@@ -1,0 +1,1733 @@
+ARM GAS  /tmp/ccuJJxba.s 			page 1
+
+
+   1              		.cpu cortex-m3
+   2              		.eabi_attribute 20, 1
+   3              		.eabi_attribute 21, 1
+   4              		.eabi_attribute 23, 3
+   5              		.eabi_attribute 24, 1
+   6              		.eabi_attribute 25, 1
+   7              		.eabi_attribute 26, 1
+   8              		.eabi_attribute 30, 2
+   9              		.eabi_attribute 34, 1
+  10              		.eabi_attribute 18, 4
+  11              		.file	"tle5011.c"
+  12              		.text
+  13              	.Ltext0:
+  14              		.cfi_sections	.debug_frame
+  15              		.section	.text.TLE5011_Read,"ax",%progbits
+  16              		.align	1
+  17              		.p2align 2,,3
+  18              		.global	TLE5011_Read
+  19              		.arch armv7-m
+  20              		.syntax unified
+  21              		.thumb
+  22              		.thumb_func
+  23              		.fpu softvfp
+  25              	TLE5011_Read:
+  26              	.LVL0:
+  27              	.LFB31:
+  28              		.file 1 "../application/Src/tle5011.c"
+   1:../application/Src/tle5011.c **** /**
+   2:../application/Src/tle5011.c ****   ******************************************************************************
+   3:../application/Src/tle5011.c ****   * @file           : tle5011.c
+   4:../application/Src/tle5011.c ****   * @brief          : TLE5011 sensors driver implementation
+   5:../application/Src/tle5011.c **** 			
+   6:../application/Src/tle5011.c **** 		FreeJoy software for game device controllers
+   7:../application/Src/tle5011.c ****     Copyright (C) 2020  Yury Vostrenkov (yuvostrenkov@gmail.com)
+   8:../application/Src/tle5011.c **** 
+   9:../application/Src/tle5011.c ****     This program is free software: you can redistribute it and/or modify
+  10:../application/Src/tle5011.c ****     it under the terms of the GNU General Public License as published by
+  11:../application/Src/tle5011.c ****     the Free Software Foundation, either version 3 of the License, or
+  12:../application/Src/tle5011.c ****     (at your option) any later version.
+  13:../application/Src/tle5011.c **** 
+  14:../application/Src/tle5011.c ****     This program is distributed in the hope that it will be useful,
+  15:../application/Src/tle5011.c ****     but WITHOUT ANY WARRANTY; without even the implied warranty of
+  16:../application/Src/tle5011.c ****     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  17:../application/Src/tle5011.c ****     GNU General Public License for more details.
+  18:../application/Src/tle5011.c **** 
+  19:../application/Src/tle5011.c ****     You should have received a copy of the GNU General Public License
+  20:../application/Src/tle5011.c ****     along with this program.  If not, see <https://www.gnu.org/licenses/>.
+  21:../application/Src/tle5011.c **** 		
+  22:../application/Src/tle5011.c ****   ******************************************************************************
+  23:../application/Src/tle5011.c ****   */
+  24:../application/Src/tle5011.c **** 
+  25:../application/Src/tle5011.c **** #include "tle5011.h"
+  26:../application/Src/tle5011.c **** #include <math.h>
+  27:../application/Src/tle5011.c **** 
+  28:../application/Src/tle5011.c **** static uint8_t MathCRC8(uint8_t crc, uint8_t data)
+  29:../application/Src/tle5011.c **** {
+  30:../application/Src/tle5011.c **** 	crc ^= data;
+ARM GAS  /tmp/ccuJJxba.s 			page 2
+
+
+  31:../application/Src/tle5011.c **** 	for (uint8_t bit=0 ; bit<8 ; bit++ ) 
+  32:../application/Src/tle5011.c **** 	{ 
+  33:../application/Src/tle5011.c **** 		if ((crc & 0x80)!=0) 
+  34:../application/Src/tle5011.c **** 		{ 
+  35:../application/Src/tle5011.c **** 			crc <<= 1; 
+  36:../application/Src/tle5011.c **** 			crc ^= 0x1D; 
+  37:../application/Src/tle5011.c **** 		} else 
+  38:../application/Src/tle5011.c **** 		{ 
+  39:../application/Src/tle5011.c **** 			crc <<= 1; 
+  40:../application/Src/tle5011.c **** 		}; 
+  41:../application/Src/tle5011.c **** 	};
+  42:../application/Src/tle5011.c **** 	return(crc);
+  43:../application/Src/tle5011.c **** };
+  44:../application/Src/tle5011.c **** 
+  45:../application/Src/tle5011.c **** static uint8_t CheckCrc(uint8_t * data, uint8_t crc, uint8_t initial, uint8_t length) 
+  46:../application/Src/tle5011.c **** {
+  47:../application/Src/tle5011.c ****   uint8_t ret = initial;
+  48:../application/Src/tle5011.c **** 	uint8_t index = 0;
+  49:../application/Src/tle5011.c **** 	
+  50:../application/Src/tle5011.c **** 	while (index < length)
+  51:../application/Src/tle5011.c **** 	{
+  52:../application/Src/tle5011.c **** 		ret = MathCRC8(ret, data[index++]);
+  53:../application/Src/tle5011.c **** 	}        
+  54:../application/Src/tle5011.c ****   ret = ~ret;
+  55:../application/Src/tle5011.c **** 	
+  56:../application/Src/tle5011.c ****   return (ret == crc);
+  57:../application/Src/tle5011.c **** }
+  58:../application/Src/tle5011.c **** 
+  59:../application/Src/tle5011.c **** void TLE5011_Read(uint8_t * data, uint8_t addr, uint8_t length)
+  60:../application/Src/tle5011.c **** {
+  29              		.loc 1 60 1 view -0
+  30              		.cfi_startproc
+  31              		@ args = 0, pretend = 0, frame = 8
+  32              		@ frame_needed = 0, uses_anonymous_args = 0
+  61:../application/Src/tle5011.c **** 	uint8_t cmd = 0x80 | (addr & 0x0F)<<3 | (length & 0x07);
+  33              		.loc 1 61 2 view .LVU1
+  60:../application/Src/tle5011.c **** 	uint8_t cmd = 0x80 | (addr & 0x0F)<<3 | (length & 0x07);
+  34              		.loc 1 60 1 is_stmt 0 view .LVU2
+  35 0000 30B5     		push	{r4, r5, lr}
+  36              	.LCFI0:
+  37              		.cfi_def_cfa_offset 12
+  38              		.cfi_offset 4, -12
+  39              		.cfi_offset 5, -8
+  40              		.cfi_offset 14, -4
+  41 0002 1446     		mov	r4, r2
+  62:../application/Src/tle5011.c **** 	
+  63:../application/Src/tle5011.c **** 	SPI_HalfDuplex_Transmit(&cmd, 1, TLE5011_SPI_MODE);
+  42              		.loc 1 63 2 view .LVU3
+  43 0004 0122     		movs	r2, #1
+  44              	.LVL1:
+  61:../application/Src/tle5011.c **** 	
+  45              		.loc 1 61 36 view .LVU4
+  46 0006 CB00     		lsls	r3, r1, #3
+  47 0008 03F07803 		and	r3, r3, #120
+  61:../application/Src/tle5011.c **** 	
+  48              		.loc 1 61 50 view .LVU5
+  49 000c 04F00701 		and	r1, r4, #7
+ARM GAS  /tmp/ccuJJxba.s 			page 3
+
+
+  50              	.LVL2:
+  60:../application/Src/tle5011.c **** 	uint8_t cmd = 0x80 | (addr & 0x0F)<<3 | (length & 0x07);
+  51              		.loc 1 60 1 view .LVU6
+  52 0010 83B0     		sub	sp, sp, #12
+  53              	.LCFI1:
+  54              		.cfi_def_cfa_offset 24
+  61:../application/Src/tle5011.c **** 	
+  55              		.loc 1 61 40 view .LVU7
+  56 0012 0B43     		orrs	r3, r3, r1
+  60:../application/Src/tle5011.c **** 	uint8_t cmd = 0x80 | (addr & 0x0F)<<3 | (length & 0x07);
+  57              		.loc 1 60 1 view .LVU8
+  58 0014 0546     		mov	r5, r0
+  61:../application/Src/tle5011.c **** 	
+  59              		.loc 1 61 40 view .LVU9
+  60 0016 63F07F03 		orn	r3, r3, #127
+  61              		.loc 1 63 2 view .LVU10
+  62 001a 1146     		mov	r1, r2
+  63 001c 0DF10700 		add	r0, sp, #7
+  64              	.LVL3:
+  61:../application/Src/tle5011.c **** 	
+  65              		.loc 1 61 10 view .LVU11
+  66 0020 8DF80730 		strb	r3, [sp, #7]
+  67              		.loc 1 63 2 is_stmt 1 view .LVU12
+  68 0024 FFF7FEFF 		bl	SPI_HalfDuplex_Transmit
+  69              	.LVL4:
+  64:../application/Src/tle5011.c **** 	if (length > 0)
+  70              		.loc 1 64 2 view .LVU13
+  71              		.loc 1 64 5 is_stmt 0 view .LVU14
+  72 0028 0CB9     		cbnz	r4, .L8
+  65:../application/Src/tle5011.c **** 	{
+  66:../application/Src/tle5011.c **** 		SPI_HalfDuplex_Receive(data, length+1, TLE5011_SPI_MODE);
+  67:../application/Src/tle5011.c **** 	}
+  68:../application/Src/tle5011.c **** 
+  69:../application/Src/tle5011.c **** }
+  73              		.loc 1 69 1 view .LVU15
+  74 002a 03B0     		add	sp, sp, #12
+  75              	.LCFI2:
+  76              		.cfi_remember_state
+  77              		.cfi_def_cfa_offset 12
+  78              		@ sp needed
+  79 002c 30BD     		pop	{r4, r5, pc}
+  80              	.LVL5:
+  81              	.L8:
+  82              	.LCFI3:
+  83              		.cfi_restore_state
+  66:../application/Src/tle5011.c **** 	}
+  84              		.loc 1 66 3 is_stmt 1 view .LVU16
+  85 002e 2846     		mov	r0, r5
+  86 0030 0122     		movs	r2, #1
+  87 0032 611C     		adds	r1, r4, #1
+  88 0034 FFF7FEFF 		bl	SPI_HalfDuplex_Receive
+  89              	.LVL6:
+  90              		.loc 1 69 1 is_stmt 0 view .LVU17
+  91 0038 03B0     		add	sp, sp, #12
+  92              	.LCFI4:
+  93              		.cfi_def_cfa_offset 12
+  94              		@ sp needed
+ARM GAS  /tmp/ccuJJxba.s 			page 4
+
+
+  95 003a 30BD     		pop	{r4, r5, pc}
+  96              		.loc 1 69 1 view .LVU18
+  97              		.cfi_endproc
+  98              	.LFE31:
+ 100              		.section	.text.TLE5011_Write,"ax",%progbits
+ 101              		.align	1
+ 102              		.p2align 2,,3
+ 103              		.global	TLE5011_Write
+ 104              		.syntax unified
+ 105              		.thumb
+ 106              		.thumb_func
+ 107              		.fpu softvfp
+ 109              	TLE5011_Write:
+ 110              	.LVL7:
+ 111              	.LFB32:
+  70:../application/Src/tle5011.c **** 
+  71:../application/Src/tle5011.c **** void TLE5011_Write(uint8_t * data, uint8_t addr, uint8_t length)
+  72:../application/Src/tle5011.c **** {
+ 112              		.loc 1 72 1 is_stmt 1 view -0
+ 113              		.cfi_startproc
+ 114              		@ args = 0, pretend = 0, frame = 8
+ 115              		@ frame_needed = 0, uses_anonymous_args = 0
+  73:../application/Src/tle5011.c **** 	uint8_t cmd = addr<<3 | (addr & 0x0F)<<3 | (length & 0x07);
+ 116              		.loc 1 73 2 view .LVU20
+  72:../application/Src/tle5011.c **** 	uint8_t cmd = addr<<3 | (addr & 0x0F)<<3 | (length & 0x07);
+ 117              		.loc 1 72 1 is_stmt 0 view .LVU21
+ 118 0000 30B5     		push	{r4, r5, lr}
+ 119              	.LCFI5:
+ 120              		.cfi_def_cfa_offset 12
+ 121              		.cfi_offset 4, -12
+ 122              		.cfi_offset 5, -8
+ 123              		.cfi_offset 14, -4
+ 124 0002 1446     		mov	r4, r2
+  74:../application/Src/tle5011.c **** 	SPI_HalfDuplex_Transmit(&cmd, 1, TLE5011_SPI_MODE);
+ 125              		.loc 1 74 2 view .LVU22
+ 126 0004 0122     		movs	r2, #1
+ 127              	.LVL8:
+  72:../application/Src/tle5011.c **** 	uint8_t cmd = addr<<3 | (addr & 0x0F)<<3 | (length & 0x07);
+ 128              		.loc 1 72 1 view .LVU23
+ 129 0006 83B0     		sub	sp, sp, #12
+ 130              	.LCFI6:
+ 131              		.cfi_def_cfa_offset 24
+  73:../application/Src/tle5011.c **** 	uint8_t cmd = addr<<3 | (addr & 0x0F)<<3 | (length & 0x07);
+ 132              		.loc 1 73 53 view .LVU24
+ 133 0008 04F00703 		and	r3, r4, #7
+  73:../application/Src/tle5011.c **** 	uint8_t cmd = addr<<3 | (addr & 0x0F)<<3 | (length & 0x07);
+ 134              		.loc 1 73 43 view .LVU25
+ 135 000c 43EAC103 		orr	r3, r3, r1, lsl #3
+  72:../application/Src/tle5011.c **** 	uint8_t cmd = addr<<3 | (addr & 0x0F)<<3 | (length & 0x07);
+ 136              		.loc 1 72 1 view .LVU26
+ 137 0010 0546     		mov	r5, r0
+ 138              		.loc 1 74 2 view .LVU27
+ 139 0012 1146     		mov	r1, r2
+ 140              	.LVL9:
+ 141              		.loc 1 74 2 view .LVU28
+ 142 0014 0DF10700 		add	r0, sp, #7
+ 143              	.LVL10:
+ARM GAS  /tmp/ccuJJxba.s 			page 5
+
+
+  73:../application/Src/tle5011.c **** 	uint8_t cmd = addr<<3 | (addr & 0x0F)<<3 | (length & 0x07);
+ 144              		.loc 1 73 10 view .LVU29
+ 145 0018 8DF80730 		strb	r3, [sp, #7]
+ 146              		.loc 1 74 2 is_stmt 1 view .LVU30
+ 147 001c FFF7FEFF 		bl	SPI_HalfDuplex_Transmit
+ 148              	.LVL11:
+  75:../application/Src/tle5011.c **** 	if (length > 0)
+ 149              		.loc 1 75 2 view .LVU31
+ 150              		.loc 1 75 5 is_stmt 0 view .LVU32
+ 151 0020 0CB9     		cbnz	r4, .L15
+  76:../application/Src/tle5011.c **** 	{
+  77:../application/Src/tle5011.c **** 		SPI_HalfDuplex_Transmit(data, length, TLE5011_SPI_MODE);
+  78:../application/Src/tle5011.c **** 	}
+  79:../application/Src/tle5011.c **** }
+ 152              		.loc 1 79 1 view .LVU33
+ 153 0022 03B0     		add	sp, sp, #12
+ 154              	.LCFI7:
+ 155              		.cfi_remember_state
+ 156              		.cfi_def_cfa_offset 12
+ 157              		@ sp needed
+ 158 0024 30BD     		pop	{r4, r5, pc}
+ 159              	.LVL12:
+ 160              	.L15:
+ 161              	.LCFI8:
+ 162              		.cfi_restore_state
+  77:../application/Src/tle5011.c **** 	}
+ 163              		.loc 1 77 3 is_stmt 1 view .LVU34
+ 164 0026 2146     		mov	r1, r4
+ 165 0028 2846     		mov	r0, r5
+ 166 002a 0122     		movs	r2, #1
+ 167 002c FFF7FEFF 		bl	SPI_HalfDuplex_Transmit
+ 168              	.LVL13:
+ 169              		.loc 1 79 1 is_stmt 0 view .LVU35
+ 170 0030 03B0     		add	sp, sp, #12
+ 171              	.LCFI9:
+ 172              		.cfi_def_cfa_offset 12
+ 173              		@ sp needed
+ 174 0032 30BD     		pop	{r4, r5, pc}
+ 175              		.loc 1 79 1 view .LVU36
+ 176              		.cfi_endproc
+ 177              	.LFE32:
+ 179              		.global	__aeabi_i2f
+ 180              		.global	__aeabi_f2d
+ 181              		.global	__aeabi_ddiv
+ 182              		.global	__aeabi_dmul
+ 183              		.global	__aeabi_d2f
+ 184              		.section	.text.TLE5011_GetAngle,"ax",%progbits
+ 185              		.align	1
+ 186              		.p2align 2,,3
+ 187              		.global	TLE5011_GetAngle
+ 188              		.syntax unified
+ 189              		.thumb
+ 190              		.thumb_func
+ 191              		.fpu softvfp
+ 193              	TLE5011_GetAngle:
+ 194              	.LVL14:
+ 195              	.LFB33:
+ARM GAS  /tmp/ccuJJxba.s 			page 6
+
+
+  80:../application/Src/tle5011.c **** 
+  81:../application/Src/tle5011.c **** int TLE5011_GetAngle(sensor_t * sensor, float * angle)
+  82:../application/Src/tle5011.c **** {
+ 196              		.loc 1 82 1 is_stmt 1 view -0
+ 197              		.cfi_startproc
+ 198              		@ args = 0, pretend = 0, frame = 0
+ 199              		@ frame_needed = 0, uses_anonymous_args = 0
+  83:../application/Src/tle5011.c **** 	int16_t x_value, y_value;
+ 200              		.loc 1 83 2 view .LVU38
+  84:../application/Src/tle5011.c **** 	float out = 0;
+ 201              		.loc 1 84 2 view .LVU39
+  85:../application/Src/tle5011.c **** 	int ret = 0;
+ 202              		.loc 1 85 2 view .LVU40
+  86:../application/Src/tle5011.c **** 	
+  87:../application/Src/tle5011.c **** 	if (CheckCrc(&sensor->data[2], sensor->data[6], 0xFB, 4))
+ 203              		.loc 1 87 2 view .LVU41
+  82:../application/Src/tle5011.c **** 	int16_t x_value, y_value;
+ 204              		.loc 1 82 1 is_stmt 0 view .LVU42
+ 205 0000 38B5     		push	{r3, r4, r5, lr}
+ 206              	.LCFI10:
+ 207              		.cfi_def_cfa_offset 16
+ 208              		.cfi_offset 3, -16
+ 209              		.cfi_offset 4, -12
+ 210              		.cfi_offset 5, -8
+ 211              		.cfi_offset 14, -4
+  82:../application/Src/tle5011.c **** 	int16_t x_value, y_value;
+ 212              		.loc 1 82 1 view .LVU43
+ 213 0002 0546     		mov	r5, r0
+ 214              	.LBB10:
+ 215              	.LBB11:
+ 216              	.LBB12:
+ 217              	.LBB13:
+  30:../application/Src/tle5011.c **** 	for (uint8_t bit=0 ; bit<8 ; bit++ ) 
+ 218              		.loc 1 30 6 view .LVU44
+ 219 0004 007C     		ldrb	r0, [r0, #16]	@ zero_extendqisi2
+ 220              	.LVL15:
+  30:../application/Src/tle5011.c **** 	for (uint8_t bit=0 ; bit<8 ; bit++ ) 
+ 221              		.loc 1 30 6 view .LVU45
+ 222              	.LBE13:
+ 223              	.LBE12:
+ 224              	.LBE11:
+ 225              	.LBE10:
+  82:../application/Src/tle5011.c **** 	int16_t x_value, y_value;
+ 226              		.loc 1 82 1 view .LVU46
+ 227 0006 0C46     		mov	r4, r1
+ 228              	.LBB37:
+ 229              	.LBB35:
+ 230              	.LBB30:
+ 231              	.LBB25:
+  30:../application/Src/tle5011.c **** 	for (uint8_t bit=0 ; bit<8 ; bit++ ) 
+ 232              		.loc 1 30 6 view .LVU47
+ 233 0008 80F0FB03 		eor	r3, r0, #251
+ 234              	.LBB14:
+  35:../application/Src/tle5011.c **** 			crc ^= 0x1D; 
+ 235              		.loc 1 35 8 view .LVU48
+ 236 000c 5B00     		lsls	r3, r3, #1
+ 237 000e DBB2     		uxtb	r3, r3
+ARM GAS  /tmp/ccuJJxba.s 			page 7
+
+
+  33:../application/Src/tle5011.c **** 		{ 
+ 238              		.loc 1 33 6 view .LVU49
+ 239 0010 C109     		lsrs	r1, r0, #7
+ 240              	.LVL16:
+  36:../application/Src/tle5011.c **** 		} else 
+ 241              		.loc 1 36 8 view .LVU50
+ 242 0012 08BF     		it	eq
+ 243 0014 83F01D03 		eoreq	r3, r3, #29
+  33:../application/Src/tle5011.c **** 		{ 
+ 244              		.loc 1 33 6 view .LVU51
+ 245 0018 13F0800F 		tst	r3, #128
+  35:../application/Src/tle5011.c **** 			crc ^= 0x1D; 
+ 246              		.loc 1 35 8 view .LVU52
+ 247 001c 4FEA4303 		lsl	r3, r3, #1
+ 248 0020 DBB2     		uxtb	r3, r3
+  36:../application/Src/tle5011.c **** 		} else 
+ 249              		.loc 1 36 8 view .LVU53
+ 250 0022 18BF     		it	ne
+ 251 0024 83F01D03 		eorne	r3, r3, #29
+  33:../application/Src/tle5011.c **** 		{ 
+ 252              		.loc 1 33 6 view .LVU54
+ 253 0028 13F0800F 		tst	r3, #128
+  35:../application/Src/tle5011.c **** 			crc ^= 0x1D; 
+ 254              		.loc 1 35 8 view .LVU55
+ 255 002c 4FEA4303 		lsl	r3, r3, #1
+ 256 0030 DBB2     		uxtb	r3, r3
+  36:../application/Src/tle5011.c **** 		} else 
+ 257              		.loc 1 36 8 view .LVU56
+ 258 0032 18BF     		it	ne
+ 259 0034 83F01D03 		eorne	r3, r3, #29
+  33:../application/Src/tle5011.c **** 		{ 
+ 260              		.loc 1 33 6 view .LVU57
+ 261 0038 13F0800F 		tst	r3, #128
+  35:../application/Src/tle5011.c **** 			crc ^= 0x1D; 
+ 262              		.loc 1 35 8 view .LVU58
+ 263 003c 4FEA4303 		lsl	r3, r3, #1
+ 264 0040 DBB2     		uxtb	r3, r3
+  36:../application/Src/tle5011.c **** 		} else 
+ 265              		.loc 1 36 8 view .LVU59
+ 266 0042 18BF     		it	ne
+ 267 0044 83F01D03 		eorne	r3, r3, #29
+  33:../application/Src/tle5011.c **** 		{ 
+ 268              		.loc 1 33 6 view .LVU60
+ 269 0048 13F0800F 		tst	r3, #128
+  35:../application/Src/tle5011.c **** 			crc ^= 0x1D; 
+ 270              		.loc 1 35 8 view .LVU61
+ 271 004c 4FEA4303 		lsl	r3, r3, #1
+ 272 0050 DBB2     		uxtb	r3, r3
+  36:../application/Src/tle5011.c **** 		} else 
+ 273              		.loc 1 36 8 view .LVU62
+ 274 0052 18BF     		it	ne
+ 275 0054 83F01D03 		eorne	r3, r3, #29
+  33:../application/Src/tle5011.c **** 		{ 
+ 276              		.loc 1 33 6 view .LVU63
+ 277 0058 13F0800F 		tst	r3, #128
+  35:../application/Src/tle5011.c **** 			crc ^= 0x1D; 
+ 278              		.loc 1 35 8 view .LVU64
+ARM GAS  /tmp/ccuJJxba.s 			page 8
+
+
+ 279 005c 4FEA4303 		lsl	r3, r3, #1
+ 280 0060 DBB2     		uxtb	r3, r3
+  36:../application/Src/tle5011.c **** 		} else 
+ 281              		.loc 1 36 8 view .LVU65
+ 282 0062 18BF     		it	ne
+ 283 0064 83F01D03 		eorne	r3, r3, #29
+  33:../application/Src/tle5011.c **** 		{ 
+ 284              		.loc 1 33 6 view .LVU66
+ 285 0068 13F0800F 		tst	r3, #128
+  35:../application/Src/tle5011.c **** 			crc ^= 0x1D; 
+ 286              		.loc 1 35 8 view .LVU67
+ 287 006c 4FEA4303 		lsl	r3, r3, #1
+ 288 0070 DBB2     		uxtb	r3, r3
+  36:../application/Src/tle5011.c **** 		} else 
+ 289              		.loc 1 36 8 view .LVU68
+ 290 0072 18BF     		it	ne
+ 291 0074 83F01D03 		eorne	r3, r3, #29
+  33:../application/Src/tle5011.c **** 		{ 
+ 292              		.loc 1 33 6 view .LVU69
+ 293 0078 13F0800F 		tst	r3, #128
+  35:../application/Src/tle5011.c **** 			crc ^= 0x1D; 
+ 294              		.loc 1 35 8 view .LVU70
+ 295 007c 4FEA4303 		lsl	r3, r3, #1
+ 296              	.LBE14:
+  30:../application/Src/tle5011.c **** 	for (uint8_t bit=0 ; bit<8 ; bit++ ) 
+ 297              		.loc 1 30 6 view .LVU71
+ 298 0080 697C     		ldrb	r1, [r5, #17]	@ zero_extendqisi2
+ 299              	.LBB15:
+  35:../application/Src/tle5011.c **** 			crc ^= 0x1D; 
+ 300              		.loc 1 35 8 view .LVU72
+ 301 0082 DBB2     		uxtb	r3, r3
+  36:../application/Src/tle5011.c **** 		} else 
+ 302              		.loc 1 36 8 view .LVU73
+ 303 0084 18BF     		it	ne
+ 304 0086 83F01D03 		eorne	r3, r3, #29
+ 305              	.LBE15:
+  30:../application/Src/tle5011.c **** 	for (uint8_t bit=0 ; bit<8 ; bit++ ) 
+ 306              		.loc 1 30 6 view .LVU74
+ 307 008a 4B40     		eors	r3, r3, r1
+ 308              	.LBB16:
+  33:../application/Src/tle5011.c **** 		{ 
+ 309              		.loc 1 33 6 view .LVU75
+ 310 008c 13F0800F 		tst	r3, #128
+  35:../application/Src/tle5011.c **** 			crc ^= 0x1D; 
+ 311              		.loc 1 35 8 view .LVU76
+ 312 0090 4FEA4303 		lsl	r3, r3, #1
+ 313 0094 DBB2     		uxtb	r3, r3
+  36:../application/Src/tle5011.c **** 		} else 
+ 314              		.loc 1 36 8 view .LVU77
+ 315 0096 18BF     		it	ne
+ 316 0098 83F01D03 		eorne	r3, r3, #29
+  33:../application/Src/tle5011.c **** 		{ 
+ 317              		.loc 1 33 6 view .LVU78
+ 318 009c 13F0800F 		tst	r3, #128
+  35:../application/Src/tle5011.c **** 			crc ^= 0x1D; 
+ 319              		.loc 1 35 8 view .LVU79
+ 320 00a0 4FEA4303 		lsl	r3, r3, #1
+ARM GAS  /tmp/ccuJJxba.s 			page 9
+
+
+ 321 00a4 DBB2     		uxtb	r3, r3
+  36:../application/Src/tle5011.c **** 		} else 
+ 322              		.loc 1 36 8 view .LVU80
+ 323 00a6 18BF     		it	ne
+ 324 00a8 83F01D03 		eorne	r3, r3, #29
+  33:../application/Src/tle5011.c **** 		{ 
+ 325              		.loc 1 33 6 view .LVU81
+ 326 00ac 13F0800F 		tst	r3, #128
+  35:../application/Src/tle5011.c **** 			crc ^= 0x1D; 
+ 327              		.loc 1 35 8 view .LVU82
+ 328 00b0 4FEA4303 		lsl	r3, r3, #1
+ 329 00b4 DBB2     		uxtb	r3, r3
+  36:../application/Src/tle5011.c **** 		} else 
+ 330              		.loc 1 36 8 view .LVU83
+ 331 00b6 18BF     		it	ne
+ 332 00b8 83F01D03 		eorne	r3, r3, #29
+  33:../application/Src/tle5011.c **** 		{ 
+ 333              		.loc 1 33 6 view .LVU84
+ 334 00bc 13F0800F 		tst	r3, #128
+  35:../application/Src/tle5011.c **** 			crc ^= 0x1D; 
+ 335              		.loc 1 35 8 view .LVU85
+ 336 00c0 4FEA4303 		lsl	r3, r3, #1
+ 337 00c4 DBB2     		uxtb	r3, r3
+  36:../application/Src/tle5011.c **** 		} else 
+ 338              		.loc 1 36 8 view .LVU86
+ 339 00c6 18BF     		it	ne
+ 340 00c8 83F01D03 		eorne	r3, r3, #29
+  33:../application/Src/tle5011.c **** 		{ 
+ 341              		.loc 1 33 6 view .LVU87
+ 342 00cc 13F0800F 		tst	r3, #128
+  35:../application/Src/tle5011.c **** 			crc ^= 0x1D; 
+ 343              		.loc 1 35 8 view .LVU88
+ 344 00d0 4FEA4303 		lsl	r3, r3, #1
+ 345 00d4 DBB2     		uxtb	r3, r3
+  36:../application/Src/tle5011.c **** 		} else 
+ 346              		.loc 1 36 8 view .LVU89
+ 347 00d6 18BF     		it	ne
+ 348 00d8 83F01D03 		eorne	r3, r3, #29
+  33:../application/Src/tle5011.c **** 		{ 
+ 349              		.loc 1 33 6 view .LVU90
+ 350 00dc 13F0800F 		tst	r3, #128
+  35:../application/Src/tle5011.c **** 			crc ^= 0x1D; 
+ 351              		.loc 1 35 8 view .LVU91
+ 352 00e0 4FEA4303 		lsl	r3, r3, #1
+ 353 00e4 DBB2     		uxtb	r3, r3
+  36:../application/Src/tle5011.c **** 		} else 
+ 354              		.loc 1 36 8 view .LVU92
+ 355 00e6 18BF     		it	ne
+ 356 00e8 83F01D03 		eorne	r3, r3, #29
+  33:../application/Src/tle5011.c **** 		{ 
+ 357              		.loc 1 33 6 view .LVU93
+ 358 00ec 13F0800F 		tst	r3, #128
+  35:../application/Src/tle5011.c **** 			crc ^= 0x1D; 
+ 359              		.loc 1 35 8 view .LVU94
+ 360 00f0 4FEA4303 		lsl	r3, r3, #1
+ 361 00f4 DBB2     		uxtb	r3, r3
+  36:../application/Src/tle5011.c **** 		} else 
+ARM GAS  /tmp/ccuJJxba.s 			page 10
+
+
+ 362              		.loc 1 36 8 view .LVU95
+ 363 00f6 18BF     		it	ne
+ 364 00f8 83F01D03 		eorne	r3, r3, #29
+  33:../application/Src/tle5011.c **** 		{ 
+ 365              		.loc 1 33 6 view .LVU96
+ 366 00fc 13F0800F 		tst	r3, #128
+  35:../application/Src/tle5011.c **** 			crc ^= 0x1D; 
+ 367              		.loc 1 35 8 view .LVU97
+ 368 0100 4FEA4303 		lsl	r3, r3, #1
+ 369              	.LBE16:
+  30:../application/Src/tle5011.c **** 	for (uint8_t bit=0 ; bit<8 ; bit++ ) 
+ 370              		.loc 1 30 6 view .LVU98
+ 371 0104 A97C     		ldrb	r1, [r5, #18]	@ zero_extendqisi2
+ 372              	.LBB17:
+  35:../application/Src/tle5011.c **** 			crc ^= 0x1D; 
+ 373              		.loc 1 35 8 view .LVU99
+ 374 0106 DBB2     		uxtb	r3, r3
+  36:../application/Src/tle5011.c **** 		} else 
+ 375              		.loc 1 36 8 view .LVU100
+ 376 0108 18BF     		it	ne
+ 377 010a 83F01D03 		eorne	r3, r3, #29
+ 378              	.LBE17:
+  30:../application/Src/tle5011.c **** 	for (uint8_t bit=0 ; bit<8 ; bit++ ) 
+ 379              		.loc 1 30 6 view .LVU101
+ 380 010e 4B40     		eors	r3, r3, r1
+ 381              	.LBB18:
+  33:../application/Src/tle5011.c **** 		{ 
+ 382              		.loc 1 33 6 view .LVU102
+ 383 0110 13F0800F 		tst	r3, #128
+  35:../application/Src/tle5011.c **** 			crc ^= 0x1D; 
+ 384              		.loc 1 35 8 view .LVU103
+ 385 0114 4FEA4303 		lsl	r3, r3, #1
+ 386 0118 DBB2     		uxtb	r3, r3
+  36:../application/Src/tle5011.c **** 		} else 
+ 387              		.loc 1 36 8 view .LVU104
+ 388 011a 18BF     		it	ne
+ 389 011c 83F01D03 		eorne	r3, r3, #29
+  33:../application/Src/tle5011.c **** 		{ 
+ 390              		.loc 1 33 6 view .LVU105
+ 391 0120 13F0800F 		tst	r3, #128
+  35:../application/Src/tle5011.c **** 			crc ^= 0x1D; 
+ 392              		.loc 1 35 8 view .LVU106
+ 393 0124 4FEA4303 		lsl	r3, r3, #1
+ 394 0128 DBB2     		uxtb	r3, r3
+  36:../application/Src/tle5011.c **** 		} else 
+ 395              		.loc 1 36 8 view .LVU107
+ 396 012a 18BF     		it	ne
+ 397 012c 83F01D03 		eorne	r3, r3, #29
+  33:../application/Src/tle5011.c **** 		{ 
+ 398              		.loc 1 33 6 view .LVU108
+ 399 0130 13F0800F 		tst	r3, #128
+  35:../application/Src/tle5011.c **** 			crc ^= 0x1D; 
+ 400              		.loc 1 35 8 view .LVU109
+ 401 0134 4FEA4303 		lsl	r3, r3, #1
+ 402 0138 DBB2     		uxtb	r3, r3
+  36:../application/Src/tle5011.c **** 		} else 
+ 403              		.loc 1 36 8 view .LVU110
+ARM GAS  /tmp/ccuJJxba.s 			page 11
+
+
+ 404 013a 18BF     		it	ne
+ 405 013c 83F01D03 		eorne	r3, r3, #29
+  33:../application/Src/tle5011.c **** 		{ 
+ 406              		.loc 1 33 6 view .LVU111
+ 407 0140 13F0800F 		tst	r3, #128
+  35:../application/Src/tle5011.c **** 			crc ^= 0x1D; 
+ 408              		.loc 1 35 8 view .LVU112
+ 409 0144 4FEA4303 		lsl	r3, r3, #1
+ 410 0148 DBB2     		uxtb	r3, r3
+  36:../application/Src/tle5011.c **** 		} else 
+ 411              		.loc 1 36 8 view .LVU113
+ 412 014a 18BF     		it	ne
+ 413 014c 83F01D03 		eorne	r3, r3, #29
+  33:../application/Src/tle5011.c **** 		{ 
+ 414              		.loc 1 33 6 view .LVU114
+ 415 0150 13F0800F 		tst	r3, #128
+  35:../application/Src/tle5011.c **** 			crc ^= 0x1D; 
+ 416              		.loc 1 35 8 view .LVU115
+ 417 0154 4FEA4303 		lsl	r3, r3, #1
+ 418 0158 DBB2     		uxtb	r3, r3
+  36:../application/Src/tle5011.c **** 		} else 
+ 419              		.loc 1 36 8 view .LVU116
+ 420 015a 18BF     		it	ne
+ 421 015c 83F01D03 		eorne	r3, r3, #29
+  33:../application/Src/tle5011.c **** 		{ 
+ 422              		.loc 1 33 6 view .LVU117
+ 423 0160 13F0800F 		tst	r3, #128
+  35:../application/Src/tle5011.c **** 			crc ^= 0x1D; 
+ 424              		.loc 1 35 8 view .LVU118
+ 425 0164 4FEA4303 		lsl	r3, r3, #1
+ 426 0168 DBB2     		uxtb	r3, r3
+  36:../application/Src/tle5011.c **** 		} else 
+ 427              		.loc 1 36 8 view .LVU119
+ 428 016a 18BF     		it	ne
+ 429 016c 83F01D03 		eorne	r3, r3, #29
+  33:../application/Src/tle5011.c **** 		{ 
+ 430              		.loc 1 33 6 view .LVU120
+ 431 0170 13F0800F 		tst	r3, #128
+  35:../application/Src/tle5011.c **** 			crc ^= 0x1D; 
+ 432              		.loc 1 35 8 view .LVU121
+ 433 0174 4FEA4303 		lsl	r3, r3, #1
+ 434 0178 DBB2     		uxtb	r3, r3
+  36:../application/Src/tle5011.c **** 		} else 
+ 435              		.loc 1 36 8 view .LVU122
+ 436 017a 18BF     		it	ne
+ 437 017c 83F01D03 		eorne	r3, r3, #29
+  33:../application/Src/tle5011.c **** 		{ 
+ 438              		.loc 1 33 6 view .LVU123
+ 439 0180 13F0800F 		tst	r3, #128
+  35:../application/Src/tle5011.c **** 			crc ^= 0x1D; 
+ 440              		.loc 1 35 8 view .LVU124
+ 441 0184 4FEA4303 		lsl	r3, r3, #1
+ 442 0188 DBB2     		uxtb	r3, r3
+ 443              	.LBE18:
+  30:../application/Src/tle5011.c **** 	for (uint8_t bit=0 ; bit<8 ; bit++ ) 
+ 444              		.loc 1 30 6 view .LVU125
+ 445 018a E97C     		ldrb	r1, [r5, #19]	@ zero_extendqisi2
+ARM GAS  /tmp/ccuJJxba.s 			page 12
+
+
+ 446              	.LBB19:
+  36:../application/Src/tle5011.c **** 		} else 
+ 447              		.loc 1 36 8 view .LVU126
+ 448 018c 18BF     		it	ne
+ 449 018e 83F01D03 		eorne	r3, r3, #29
+ 450              	.LBE19:
+  30:../application/Src/tle5011.c **** 	for (uint8_t bit=0 ; bit<8 ; bit++ ) 
+ 451              		.loc 1 30 6 view .LVU127
+ 452 0192 4B40     		eors	r3, r3, r1
+ 453              	.LBB20:
+  33:../application/Src/tle5011.c **** 		{ 
+ 454              		.loc 1 33 6 view .LVU128
+ 455 0194 13F0800F 		tst	r3, #128
+  35:../application/Src/tle5011.c **** 			crc ^= 0x1D; 
+ 456              		.loc 1 35 8 view .LVU129
+ 457 0198 4FEA4303 		lsl	r3, r3, #1
+ 458 019c DBB2     		uxtb	r3, r3
+  36:../application/Src/tle5011.c **** 		} else 
+ 459              		.loc 1 36 8 view .LVU130
+ 460 019e 18BF     		it	ne
+ 461 01a0 83F01D03 		eorne	r3, r3, #29
+  33:../application/Src/tle5011.c **** 		{ 
+ 462              		.loc 1 33 6 view .LVU131
+ 463 01a4 13F0800F 		tst	r3, #128
+  35:../application/Src/tle5011.c **** 			crc ^= 0x1D; 
+ 464              		.loc 1 35 8 view .LVU132
+ 465 01a8 4FEA4303 		lsl	r3, r3, #1
+ 466 01ac DBB2     		uxtb	r3, r3
+  36:../application/Src/tle5011.c **** 		} else 
+ 467              		.loc 1 36 8 view .LVU133
+ 468 01ae 18BF     		it	ne
+ 469 01b0 83F01D03 		eorne	r3, r3, #29
+  33:../application/Src/tle5011.c **** 		{ 
+ 470              		.loc 1 33 6 view .LVU134
+ 471 01b4 13F0800F 		tst	r3, #128
+  35:../application/Src/tle5011.c **** 			crc ^= 0x1D; 
+ 472              		.loc 1 35 8 view .LVU135
+ 473 01b8 4FEA4303 		lsl	r3, r3, #1
+ 474 01bc DBB2     		uxtb	r3, r3
+  36:../application/Src/tle5011.c **** 		} else 
+ 475              		.loc 1 36 8 view .LVU136
+ 476 01be 18BF     		it	ne
+ 477 01c0 83F01D03 		eorne	r3, r3, #29
+  33:../application/Src/tle5011.c **** 		{ 
+ 478              		.loc 1 33 6 view .LVU137
+ 479 01c4 13F0800F 		tst	r3, #128
+  35:../application/Src/tle5011.c **** 			crc ^= 0x1D; 
+ 480              		.loc 1 35 8 view .LVU138
+ 481 01c8 4FEA4303 		lsl	r3, r3, #1
+ 482 01cc DBB2     		uxtb	r3, r3
+  36:../application/Src/tle5011.c **** 		} else 
+ 483              		.loc 1 36 8 view .LVU139
+ 484 01ce 18BF     		it	ne
+ 485 01d0 83F01D03 		eorne	r3, r3, #29
+  33:../application/Src/tle5011.c **** 		{ 
+ 486              		.loc 1 33 6 view .LVU140
+ 487 01d4 13F0800F 		tst	r3, #128
+ARM GAS  /tmp/ccuJJxba.s 			page 13
+
+
+  35:../application/Src/tle5011.c **** 			crc ^= 0x1D; 
+ 488              		.loc 1 35 8 view .LVU141
+ 489 01d8 4FEA4303 		lsl	r3, r3, #1
+ 490 01dc DBB2     		uxtb	r3, r3
+  36:../application/Src/tle5011.c **** 		} else 
+ 491              		.loc 1 36 8 view .LVU142
+ 492 01de 18BF     		it	ne
+ 493 01e0 83F01D03 		eorne	r3, r3, #29
+  33:../application/Src/tle5011.c **** 		{ 
+ 494              		.loc 1 33 6 view .LVU143
+ 495 01e4 13F0800F 		tst	r3, #128
+  35:../application/Src/tle5011.c **** 			crc ^= 0x1D; 
+ 496              		.loc 1 35 8 view .LVU144
+ 497 01e8 4FEA4303 		lsl	r3, r3, #1
+ 498 01ec DBB2     		uxtb	r3, r3
+  36:../application/Src/tle5011.c **** 		} else 
+ 499              		.loc 1 36 8 view .LVU145
+ 500 01ee 18BF     		it	ne
+ 501 01f0 83F01D03 		eorne	r3, r3, #29
+  33:../application/Src/tle5011.c **** 		{ 
+ 502              		.loc 1 33 6 view .LVU146
+ 503 01f4 13F0800F 		tst	r3, #128
+  35:../application/Src/tle5011.c **** 			crc ^= 0x1D; 
+ 504              		.loc 1 35 8 view .LVU147
+ 505 01f8 4FEA4303 		lsl	r3, r3, #1
+ 506 01fc DBB2     		uxtb	r3, r3
+  36:../application/Src/tle5011.c **** 		} else 
+ 507              		.loc 1 36 8 view .LVU148
+ 508 01fe 18BF     		it	ne
+ 509 0200 83F01D03 		eorne	r3, r3, #29
+  33:../application/Src/tle5011.c **** 		{ 
+ 510              		.loc 1 33 6 view .LVU149
+ 511 0204 13F0800F 		tst	r3, #128
+  35:../application/Src/tle5011.c **** 			crc ^= 0x1D; 
+ 512              		.loc 1 35 8 view .LVU150
+ 513 0208 4FEA4303 		lsl	r3, r3, #1
+ 514 020c DBB2     		uxtb	r3, r3
+  36:../application/Src/tle5011.c **** 		} else 
+ 515              		.loc 1 36 8 view .LVU151
+ 516 020e 18BF     		it	ne
+ 517 0210 83F01D03 		eorne	r3, r3, #29
+ 518              	.LBE20:
+ 519              	.LBE25:
+ 520              	.LBE30:
+  54:../application/Src/tle5011.c **** 	
+ 521              		.loc 1 54 7 view .LVU152
+ 522 0214 DB43     		mvns	r3, r3
+ 523              	.LBE35:
+ 524              	.LBE37:
+ 525              		.loc 1 87 6 view .LVU153
+ 526 0216 2A7D     		ldrb	r2, [r5, #20]	@ zero_extendqisi2
+ 527              	.LVL17:
+ 528              	.LBB38:
+ 529              	.LBI10:
+  45:../application/Src/tle5011.c **** {
+ 530              		.loc 1 45 16 is_stmt 1 view .LVU154
+ 531              	.LBB36:
+ARM GAS  /tmp/ccuJJxba.s 			page 14
+
+
+  47:../application/Src/tle5011.c **** 	uint8_t index = 0;
+ 532              		.loc 1 47 3 view .LVU155
+  48:../application/Src/tle5011.c **** 	
+ 533              		.loc 1 48 2 view .LVU156
+  50:../application/Src/tle5011.c **** 	{
+ 534              		.loc 1 50 2 view .LVU157
+  50:../application/Src/tle5011.c **** 	{
+ 535              		.loc 1 50 8 view .LVU158
+  52:../application/Src/tle5011.c **** 	}        
+ 536              		.loc 1 52 3 view .LVU159
+ 537              	.LBB31:
+ 538              	.LBI12:
+  28:../application/Src/tle5011.c **** {
+ 539              		.loc 1 28 16 view .LVU160
+ 540              	.LBB26:
+  30:../application/Src/tle5011.c **** 	for (uint8_t bit=0 ; bit<8 ; bit++ ) 
+ 541              		.loc 1 30 2 view .LVU161
+  31:../application/Src/tle5011.c **** 	{ 
+ 542              		.loc 1 31 2 view .LVU162
+ 543              	.LBB21:
+  31:../application/Src/tle5011.c **** 	{ 
+ 544              		.loc 1 31 7 view .LVU163
+  31:../application/Src/tle5011.c **** 	{ 
+ 545              		.loc 1 31 23 view .LVU164
+  33:../application/Src/tle5011.c **** 		{ 
+ 546              		.loc 1 33 3 view .LVU165
+  35:../application/Src/tle5011.c **** 			crc ^= 0x1D; 
+ 547              		.loc 1 35 4 view .LVU166
+  36:../application/Src/tle5011.c **** 		} else 
+ 548              		.loc 1 36 4 view .LVU167
+  40:../application/Src/tle5011.c **** 	};
+ 549              		.loc 1 40 4 view .LVU168
+  31:../application/Src/tle5011.c **** 	{ 
+ 550              		.loc 1 31 31 view .LVU169
+  31:../application/Src/tle5011.c **** 	{ 
+ 551              		.loc 1 31 23 view .LVU170
+  33:../application/Src/tle5011.c **** 		{ 
+ 552              		.loc 1 33 3 view .LVU171
+  35:../application/Src/tle5011.c **** 			crc ^= 0x1D; 
+ 553              		.loc 1 35 4 view .LVU172
+  36:../application/Src/tle5011.c **** 		} else 
+ 554              		.loc 1 36 4 view .LVU173
+  40:../application/Src/tle5011.c **** 	};
+ 555              		.loc 1 40 4 view .LVU174
+  31:../application/Src/tle5011.c **** 	{ 
+ 556              		.loc 1 31 31 view .LVU175
+  31:../application/Src/tle5011.c **** 	{ 
+ 557              		.loc 1 31 23 view .LVU176
+  33:../application/Src/tle5011.c **** 		{ 
+ 558              		.loc 1 33 3 view .LVU177
+  35:../application/Src/tle5011.c **** 			crc ^= 0x1D; 
+ 559              		.loc 1 35 4 view .LVU178
+  36:../application/Src/tle5011.c **** 		} else 
+ 560              		.loc 1 36 4 view .LVU179
+  40:../application/Src/tle5011.c **** 	};
+ 561              		.loc 1 40 4 view .LVU180
+  31:../application/Src/tle5011.c **** 	{ 
+ARM GAS  /tmp/ccuJJxba.s 			page 15
+
+
+ 562              		.loc 1 31 31 view .LVU181
+  31:../application/Src/tle5011.c **** 	{ 
+ 563              		.loc 1 31 23 view .LVU182
+  33:../application/Src/tle5011.c **** 		{ 
+ 564              		.loc 1 33 3 view .LVU183
+  35:../application/Src/tle5011.c **** 			crc ^= 0x1D; 
+ 565              		.loc 1 35 4 view .LVU184
+  36:../application/Src/tle5011.c **** 		} else 
+ 566              		.loc 1 36 4 view .LVU185
+  40:../application/Src/tle5011.c **** 	};
+ 567              		.loc 1 40 4 view .LVU186
+  31:../application/Src/tle5011.c **** 	{ 
+ 568              		.loc 1 31 31 view .LVU187
+  31:../application/Src/tle5011.c **** 	{ 
+ 569              		.loc 1 31 23 view .LVU188
+  33:../application/Src/tle5011.c **** 		{ 
+ 570              		.loc 1 33 3 view .LVU189
+  35:../application/Src/tle5011.c **** 			crc ^= 0x1D; 
+ 571              		.loc 1 35 4 view .LVU190
+  36:../application/Src/tle5011.c **** 		} else 
+ 572              		.loc 1 36 4 view .LVU191
+  40:../application/Src/tle5011.c **** 	};
+ 573              		.loc 1 40 4 view .LVU192
+  31:../application/Src/tle5011.c **** 	{ 
+ 574              		.loc 1 31 31 view .LVU193
+  31:../application/Src/tle5011.c **** 	{ 
+ 575              		.loc 1 31 23 view .LVU194
+  33:../application/Src/tle5011.c **** 		{ 
+ 576              		.loc 1 33 3 view .LVU195
+  35:../application/Src/tle5011.c **** 			crc ^= 0x1D; 
+ 577              		.loc 1 35 4 view .LVU196
+  36:../application/Src/tle5011.c **** 		} else 
+ 578              		.loc 1 36 4 view .LVU197
+  40:../application/Src/tle5011.c **** 	};
+ 579              		.loc 1 40 4 view .LVU198
+  31:../application/Src/tle5011.c **** 	{ 
+ 580              		.loc 1 31 31 view .LVU199
+  31:../application/Src/tle5011.c **** 	{ 
+ 581              		.loc 1 31 23 view .LVU200
+  33:../application/Src/tle5011.c **** 		{ 
+ 582              		.loc 1 33 3 view .LVU201
+  35:../application/Src/tle5011.c **** 			crc ^= 0x1D; 
+ 583              		.loc 1 35 4 view .LVU202
+  36:../application/Src/tle5011.c **** 		} else 
+ 584              		.loc 1 36 4 view .LVU203
+  40:../application/Src/tle5011.c **** 	};
+ 585              		.loc 1 40 4 view .LVU204
+  31:../application/Src/tle5011.c **** 	{ 
+ 586              		.loc 1 31 31 view .LVU205
+  31:../application/Src/tle5011.c **** 	{ 
+ 587              		.loc 1 31 23 view .LVU206
+  33:../application/Src/tle5011.c **** 		{ 
+ 588              		.loc 1 33 3 view .LVU207
+  35:../application/Src/tle5011.c **** 			crc ^= 0x1D; 
+ 589              		.loc 1 35 4 view .LVU208
+  36:../application/Src/tle5011.c **** 		} else 
+ 590              		.loc 1 36 4 view .LVU209
+ARM GAS  /tmp/ccuJJxba.s 			page 16
+
+
+  36:../application/Src/tle5011.c **** 		} else 
+ 591              		.loc 1 36 4 is_stmt 0 view .LVU210
+ 592              	.LBE21:
+ 593              	.LBE26:
+ 594              	.LBE31:
+  50:../application/Src/tle5011.c **** 	{
+ 595              		.loc 1 50 8 is_stmt 1 view .LVU211
+  52:../application/Src/tle5011.c **** 	}        
+ 596              		.loc 1 52 3 view .LVU212
+ 597              	.LBB32:
+  28:../application/Src/tle5011.c **** {
+ 598              		.loc 1 28 16 view .LVU213
+ 599              	.LBB27:
+  30:../application/Src/tle5011.c **** 	for (uint8_t bit=0 ; bit<8 ; bit++ ) 
+ 600              		.loc 1 30 2 view .LVU214
+  31:../application/Src/tle5011.c **** 	{ 
+ 601              		.loc 1 31 2 view .LVU215
+ 602              	.LBB22:
+  31:../application/Src/tle5011.c **** 	{ 
+ 603              		.loc 1 31 7 view .LVU216
+  31:../application/Src/tle5011.c **** 	{ 
+ 604              		.loc 1 31 23 view .LVU217
+  33:../application/Src/tle5011.c **** 		{ 
+ 605              		.loc 1 33 3 view .LVU218
+  35:../application/Src/tle5011.c **** 			crc ^= 0x1D; 
+ 606              		.loc 1 35 4 view .LVU219
+  36:../application/Src/tle5011.c **** 		} else 
+ 607              		.loc 1 36 4 view .LVU220
+  40:../application/Src/tle5011.c **** 	};
+ 608              		.loc 1 40 4 view .LVU221
+  31:../application/Src/tle5011.c **** 	{ 
+ 609              		.loc 1 31 31 view .LVU222
+  31:../application/Src/tle5011.c **** 	{ 
+ 610              		.loc 1 31 23 view .LVU223
+  33:../application/Src/tle5011.c **** 		{ 
+ 611              		.loc 1 33 3 view .LVU224
+  35:../application/Src/tle5011.c **** 			crc ^= 0x1D; 
+ 612              		.loc 1 35 4 view .LVU225
+  36:../application/Src/tle5011.c **** 		} else 
+ 613              		.loc 1 36 4 view .LVU226
+  40:../application/Src/tle5011.c **** 	};
+ 614              		.loc 1 40 4 view .LVU227
+  31:../application/Src/tle5011.c **** 	{ 
+ 615              		.loc 1 31 31 view .LVU228
+  31:../application/Src/tle5011.c **** 	{ 
+ 616              		.loc 1 31 23 view .LVU229
+  33:../application/Src/tle5011.c **** 		{ 
+ 617              		.loc 1 33 3 view .LVU230
+  35:../application/Src/tle5011.c **** 			crc ^= 0x1D; 
+ 618              		.loc 1 35 4 view .LVU231
+  36:../application/Src/tle5011.c **** 		} else 
+ 619              		.loc 1 36 4 view .LVU232
+  40:../application/Src/tle5011.c **** 	};
+ 620              		.loc 1 40 4 view .LVU233
+  31:../application/Src/tle5011.c **** 	{ 
+ 621              		.loc 1 31 31 view .LVU234
+  31:../application/Src/tle5011.c **** 	{ 
+ARM GAS  /tmp/ccuJJxba.s 			page 17
+
+
+ 622              		.loc 1 31 23 view .LVU235
+  33:../application/Src/tle5011.c **** 		{ 
+ 623              		.loc 1 33 3 view .LVU236
+  35:../application/Src/tle5011.c **** 			crc ^= 0x1D; 
+ 624              		.loc 1 35 4 view .LVU237
+  36:../application/Src/tle5011.c **** 		} else 
+ 625              		.loc 1 36 4 view .LVU238
+  40:../application/Src/tle5011.c **** 	};
+ 626              		.loc 1 40 4 view .LVU239
+  31:../application/Src/tle5011.c **** 	{ 
+ 627              		.loc 1 31 31 view .LVU240
+  31:../application/Src/tle5011.c **** 	{ 
+ 628              		.loc 1 31 23 view .LVU241
+  33:../application/Src/tle5011.c **** 		{ 
+ 629              		.loc 1 33 3 view .LVU242
+  35:../application/Src/tle5011.c **** 			crc ^= 0x1D; 
+ 630              		.loc 1 35 4 view .LVU243
+  36:../application/Src/tle5011.c **** 		} else 
+ 631              		.loc 1 36 4 view .LVU244
+  40:../application/Src/tle5011.c **** 	};
+ 632              		.loc 1 40 4 view .LVU245
+  31:../application/Src/tle5011.c **** 	{ 
+ 633              		.loc 1 31 31 view .LVU246
+  31:../application/Src/tle5011.c **** 	{ 
+ 634              		.loc 1 31 23 view .LVU247
+  33:../application/Src/tle5011.c **** 		{ 
+ 635              		.loc 1 33 3 view .LVU248
+  35:../application/Src/tle5011.c **** 			crc ^= 0x1D; 
+ 636              		.loc 1 35 4 view .LVU249
+  36:../application/Src/tle5011.c **** 		} else 
+ 637              		.loc 1 36 4 view .LVU250
+  40:../application/Src/tle5011.c **** 	};
+ 638              		.loc 1 40 4 view .LVU251
+  31:../application/Src/tle5011.c **** 	{ 
+ 639              		.loc 1 31 31 view .LVU252
+  31:../application/Src/tle5011.c **** 	{ 
+ 640              		.loc 1 31 23 view .LVU253
+  33:../application/Src/tle5011.c **** 		{ 
+ 641              		.loc 1 33 3 view .LVU254
+  35:../application/Src/tle5011.c **** 			crc ^= 0x1D; 
+ 642              		.loc 1 35 4 view .LVU255
+  36:../application/Src/tle5011.c **** 		} else 
+ 643              		.loc 1 36 4 view .LVU256
+  40:../application/Src/tle5011.c **** 	};
+ 644              		.loc 1 40 4 view .LVU257
+  31:../application/Src/tle5011.c **** 	{ 
+ 645              		.loc 1 31 31 view .LVU258
+  31:../application/Src/tle5011.c **** 	{ 
+ 646              		.loc 1 31 23 view .LVU259
+  33:../application/Src/tle5011.c **** 		{ 
+ 647              		.loc 1 33 3 view .LVU260
+  35:../application/Src/tle5011.c **** 			crc ^= 0x1D; 
+ 648              		.loc 1 35 4 view .LVU261
+  36:../application/Src/tle5011.c **** 		} else 
+ 649              		.loc 1 36 4 view .LVU262
+  36:../application/Src/tle5011.c **** 		} else 
+ 650              		.loc 1 36 4 is_stmt 0 view .LVU263
+ARM GAS  /tmp/ccuJJxba.s 			page 18
+
+
+ 651              	.LBE22:
+ 652              	.LBE27:
+ 653              	.LBE32:
+  50:../application/Src/tle5011.c **** 	{
+ 654              		.loc 1 50 8 is_stmt 1 view .LVU264
+  52:../application/Src/tle5011.c **** 	}        
+ 655              		.loc 1 52 3 view .LVU265
+ 656              	.LBB33:
+  28:../application/Src/tle5011.c **** {
+ 657              		.loc 1 28 16 view .LVU266
+ 658              	.LBB28:
+  30:../application/Src/tle5011.c **** 	for (uint8_t bit=0 ; bit<8 ; bit++ ) 
+ 659              		.loc 1 30 2 view .LVU267
+  31:../application/Src/tle5011.c **** 	{ 
+ 660              		.loc 1 31 2 view .LVU268
+ 661              	.LBB23:
+  31:../application/Src/tle5011.c **** 	{ 
+ 662              		.loc 1 31 7 view .LVU269
+  31:../application/Src/tle5011.c **** 	{ 
+ 663              		.loc 1 31 23 view .LVU270
+  33:../application/Src/tle5011.c **** 		{ 
+ 664              		.loc 1 33 3 view .LVU271
+  35:../application/Src/tle5011.c **** 			crc ^= 0x1D; 
+ 665              		.loc 1 35 4 view .LVU272
+  36:../application/Src/tle5011.c **** 		} else 
+ 666              		.loc 1 36 4 view .LVU273
+  40:../application/Src/tle5011.c **** 	};
+ 667              		.loc 1 40 4 view .LVU274
+  31:../application/Src/tle5011.c **** 	{ 
+ 668              		.loc 1 31 31 view .LVU275
+  31:../application/Src/tle5011.c **** 	{ 
+ 669              		.loc 1 31 23 view .LVU276
+  33:../application/Src/tle5011.c **** 		{ 
+ 670              		.loc 1 33 3 view .LVU277
+  35:../application/Src/tle5011.c **** 			crc ^= 0x1D; 
+ 671              		.loc 1 35 4 view .LVU278
+  36:../application/Src/tle5011.c **** 		} else 
+ 672              		.loc 1 36 4 view .LVU279
+  40:../application/Src/tle5011.c **** 	};
+ 673              		.loc 1 40 4 view .LVU280
+  31:../application/Src/tle5011.c **** 	{ 
+ 674              		.loc 1 31 31 view .LVU281
+  31:../application/Src/tle5011.c **** 	{ 
+ 675              		.loc 1 31 23 view .LVU282
+  33:../application/Src/tle5011.c **** 		{ 
+ 676              		.loc 1 33 3 view .LVU283
+  35:../application/Src/tle5011.c **** 			crc ^= 0x1D; 
+ 677              		.loc 1 35 4 view .LVU284
+  36:../application/Src/tle5011.c **** 		} else 
+ 678              		.loc 1 36 4 view .LVU285
+  40:../application/Src/tle5011.c **** 	};
+ 679              		.loc 1 40 4 view .LVU286
+  31:../application/Src/tle5011.c **** 	{ 
+ 680              		.loc 1 31 31 view .LVU287
+  31:../application/Src/tle5011.c **** 	{ 
+ 681              		.loc 1 31 23 view .LVU288
+  33:../application/Src/tle5011.c **** 		{ 
+ARM GAS  /tmp/ccuJJxba.s 			page 19
+
+
+ 682              		.loc 1 33 3 view .LVU289
+  35:../application/Src/tle5011.c **** 			crc ^= 0x1D; 
+ 683              		.loc 1 35 4 view .LVU290
+  36:../application/Src/tle5011.c **** 		} else 
+ 684              		.loc 1 36 4 view .LVU291
+  40:../application/Src/tle5011.c **** 	};
+ 685              		.loc 1 40 4 view .LVU292
+  31:../application/Src/tle5011.c **** 	{ 
+ 686              		.loc 1 31 31 view .LVU293
+  31:../application/Src/tle5011.c **** 	{ 
+ 687              		.loc 1 31 23 view .LVU294
+  33:../application/Src/tle5011.c **** 		{ 
+ 688              		.loc 1 33 3 view .LVU295
+  35:../application/Src/tle5011.c **** 			crc ^= 0x1D; 
+ 689              		.loc 1 35 4 view .LVU296
+  36:../application/Src/tle5011.c **** 		} else 
+ 690              		.loc 1 36 4 view .LVU297
+  40:../application/Src/tle5011.c **** 	};
+ 691              		.loc 1 40 4 view .LVU298
+  31:../application/Src/tle5011.c **** 	{ 
+ 692              		.loc 1 31 31 view .LVU299
+  31:../application/Src/tle5011.c **** 	{ 
+ 693              		.loc 1 31 23 view .LVU300
+  33:../application/Src/tle5011.c **** 		{ 
+ 694              		.loc 1 33 3 view .LVU301
+  35:../application/Src/tle5011.c **** 			crc ^= 0x1D; 
+ 695              		.loc 1 35 4 view .LVU302
+  36:../application/Src/tle5011.c **** 		} else 
+ 696              		.loc 1 36 4 view .LVU303
+  40:../application/Src/tle5011.c **** 	};
+ 697              		.loc 1 40 4 view .LVU304
+  31:../application/Src/tle5011.c **** 	{ 
+ 698              		.loc 1 31 31 view .LVU305
+  31:../application/Src/tle5011.c **** 	{ 
+ 699              		.loc 1 31 23 view .LVU306
+  33:../application/Src/tle5011.c **** 		{ 
+ 700              		.loc 1 33 3 view .LVU307
+  35:../application/Src/tle5011.c **** 			crc ^= 0x1D; 
+ 701              		.loc 1 35 4 view .LVU308
+  36:../application/Src/tle5011.c **** 		} else 
+ 702              		.loc 1 36 4 view .LVU309
+  40:../application/Src/tle5011.c **** 	};
+ 703              		.loc 1 40 4 view .LVU310
+  31:../application/Src/tle5011.c **** 	{ 
+ 704              		.loc 1 31 31 view .LVU311
+  31:../application/Src/tle5011.c **** 	{ 
+ 705              		.loc 1 31 23 view .LVU312
+  33:../application/Src/tle5011.c **** 		{ 
+ 706              		.loc 1 33 3 view .LVU313
+  35:../application/Src/tle5011.c **** 			crc ^= 0x1D; 
+ 707              		.loc 1 35 4 view .LVU314
+  36:../application/Src/tle5011.c **** 		} else 
+ 708              		.loc 1 36 4 view .LVU315
+  36:../application/Src/tle5011.c **** 		} else 
+ 709              		.loc 1 36 4 is_stmt 0 view .LVU316
+ 710              	.LBE23:
+ 711              	.LBE28:
+ARM GAS  /tmp/ccuJJxba.s 			page 20
+
+
+ 712              	.LBE33:
+  50:../application/Src/tle5011.c **** 	{
+ 713              		.loc 1 50 8 is_stmt 1 view .LVU317
+  52:../application/Src/tle5011.c **** 	}        
+ 714              		.loc 1 52 3 view .LVU318
+ 715              	.LBB34:
+  28:../application/Src/tle5011.c **** {
+ 716              		.loc 1 28 16 view .LVU319
+ 717              	.LBB29:
+  30:../application/Src/tle5011.c **** 	for (uint8_t bit=0 ; bit<8 ; bit++ ) 
+ 718              		.loc 1 30 2 view .LVU320
+  31:../application/Src/tle5011.c **** 	{ 
+ 719              		.loc 1 31 2 view .LVU321
+ 720              	.LBB24:
+  31:../application/Src/tle5011.c **** 	{ 
+ 721              		.loc 1 31 7 view .LVU322
+  31:../application/Src/tle5011.c **** 	{ 
+ 722              		.loc 1 31 23 view .LVU323
+  33:../application/Src/tle5011.c **** 		{ 
+ 723              		.loc 1 33 3 view .LVU324
+  39:../application/Src/tle5011.c **** 		}; 
+ 724              		.loc 1 39 4 view .LVU325
+  35:../application/Src/tle5011.c **** 			crc ^= 0x1D; 
+ 725              		.loc 1 35 4 view .LVU326
+  36:../application/Src/tle5011.c **** 		} else 
+ 726              		.loc 1 36 4 view .LVU327
+  40:../application/Src/tle5011.c **** 	};
+ 727              		.loc 1 40 4 view .LVU328
+  31:../application/Src/tle5011.c **** 	{ 
+ 728              		.loc 1 31 31 view .LVU329
+  31:../application/Src/tle5011.c **** 	{ 
+ 729              		.loc 1 31 23 view .LVU330
+  33:../application/Src/tle5011.c **** 		{ 
+ 730              		.loc 1 33 3 view .LVU331
+  39:../application/Src/tle5011.c **** 		}; 
+ 731              		.loc 1 39 4 view .LVU332
+  35:../application/Src/tle5011.c **** 			crc ^= 0x1D; 
+ 732              		.loc 1 35 4 view .LVU333
+  36:../application/Src/tle5011.c **** 		} else 
+ 733              		.loc 1 36 4 view .LVU334
+  40:../application/Src/tle5011.c **** 	};
+ 734              		.loc 1 40 4 view .LVU335
+  31:../application/Src/tle5011.c **** 	{ 
+ 735              		.loc 1 31 31 view .LVU336
+  31:../application/Src/tle5011.c **** 	{ 
+ 736              		.loc 1 31 23 view .LVU337
+  33:../application/Src/tle5011.c **** 		{ 
+ 737              		.loc 1 33 3 view .LVU338
+  39:../application/Src/tle5011.c **** 		}; 
+ 738              		.loc 1 39 4 view .LVU339
+  35:../application/Src/tle5011.c **** 			crc ^= 0x1D; 
+ 739              		.loc 1 35 4 view .LVU340
+  36:../application/Src/tle5011.c **** 		} else 
+ 740              		.loc 1 36 4 view .LVU341
+  40:../application/Src/tle5011.c **** 	};
+ 741              		.loc 1 40 4 view .LVU342
+  31:../application/Src/tle5011.c **** 	{ 
+ARM GAS  /tmp/ccuJJxba.s 			page 21
+
+
+ 742              		.loc 1 31 31 view .LVU343
+  31:../application/Src/tle5011.c **** 	{ 
+ 743              		.loc 1 31 23 view .LVU344
+  33:../application/Src/tle5011.c **** 		{ 
+ 744              		.loc 1 33 3 view .LVU345
+  39:../application/Src/tle5011.c **** 		}; 
+ 745              		.loc 1 39 4 view .LVU346
+  35:../application/Src/tle5011.c **** 			crc ^= 0x1D; 
+ 746              		.loc 1 35 4 view .LVU347
+  36:../application/Src/tle5011.c **** 		} else 
+ 747              		.loc 1 36 4 view .LVU348
+  40:../application/Src/tle5011.c **** 	};
+ 748              		.loc 1 40 4 view .LVU349
+  31:../application/Src/tle5011.c **** 	{ 
+ 749              		.loc 1 31 31 view .LVU350
+  31:../application/Src/tle5011.c **** 	{ 
+ 750              		.loc 1 31 23 view .LVU351
+  33:../application/Src/tle5011.c **** 		{ 
+ 751              		.loc 1 33 3 view .LVU352
+  39:../application/Src/tle5011.c **** 		}; 
+ 752              		.loc 1 39 4 view .LVU353
+  35:../application/Src/tle5011.c **** 			crc ^= 0x1D; 
+ 753              		.loc 1 35 4 view .LVU354
+  36:../application/Src/tle5011.c **** 		} else 
+ 754              		.loc 1 36 4 view .LVU355
+  40:../application/Src/tle5011.c **** 	};
+ 755              		.loc 1 40 4 view .LVU356
+  31:../application/Src/tle5011.c **** 	{ 
+ 756              		.loc 1 31 31 view .LVU357
+  31:../application/Src/tle5011.c **** 	{ 
+ 757              		.loc 1 31 23 view .LVU358
+  33:../application/Src/tle5011.c **** 		{ 
+ 758              		.loc 1 33 3 view .LVU359
+  39:../application/Src/tle5011.c **** 		}; 
+ 759              		.loc 1 39 4 view .LVU360
+  35:../application/Src/tle5011.c **** 			crc ^= 0x1D; 
+ 760              		.loc 1 35 4 view .LVU361
+  36:../application/Src/tle5011.c **** 		} else 
+ 761              		.loc 1 36 4 view .LVU362
+  40:../application/Src/tle5011.c **** 	};
+ 762              		.loc 1 40 4 view .LVU363
+  31:../application/Src/tle5011.c **** 	{ 
+ 763              		.loc 1 31 31 view .LVU364
+  31:../application/Src/tle5011.c **** 	{ 
+ 764              		.loc 1 31 23 view .LVU365
+  33:../application/Src/tle5011.c **** 		{ 
+ 765              		.loc 1 33 3 view .LVU366
+  39:../application/Src/tle5011.c **** 		}; 
+ 766              		.loc 1 39 4 view .LVU367
+  35:../application/Src/tle5011.c **** 			crc ^= 0x1D; 
+ 767              		.loc 1 35 4 view .LVU368
+  36:../application/Src/tle5011.c **** 		} else 
+ 768              		.loc 1 36 4 view .LVU369
+  40:../application/Src/tle5011.c **** 	};
+ 769              		.loc 1 40 4 view .LVU370
+  31:../application/Src/tle5011.c **** 	{ 
+ 770              		.loc 1 31 31 view .LVU371
+ARM GAS  /tmp/ccuJJxba.s 			page 22
+
+
+  31:../application/Src/tle5011.c **** 	{ 
+ 771              		.loc 1 31 23 view .LVU372
+  33:../application/Src/tle5011.c **** 		{ 
+ 772              		.loc 1 33 3 view .LVU373
+  39:../application/Src/tle5011.c **** 		}; 
+ 773              		.loc 1 39 4 view .LVU374
+  35:../application/Src/tle5011.c **** 			crc ^= 0x1D; 
+ 774              		.loc 1 35 4 view .LVU375
+  36:../application/Src/tle5011.c **** 		} else 
+ 775              		.loc 1 36 4 view .LVU376
+  36:../application/Src/tle5011.c **** 		} else 
+ 776              		.loc 1 36 4 is_stmt 0 view .LVU377
+ 777              	.LBE24:
+ 778              	.LBE29:
+ 779              	.LBE34:
+  50:../application/Src/tle5011.c **** 	{
+ 780              		.loc 1 50 8 is_stmt 1 view .LVU378
+  54:../application/Src/tle5011.c **** 	
+ 781              		.loc 1 54 3 view .LVU379
+  56:../application/Src/tle5011.c **** }
+ 782              		.loc 1 56 3 view .LVU380
+  56:../application/Src/tle5011.c **** }
+ 783              		.loc 1 56 3 is_stmt 0 view .LVU381
+ 784              	.LBE36:
+ 785              	.LBE38:
+ 786              		.loc 1 87 5 view .LVU382
+ 787 0218 DBB2     		uxtb	r3, r3
+ 788 021a 9A42     		cmp	r2, r3
+ 789 021c 22D1     		bne	.L82
+  88:../application/Src/tle5011.c **** 	{
+  89:../application/Src/tle5011.c **** 		x_value = sensor->data[3]<<8 | sensor->data[2];
+ 790              		.loc 1 89 3 is_stmt 1 view .LVU383
+ 791              	.LVL18:
+  90:../application/Src/tle5011.c **** 		y_value = sensor->data[5]<<8 | sensor->data[4];
+ 792              		.loc 1 90 3 view .LVU384
+  91:../application/Src/tle5011.c **** 				
+  92:../application/Src/tle5011.c **** 		out = atan2f((float)y_value, (float)x_value)/ M_PI * (float)180.0;			
+ 793              		.loc 1 92 3 view .LVU385
+  89:../application/Src/tle5011.c **** 		y_value = sensor->data[5]<<8 | sensor->data[4];
+ 794              		.loc 1 89 25 is_stmt 0 view .LVU386
+ 795 021e 6B7C     		ldrb	r3, [r5, #17]	@ zero_extendqisi2
+  89:../application/Src/tle5011.c **** 		y_value = sensor->data[5]<<8 | sensor->data[4];
+ 796              		.loc 1 89 46 view .LVU387
+ 797 0220 287C     		ldrb	r0, [r5, #16]	@ zero_extendqisi2
+  89:../application/Src/tle5011.c **** 		y_value = sensor->data[5]<<8 | sensor->data[4];
+ 798              		.loc 1 89 11 view .LVU388
+ 799 0222 40EA0320 		orr	r0, r0, r3, lsl #8
+ 800              		.loc 1 92 9 view .LVU389
+ 801 0226 00B2     		sxth	r0, r0
+ 802 0228 FFF7FEFF 		bl	__aeabi_i2f
+ 803              	.LVL19:
+  90:../application/Src/tle5011.c **** 		y_value = sensor->data[5]<<8 | sensor->data[4];
+ 804              		.loc 1 90 25 view .LVU390
+ 805 022c EA7C     		ldrb	r2, [r5, #19]	@ zero_extendqisi2
+  90:../application/Src/tle5011.c **** 		y_value = sensor->data[5]<<8 | sensor->data[4];
+ 806              		.loc 1 90 46 view .LVU391
+ 807 022e AB7C     		ldrb	r3, [r5, #18]	@ zero_extendqisi2
+ARM GAS  /tmp/ccuJJxba.s 			page 23
+
+
+ 808              	.LVL20:
+ 809              		.loc 1 92 9 view .LVU392
+ 810 0230 0546     		mov	r5, r0
+ 811              	.LVL21:
+  90:../application/Src/tle5011.c **** 		y_value = sensor->data[5]<<8 | sensor->data[4];
+ 812              		.loc 1 90 11 view .LVU393
+ 813 0232 43EA0223 		orr	r3, r3, r2, lsl #8
+ 814              	.LVL22:
+ 815              		.loc 1 92 9 view .LVU394
+ 816 0236 18B2     		sxth	r0, r3
+ 817 0238 FFF7FEFF 		bl	__aeabi_i2f
+ 818              	.LVL23:
+ 819              		.loc 1 92 9 view .LVU395
+ 820 023c 2946     		mov	r1, r5
+ 821 023e FFF7FEFF 		bl	atan2f
+ 822              	.LVL24:
+  93:../application/Src/tle5011.c **** 		*angle = out;
+ 823              		.loc 1 93 3 is_stmt 1 view .LVU396
+  92:../application/Src/tle5011.c **** 		*angle = out;
+ 824              		.loc 1 92 9 is_stmt 0 view .LVU397
+ 825 0242 FFF7FEFF 		bl	__aeabi_f2d
+ 826              	.LVL25:
+  92:../application/Src/tle5011.c **** 		*angle = out;
+ 827              		.loc 1 92 47 view .LVU398
+ 828 0246 0AA3     		adr	r3, .L84
+ 829 0248 D3E90023 		ldrd	r2, [r3]
+ 830 024c FFF7FEFF 		bl	__aeabi_ddiv
+ 831              	.LVL26:
+  92:../application/Src/tle5011.c **** 		*angle = out;
+ 832              		.loc 1 92 54 view .LVU399
+ 833 0250 0022     		movs	r2, #0
+ 834 0252 094B     		ldr	r3, .L84+8
+ 835 0254 FFF7FEFF 		bl	__aeabi_dmul
+ 836              	.LVL27:
+  92:../application/Src/tle5011.c **** 		*angle = out;
+ 837              		.loc 1 92 7 view .LVU400
+ 838 0258 FFF7FEFF 		bl	__aeabi_d2f
+ 839              	.LVL28:
+ 840 025c 0346     		mov	r3, r0
+  94:../application/Src/tle5011.c **** 		ret = 0;
+ 841              		.loc 1 94 7 view .LVU401
+ 842 025e 0020     		movs	r0, #0
+  92:../application/Src/tle5011.c **** 		*angle = out;
+ 843              		.loc 1 92 7 view .LVU402
+ 844 0260 2360     		str	r3, [r4]	@ float
+ 845              		.loc 1 94 3 is_stmt 1 view .LVU403
+  95:../application/Src/tle5011.c **** 	}
+  96:../application/Src/tle5011.c **** 	else
+  97:../application/Src/tle5011.c **** 	{
+  98:../application/Src/tle5011.c **** 		ret = -1;
+  99:../application/Src/tle5011.c **** 	}
+ 100:../application/Src/tle5011.c **** 	return ret;
+ 101:../application/Src/tle5011.c **** }
+ 846              		.loc 1 101 1 is_stmt 0 view .LVU404
+ 847 0262 38BD     		pop	{r3, r4, r5, pc}
+ 848              	.LVL29:
+ 849              	.L82:
+ARM GAS  /tmp/ccuJJxba.s 			page 24
+
+
+  98:../application/Src/tle5011.c **** 	}
+ 850              		.loc 1 98 7 view .LVU405
+ 851 0264 4FF0FF30 		mov	r0, #-1
+ 852              	.LVL30:
+ 100:../application/Src/tle5011.c **** }
+ 853              		.loc 1 100 2 is_stmt 1 view .LVU406
+ 854              		.loc 1 101 1 is_stmt 0 view .LVU407
+ 855 0268 38BD     		pop	{r3, r4, r5, pc}
+ 856              	.LVL31:
+ 857              	.L85:
+ 858              		.loc 1 101 1 view .LVU408
+ 859 026a 00BFAFF3 		.align	3
+ 859      0080
+ 860              	.L84:
+ 861 0270 182D4454 		.word	1413754136
+ 862 0274 FB210940 		.word	1074340347
+ 863 0278 00806640 		.word	1080459264
+ 864              		.cfi_endproc
+ 865              	.LFE33:
+ 867              		.section	.text.TLE5011_StartDMA,"ax",%progbits
+ 868              		.align	1
+ 869              		.p2align 2,,3
+ 870              		.global	TLE5011_StartDMA
+ 871              		.syntax unified
+ 872              		.thumb
+ 873              		.thumb_func
+ 874              		.fpu softvfp
+ 876              	TLE5011_StartDMA:
+ 877              	.LVL32:
+ 878              	.LFB34:
+ 102:../application/Src/tle5011.c **** 
+ 103:../application/Src/tle5011.c **** void TLE5011_StartDMA(sensor_t * sensor)
+ 104:../application/Src/tle5011.c **** {	
+ 879              		.loc 1 104 1 is_stmt 1 view -0
+ 880              		.cfi_startproc
+ 881              		@ args = 0, pretend = 0, frame = 8
+ 882              		@ frame_needed = 0, uses_anonymous_args = 0
+ 105:../application/Src/tle5011.c **** 	sensor->rx_complete = 1;
+ 883              		.loc 1 105 2 view .LVU410
+ 106:../application/Src/tle5011.c **** 	sensor->tx_complete = 0;
+ 884              		.loc 1 106 2 view .LVU411
+ 104:../application/Src/tle5011.c **** 	sensor->rx_complete = 1;
+ 885              		.loc 1 104 1 is_stmt 0 view .LVU412
+ 886 0000 70B5     		push	{r4, r5, r6, lr}
+ 887              	.LCFI11:
+ 888              		.cfi_def_cfa_offset 16
+ 889              		.cfi_offset 4, -16
+ 890              		.cfi_offset 5, -12
+ 891              		.cfi_offset 6, -8
+ 892              		.cfi_offset 14, -4
+ 105:../application/Src/tle5011.c **** 	sensor->rx_complete = 1;
+ 893              		.loc 1 105 22 view .LVU413
+ 894 0002 0125     		movs	r5, #1
+ 104:../application/Src/tle5011.c **** 	sensor->rx_complete = 1;
+ 895              		.loc 1 104 1 view .LVU414
+ 896 0004 0446     		mov	r4, r0
+ 897 0006 82B0     		sub	sp, sp, #8
+ARM GAS  /tmp/ccuJJxba.s 			page 25
+
+
+ 898              	.LCFI12:
+ 899              		.cfi_def_cfa_offset 24
+ 107:../application/Src/tle5011.c **** 	
+ 108:../application/Src/tle5011.c **** 	// switch MOSI to open-drain
+ 109:../application/Src/tle5011.c **** 	GPIO_InitTypeDef GPIO_InitStructure;
+ 110:../application/Src/tle5011.c **** 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+ 111:../application/Src/tle5011.c **** 	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_5;
+ 900              		.loc 1 111 30 view .LVU415
+ 901 0008 0E4B     		ldr	r3, .L88
+ 105:../application/Src/tle5011.c **** 	sensor->tx_complete = 0;
+ 902              		.loc 1 105 22 view .LVU416
+ 903 000a 0581     		strh	r5, [r0, #8]	@ movhi
+ 109:../application/Src/tle5011.c **** 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+ 904              		.loc 1 109 2 is_stmt 1 view .LVU417
+ 110:../application/Src/tle5011.c **** 	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_5;
+ 905              		.loc 1 110 2 view .LVU418
+ 906              		.loc 1 111 2 view .LVU419
+ 112:../application/Src/tle5011.c **** 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_OD;						
+ 907              		.loc 1 112 2 view .LVU420
+ 113:../application/Src/tle5011.c **** 	GPIO_Init (GPIOB,&GPIO_InitStructure);
+ 908              		.loc 1 113 2 is_stmt 0 view .LVU421
+ 909 000c 01A9     		add	r1, sp, #4
+ 910 000e 0E48     		ldr	r0, .L88+4
+ 911              	.LVL33:
+ 111:../application/Src/tle5011.c **** 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_OD;						
+ 912              		.loc 1 111 30 view .LVU422
+ 913 0010 0193     		str	r3, [sp, #4]
+ 914              		.loc 1 113 2 is_stmt 1 view .LVU423
+ 114:../application/Src/tle5011.c **** 	
+ 115:../application/Src/tle5011.c **** 	// CS low
+ 116:../application/Src/tle5011.c **** 	pin_config[sensor->source].port->ODR &= ~pin_config[sensor->source].pin;
+ 117:../application/Src/tle5011.c **** 	sensor->data[0] = 0x00;
+ 915              		.loc 1 117 18 is_stmt 0 view .LVU424
+ 916 0012 4FF40C46 		mov	r6, #35840
+ 113:../application/Src/tle5011.c **** 	
+ 917              		.loc 1 113 2 view .LVU425
+ 918 0016 FFF7FEFF 		bl	GPIO_Init
+ 919              	.LVL34:
+ 116:../application/Src/tle5011.c **** 	sensor->data[0] = 0x00;
+ 920              		.loc 1 116 2 is_stmt 1 view .LVU426
+ 921              		.loc 1 117 18 is_stmt 0 view .LVU427
+ 922 001a 2046     		mov	r0, r4
+ 116:../application/Src/tle5011.c **** 	sensor->data[0] = 0x00;
+ 923              		.loc 1 116 28 view .LVU428
+ 924 001c 0B4B     		ldr	r3, .L88+8
+ 116:../application/Src/tle5011.c **** 	sensor->data[0] = 0x00;
+ 925              		.loc 1 116 19 view .LVU429
+ 926 001e 94F90B40 		ldrsb	r4, [r4, #11]
+ 927              	.LVL35:
+ 118:../application/Src/tle5011.c **** 	sensor->data[1] = 0x8C;
+ 119:../application/Src/tle5011.c **** 	
+ 120:../application/Src/tle5011.c **** 	SPI_HalfDuplex_Transmit(&sensor->data[0], 2, TLE5011_SPI_MODE);
+ 928              		.loc 1 120 2 view .LVU430
+ 929 0022 2A46     		mov	r2, r5
+ 116:../application/Src/tle5011.c **** 	sensor->data[0] = 0x00;
+ 930              		.loc 1 116 28 view .LVU431
+ 931 0024 53F83410 		ldr	r1, [r3, r4, lsl #3]
+ARM GAS  /tmp/ccuJJxba.s 			page 26
+
+
+ 116:../application/Src/tle5011.c **** 	sensor->data[0] = 0x00;
+ 932              		.loc 1 116 69 view .LVU432
+ 933 0028 03EBC403 		add	r3, r3, r4, lsl #3
+ 934 002c 9C88     		ldrh	r4, [r3, #4]
+ 116:../application/Src/tle5011.c **** 	sensor->data[0] = 0x00;
+ 935              		.loc 1 116 39 view .LVU433
+ 936 002e CB68     		ldr	r3, [r1, #12]
+ 937 0030 23EA0403 		bic	r3, r3, r4
+ 938 0034 CB60     		str	r3, [r1, #12]
+ 117:../application/Src/tle5011.c **** 	sensor->data[1] = 0x8C;
+ 939              		.loc 1 117 2 is_stmt 1 view .LVU434
+ 118:../application/Src/tle5011.c **** 	sensor->data[1] = 0x8C;
+ 940              		.loc 1 118 2 view .LVU435
+ 941              		.loc 1 120 2 is_stmt 0 view .LVU436
+ 942 0036 0221     		movs	r1, #2
+ 117:../application/Src/tle5011.c **** 	sensor->data[1] = 0x8C;
+ 943              		.loc 1 117 18 view .LVU437
+ 944 0038 20F80E6F 		strh	r6, [r0, #14]!	@ movhi
+ 945              	.LVL36:
+ 946              		.loc 1 120 2 is_stmt 1 view .LVU438
+ 947 003c FFF7FEFF 		bl	SPI_HalfDuplex_Transmit
+ 948              	.LVL37:
+ 121:../application/Src/tle5011.c **** }
+ 949              		.loc 1 121 1 is_stmt 0 view .LVU439
+ 950 0040 02B0     		add	sp, sp, #8
+ 951              	.LCFI13:
+ 952              		.cfi_def_cfa_offset 16
+ 953              		@ sp needed
+ 954 0042 70BD     		pop	{r4, r5, r6, pc}
+ 955              	.L89:
+ 956              		.align	2
+ 957              	.L88:
+ 958 0044 2000031C 		.word	469958688
+ 959 0048 000C0140 		.word	1073810432
+ 960 004c 00000000 		.word	pin_config
+ 961              		.cfi_endproc
+ 962              	.LFE34:
+ 964              		.section	.text.TLE5011_StopDMA,"ax",%progbits
+ 965              		.align	1
+ 966              		.p2align 2,,3
+ 967              		.global	TLE5011_StopDMA
+ 968              		.syntax unified
+ 969              		.thumb
+ 970              		.thumb_func
+ 971              		.fpu softvfp
+ 973              	TLE5011_StopDMA:
+ 974              	.LVL38:
+ 975              	.LFB35:
+ 122:../application/Src/tle5011.c **** 
+ 123:../application/Src/tle5011.c **** void TLE5011_StopDMA(sensor_t * sensor)
+ 124:../application/Src/tle5011.c **** {	
+ 976              		.loc 1 124 1 is_stmt 1 view -0
+ 977              		.cfi_startproc
+ 978              		@ args = 0, pretend = 0, frame = 8
+ 979              		@ frame_needed = 0, uses_anonymous_args = 0
+ 125:../application/Src/tle5011.c **** 	DMA_Cmd(DMA1_Channel2, DISABLE);
+ 980              		.loc 1 125 2 view .LVU441
+ARM GAS  /tmp/ccuJJxba.s 			page 27
+
+
+ 124:../application/Src/tle5011.c **** 	DMA_Cmd(DMA1_Channel2, DISABLE);
+ 981              		.loc 1 124 1 is_stmt 0 view .LVU442
+ 982 0000 30B5     		push	{r4, r5, lr}
+ 983              	.LCFI14:
+ 984              		.cfi_def_cfa_offset 12
+ 985              		.cfi_offset 4, -12
+ 986              		.cfi_offset 5, -8
+ 987              		.cfi_offset 14, -4
+ 988 0002 0446     		mov	r4, r0
+ 126:../application/Src/tle5011.c **** 	
+ 127:../application/Src/tle5011.c **** 	// CS high	
+ 128:../application/Src/tle5011.c **** 	pin_config[sensor->source].port->ODR |= pin_config[sensor->source].pin;
+ 129:../application/Src/tle5011.c **** 	sensor->rx_complete = 1;
+ 989              		.loc 1 129 22 view .LVU443
+ 990 0004 40F20115 		movw	r5, #257
+ 124:../application/Src/tle5011.c **** 	DMA_Cmd(DMA1_Channel2, DISABLE);
+ 991              		.loc 1 124 1 view .LVU444
+ 992 0008 83B0     		sub	sp, sp, #12
+ 993              	.LCFI15:
+ 994              		.cfi_def_cfa_offset 24
+ 125:../application/Src/tle5011.c **** 	
+ 995              		.loc 1 125 2 view .LVU445
+ 996 000a 0021     		movs	r1, #0
+ 997 000c 0F48     		ldr	r0, .L92
+ 998              	.LVL39:
+ 125:../application/Src/tle5011.c **** 	
+ 999              		.loc 1 125 2 view .LVU446
+ 1000 000e FFF7FEFF 		bl	DMA_Cmd
+ 1001              	.LVL40:
+ 128:../application/Src/tle5011.c **** 	sensor->rx_complete = 1;
+ 1002              		.loc 1 128 2 is_stmt 1 view .LVU447
+ 128:../application/Src/tle5011.c **** 	sensor->rx_complete = 1;
+ 1003              		.loc 1 128 19 is_stmt 0 view .LVU448
+ 1004 0012 94F90B00 		ldrsb	r0, [r4, #11]
+ 128:../application/Src/tle5011.c **** 	sensor->rx_complete = 1;
+ 1005              		.loc 1 128 28 view .LVU449
+ 1006 0016 0E4B     		ldr	r3, .L92+4
+ 130:../application/Src/tle5011.c **** 	sensor->tx_complete = 1;
+ 131:../application/Src/tle5011.c **** 	
+ 132:../application/Src/tle5011.c **** 	SPI_BiDirectionalLineConfig(SPI1, SPI_Direction_Tx);	
+ 1007              		.loc 1 132 2 view .LVU450
+ 1008 0018 4FF48041 		mov	r1, #16384
+ 128:../application/Src/tle5011.c **** 	sensor->rx_complete = 1;
+ 1009              		.loc 1 128 28 view .LVU451
+ 1010 001c 53F83020 		ldr	r2, [r3, r0, lsl #3]
+ 128:../application/Src/tle5011.c **** 	sensor->rx_complete = 1;
+ 1011              		.loc 1 128 68 view .LVU452
+ 1012 0020 03EBC003 		add	r3, r3, r0, lsl #3
+ 1013 0024 9B88     		ldrh	r3, [r3, #4]
+ 128:../application/Src/tle5011.c **** 	sensor->rx_complete = 1;
+ 1014              		.loc 1 128 39 view .LVU453
+ 1015 0026 D068     		ldr	r0, [r2, #12]
+ 1016 0028 0343     		orrs	r3, r3, r0
+ 1017 002a D360     		str	r3, [r2, #12]
+ 129:../application/Src/tle5011.c **** 	sensor->tx_complete = 1;
+ 1018              		.loc 1 129 2 is_stmt 1 view .LVU454
+ 130:../application/Src/tle5011.c **** 	sensor->tx_complete = 1;
+ARM GAS  /tmp/ccuJJxba.s 			page 28
+
+
+ 1019              		.loc 1 130 2 view .LVU455
+ 1020              		.loc 1 132 2 is_stmt 0 view .LVU456
+ 1021 002c 0948     		ldr	r0, .L92+8
+ 129:../application/Src/tle5011.c **** 	sensor->tx_complete = 1;
+ 1022              		.loc 1 129 22 view .LVU457
+ 1023 002e 2581     		strh	r5, [r4, #8]	@ movhi
+ 1024              		.loc 1 132 2 is_stmt 1 view .LVU458
+ 1025 0030 FFF7FEFF 		bl	SPI_BiDirectionalLineConfig
+ 1026              	.LVL41:
+ 133:../application/Src/tle5011.c **** 	
+ 134:../application/Src/tle5011.c **** 	Delay_us(5);	// wait SPI clocks to stop
+ 1027              		.loc 1 134 2 view .LVU459
+ 1028 0034 0520     		movs	r0, #5
+ 1029 0036 FFF7FEFF 		bl	Delay_us
+ 1030              	.LVL42:
+ 135:../application/Src/tle5011.c **** 	
+ 136:../application/Src/tle5011.c **** 	// switch MOSI back to push-pull
+ 137:../application/Src/tle5011.c **** 	GPIO_InitTypeDef GPIO_InitStructure;
+ 1031              		.loc 1 137 2 view .LVU460
+ 138:../application/Src/tle5011.c **** 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+ 1032              		.loc 1 138 2 view .LVU461
+ 139:../application/Src/tle5011.c **** 	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_5;
+ 1033              		.loc 1 139 2 view .LVU462
+ 140:../application/Src/tle5011.c **** 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;						
+ 1034              		.loc 1 140 2 view .LVU463
+ 139:../application/Src/tle5011.c **** 	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_5;
+ 1035              		.loc 1 139 30 is_stmt 0 view .LVU464
+ 1036 003a 074B     		ldr	r3, .L92+12
+ 141:../application/Src/tle5011.c **** 	GPIO_Init (GPIOB,&GPIO_InitStructure);
+ 1037              		.loc 1 141 2 view .LVU465
+ 1038 003c 0748     		ldr	r0, .L92+16
+ 1039 003e 01A9     		add	r1, sp, #4
+ 139:../application/Src/tle5011.c **** 	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_5;
+ 1040              		.loc 1 139 30 view .LVU466
+ 1041 0040 0193     		str	r3, [sp, #4]
+ 1042              		.loc 1 141 2 is_stmt 1 view .LVU467
+ 1043 0042 FFF7FEFF 		bl	GPIO_Init
+ 1044              	.LVL43:
+ 142:../application/Src/tle5011.c **** }
+ 1045              		.loc 1 142 1 is_stmt 0 view .LVU468
+ 1046 0046 03B0     		add	sp, sp, #12
+ 1047              	.LCFI16:
+ 1048              		.cfi_def_cfa_offset 12
+ 1049              		@ sp needed
+ 1050 0048 30BD     		pop	{r4, r5, pc}
+ 1051              	.LVL44:
+ 1052              	.L93:
+ 1053              		.loc 1 142 1 view .LVU469
+ 1054 004a 00BF     		.align	2
+ 1055              	.L92:
+ 1056 004c 1C000240 		.word	1073872924
+ 1057 0050 00000000 		.word	pin_config
+ 1058 0054 00300140 		.word	1073819648
+ 1059 0058 20000318 		.word	402849824
+ 1060 005c 000C0140 		.word	1073810432
+ 1061              		.cfi_endproc
+ 1062              	.LFE35:
+ARM GAS  /tmp/ccuJJxba.s 			page 29
+
+
+ 1064              		.text
+ 1065              	.Letext0:
+ 1066              		.file 2 "/usr/lib/gcc/arm-none-eabi/9.2.1/include/stdint.h"
+ 1067              		.file 3 "../application/Inc/common_types.h"
+ 1068              		.file 4 "../Drivers/CMSIS/CM3/CoreSupport/core_cm3.h"
+ 1069              		.file 5 "../Drivers/CMSIS/CM3/DeviceSupport/ST/STM32F10x/system_stm32f10x.h"
+ 1070              		.file 6 "../Drivers/CMSIS/CM3/DeviceSupport/ST/STM32F10x/stm32f10x.h"
+ 1071              		.file 7 "../Drivers/STM32F10x_StdPeriph_Driver/inc/stm32f10x_gpio.h"
+ 1072              		.file 8 "/usr/lib/gcc/arm-none-eabi/9.2.1/include/stddef.h"
+ 1073              		.file 9 "/usr/include/newlib/sys/_types.h"
+ 1074              		.file 10 "/usr/include/newlib/sys/reent.h"
+ 1075              		.file 11 "/usr/include/newlib/sys/lock.h"
+ 1076              		.file 12 "../application/Inc/periphery.h"
+ 1077              		.file 13 "/usr/include/newlib/math.h"
+ 1078              		.file 14 "../Drivers/STM32F10x_StdPeriph_Driver/inc/stm32f10x_dma.h"
+ 1079              		.file 15 "../Drivers/STM32F10x_StdPeriph_Driver/inc/stm32f10x_spi.h"
+ 1080              		.file 16 "../application/Inc/spi.h"
+ARM GAS  /tmp/ccuJJxba.s 			page 30
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 tle5011.c
+     /tmp/ccuJJxba.s:16     .text.TLE5011_Read:0000000000000000 $t
+     /tmp/ccuJJxba.s:25     .text.TLE5011_Read:0000000000000000 TLE5011_Read
+     /tmp/ccuJJxba.s:101    .text.TLE5011_Write:0000000000000000 $t
+     /tmp/ccuJJxba.s:109    .text.TLE5011_Write:0000000000000000 TLE5011_Write
+     /tmp/ccuJJxba.s:185    .text.TLE5011_GetAngle:0000000000000000 $t
+     /tmp/ccuJJxba.s:193    .text.TLE5011_GetAngle:0000000000000000 TLE5011_GetAngle
+     /tmp/ccuJJxba.s:861    .text.TLE5011_GetAngle:0000000000000270 $d
+     /tmp/ccuJJxba.s:868    .text.TLE5011_StartDMA:0000000000000000 $t
+     /tmp/ccuJJxba.s:876    .text.TLE5011_StartDMA:0000000000000000 TLE5011_StartDMA
+     /tmp/ccuJJxba.s:958    .text.TLE5011_StartDMA:0000000000000044 $d
+     /tmp/ccuJJxba.s:965    .text.TLE5011_StopDMA:0000000000000000 $t
+     /tmp/ccuJJxba.s:973    .text.TLE5011_StopDMA:0000000000000000 TLE5011_StopDMA
+     /tmp/ccuJJxba.s:1056   .text.TLE5011_StopDMA:000000000000004c $d
+
+UNDEFINED SYMBOLS
+SPI_HalfDuplex_Transmit
+SPI_HalfDuplex_Receive
+__aeabi_i2f
+__aeabi_f2d
+__aeabi_ddiv
+__aeabi_dmul
+__aeabi_d2f
+atan2f
+GPIO_Init
+pin_config
+DMA_Cmd
+SPI_BiDirectionalLineConfig
+Delay_us

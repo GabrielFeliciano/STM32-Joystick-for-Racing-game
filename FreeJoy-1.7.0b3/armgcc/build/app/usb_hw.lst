@@ -1,0 +1,2883 @@
+ARM GAS  /tmp/cckrPG3V.s 			page 1
+
+
+   1              		.cpu cortex-m3
+   2              		.eabi_attribute 20, 1
+   3              		.eabi_attribute 21, 1
+   4              		.eabi_attribute 23, 3
+   5              		.eabi_attribute 24, 1
+   6              		.eabi_attribute 25, 1
+   7              		.eabi_attribute 26, 1
+   8              		.eabi_attribute 30, 2
+   9              		.eabi_attribute 34, 1
+  10              		.eabi_attribute 18, 4
+  11              		.file	"usb_hw.c"
+  12              		.text
+  13              	.Ltext0:
+  14              		.cfi_sections	.debug_frame
+  15              		.section	.text.Set_System,"ax",%progbits
+  16              		.align	1
+  17              		.p2align 2,,3
+  18              		.global	Set_System
+  19              		.arch armv7-m
+  20              		.syntax unified
+  21              		.thumb
+  22              		.thumb_func
+  23              		.fpu softvfp
+  25              	Set_System:
+  26              	.LFB29:
+  27              		.file 1 "../application/Src/usb_hw.c"
+   1:../application/Src/usb_hw.c **** #include "usb_hw.h"
+   2:../application/Src/usb_hw.c **** #include "usb_lib.h"
+   3:../application/Src/usb_hw.c **** #include "usb_desc.h"
+   4:../application/Src/usb_hw.c **** #include "usb_pwr.h"
+   5:../application/Src/usb_hw.c **** 
+   6:../application/Src/usb_hw.c **** #include "config.h"
+   7:../application/Src/usb_hw.c **** #include "string.h"
+   8:../application/Src/usb_hw.c **** 
+   9:../application/Src/usb_hw.c **** /* Private typedef -----------------------------------------------------------*/
+  10:../application/Src/usb_hw.c **** /* Private define ------------------------------------------------------------*/
+  11:../application/Src/usb_hw.c **** #define         ID1          (0x1FFFF7E8)
+  12:../application/Src/usb_hw.c **** #define         ID2          (0x1FFFF7EC)
+  13:../application/Src/usb_hw.c **** #define         ID3          (0x1FFFF7F0)
+  14:../application/Src/usb_hw.c **** /* Private macro -------------------------------------------------------------*/
+  15:../application/Src/usb_hw.c **** /* Private variables ---------------------------------------------------------*/
+  16:../application/Src/usb_hw.c **** 
+  17:../application/Src/usb_hw.c **** ErrorStatus HSEStartUpStatus;
+  18:../application/Src/usb_hw.c **** 
+  19:../application/Src/usb_hw.c **** /* Extern variables ----------------------------------------------------------*/
+  20:../application/Src/usb_hw.c **** /* Private function prototypes -----------------------------------------------*/
+  21:../application/Src/usb_hw.c **** static void IntToUnicode (uint32_t value , uint8_t *pbuf , uint8_t len);
+  22:../application/Src/usb_hw.c **** static void AsciiToUnicode (uint8_t * pbuf_in , uint8_t *pbuf_out , uint8_t len);
+  23:../application/Src/usb_hw.c **** /* Private functions ---------------------------------------------------------*/
+  24:../application/Src/usb_hw.c **** 
+  25:../application/Src/usb_hw.c **** /*******************************************************************************
+  26:../application/Src/usb_hw.c **** * Function Name  : Set_System
+  27:../application/Src/usb_hw.c **** * Description    : Configures Main system clocks & power.
+  28:../application/Src/usb_hw.c **** * Input          : None.
+  29:../application/Src/usb_hw.c **** * Return         : None.
+  30:../application/Src/usb_hw.c **** *******************************************************************************/
+  31:../application/Src/usb_hw.c **** void Set_System(void)
+ARM GAS  /tmp/cckrPG3V.s 			page 2
+
+
+  32:../application/Src/usb_hw.c **** {
+  28              		.loc 1 32 1 view -0
+  29              		.cfi_startproc
+  30              		@ args = 0, pretend = 0, frame = 8
+  31              		@ frame_needed = 0, uses_anonymous_args = 0
+  33:../application/Src/usb_hw.c ****   GPIO_InitTypeDef  GPIO_InitStructure;  
+  32              		.loc 1 33 3 view .LVU1
+  34:../application/Src/usb_hw.c ****   /*!< At this stage the microcontroller clock setting is already configured, 
+  35:../application/Src/usb_hw.c ****        this is done through SystemInit() function which is called from startup
+  36:../application/Src/usb_hw.c ****        file (startup_stm32xxx.s) before to branch to application main.
+  37:../application/Src/usb_hw.c ****        To reconfigure the default setting of SystemInit() function, refer to
+  38:../application/Src/usb_hw.c ****        system_stm32xxx.c file
+  39:../application/Src/usb_hw.c ****      */ 
+  40:../application/Src/usb_hw.c ****   
+  41:../application/Src/usb_hw.c **** #if defined(STM32L1XX_MD) || defined(STM32L1XX_HD) || defined(STM32F37X) || defined(STM32F303xC) ||
+  42:../application/Src/usb_hw.c ****   RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOA, ENABLE);
+  43:../application/Src/usb_hw.c **** 
+  44:../application/Src/usb_hw.c **** #else /* defined(STM32F10X_HD) || defined(STM32F10X_MD) defined(STM32F10X_XL)*/
+  45:../application/Src/usb_hw.c ****   RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);
+  33              		.loc 1 45 3 view .LVU2
+  32:../application/Src/usb_hw.c ****   GPIO_InitTypeDef  GPIO_InitStructure;  
+  34              		.loc 1 32 1 is_stmt 0 view .LVU3
+  35 0000 10B5     		push	{r4, lr}
+  36              	.LCFI0:
+  37              		.cfi_def_cfa_offset 8
+  38              		.cfi_offset 4, -8
+  39              		.cfi_offset 14, -4
+  40              		.loc 1 45 3 view .LVU4
+  41 0002 0121     		movs	r1, #1
+  32:../application/Src/usb_hw.c ****   GPIO_InitTypeDef  GPIO_InitStructure;  
+  42              		.loc 1 32 1 view .LVU5
+  43 0004 82B0     		sub	sp, sp, #8
+  44              	.LCFI1:
+  45              		.cfi_def_cfa_offset 16
+  46              		.loc 1 45 3 view .LVU6
+  47 0006 0420     		movs	r0, #4
+  48 0008 FFF7FEFF 		bl	RCC_APB2PeriphClockCmd
+  49              	.LVL0:
+  46:../application/Src/usb_hw.c **** #endif
+  47:../application/Src/usb_hw.c ****   
+  48:../application/Src/usb_hw.c ****   /********************************************/
+  49:../application/Src/usb_hw.c ****   /*  Configure USB DM/DP pins                */
+  50:../application/Src/usb_hw.c ****   /********************************************/
+  51:../application/Src/usb_hw.c ****   
+  52:../application/Src/usb_hw.c **** #if defined(STM32L1XX_MD) || defined(STM32L1XX_HD)
+  53:../application/Src/usb_hw.c ****   
+  54:../application/Src/usb_hw.c **** 	  /* Enable all GPIOs Clock*/
+  55:../application/Src/usb_hw.c ****   RCC_AHBPeriphClockCmd(RCC_AHBPeriph_ALLGPIO, ENABLE);
+  56:../application/Src/usb_hw.c **** 	
+  57:../application/Src/usb_hw.c **** 	  /* Configure USB DM/DP pin. This is optional, and maintained only for user guidance.
+  58:../application/Src/usb_hw.c ****   For the STM32L products there is no need to configure the PA12/PA11 pins couple 
+  59:../application/Src/usb_hw.c ****   as Alternate Function */ 
+  60:../application/Src/usb_hw.c ****   GPIO_InitStructure.GPIO_Pin = GPIO_Pin_11 | GPIO_Pin_12;
+  61:../application/Src/usb_hw.c ****   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_40MHz;
+  62:../application/Src/usb_hw.c ****   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
+  63:../application/Src/usb_hw.c ****   GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
+  64:../application/Src/usb_hw.c ****   GPIO_Init(GPIOA, &GPIO_InitStructure);
+ARM GAS  /tmp/cckrPG3V.s 			page 3
+
+
+  65:../application/Src/usb_hw.c ****   GPIO_InitStructure.GPIO_Pin = GPIO_Pin_All;
+  66:../application/Src/usb_hw.c ****   
+  67:../application/Src/usb_hw.c **** #elif defined(STM32F10X_HD) || defined(STM32F10X_MD)  || defined(STM32F10X_XL)
+  68:../application/Src/usb_hw.c **** 
+  69:../application/Src/usb_hw.c **** /* Enable all GPIOs Clock*/
+  70:../application/Src/usb_hw.c ****   RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);
+  50              		.loc 1 70 3 is_stmt 1 view .LVU7
+  71:../application/Src/usb_hw.c **** 	
+  72:../application/Src/usb_hw.c **** 	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_11 | GPIO_Pin_12;
+  73:../application/Src/usb_hw.c ****   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+  74:../application/Src/usb_hw.c ****   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
+  75:../application/Src/usb_hw.c ****   GPIO_Init(GPIOA, &GPIO_InitStructure);
+  51              		.loc 1 75 3 is_stmt 0 view .LVU8
+  52 000c 0C4C     		ldr	r4, .L4
+  70:../application/Src/usb_hw.c **** 	
+  53              		.loc 1 70 3 view .LVU9
+  54 000e 0121     		movs	r1, #1
+  55 0010 0420     		movs	r0, #4
+  56 0012 FFF7FEFF 		bl	RCC_APB2PeriphClockCmd
+  57              	.LVL1:
+  72:../application/Src/usb_hw.c ****   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+  58              		.loc 1 72 2 is_stmt 1 view .LVU10
+  73:../application/Src/usb_hw.c ****   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
+  59              		.loc 1 73 3 view .LVU11
+  74:../application/Src/usb_hw.c ****   GPIO_Init(GPIOA, &GPIO_InitStructure);
+  60              		.loc 1 74 3 view .LVU12
+  72:../application/Src/usb_hw.c ****   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+  61              		.loc 1 72 30 is_stmt 0 view .LVU13
+  62 0016 0B4B     		ldr	r3, .L4+4
+  63              		.loc 1 75 3 view .LVU14
+  64 0018 01A9     		add	r1, sp, #4
+  65 001a 2046     		mov	r0, r4
+  72:../application/Src/usb_hw.c ****   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+  66              		.loc 1 72 30 view .LVU15
+  67 001c 0193     		str	r3, [sp, #4]
+  68              		.loc 1 75 3 is_stmt 1 view .LVU16
+  69 001e FFF7FEFF 		bl	GPIO_Init
+  70              	.LVL2:
+  76:../application/Src/usb_hw.c **** 	
+  77:../application/Src/usb_hw.c **** 	GPIOA->ODR &= ~GPIO_Pin_12;			// Enumeration
+  71              		.loc 1 77 2 view .LVU17
+  72              		.loc 1 77 13 is_stmt 0 view .LVU18
+  73 0022 E368     		ldr	r3, [r4, #12]
+  78:../application/Src/usb_hw.c **** 	Delay_ms(5); //delay
+  74              		.loc 1 78 2 view .LVU19
+  75 0024 0520     		movs	r0, #5
+  77:../application/Src/usb_hw.c **** 	Delay_ms(5); //delay
+  76              		.loc 1 77 13 view .LVU20
+  77 0026 23F48053 		bic	r3, r3, #4096
+  78 002a E360     		str	r3, [r4, #12]
+  79              		.loc 1 78 2 is_stmt 1 view .LVU21
+  80 002c FFF7FEFF 		bl	Delay_ms
+  81              	.LVL3:
+  79:../application/Src/usb_hw.c **** 	
+  80:../application/Src/usb_hw.c ****   GPIO_InitStructure.GPIO_Pin = GPIO_Pin_11 | GPIO_Pin_12;
+  82              		.loc 1 80 3 view .LVU22
+  81:../application/Src/usb_hw.c ****   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+ARM GAS  /tmp/cckrPG3V.s 			page 4
+
+
+  83              		.loc 1 81 3 view .LVU23
+  82:../application/Src/usb_hw.c ****   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;
+  84              		.loc 1 82 3 view .LVU24
+  80:../application/Src/usb_hw.c ****   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+  85              		.loc 1 80 31 is_stmt 0 view .LVU25
+  86 0030 054B     		ldr	r3, .L4+8
+  83:../application/Src/usb_hw.c ****   GPIO_Init(GPIOA, &GPIO_InitStructure);
+  87              		.loc 1 83 3 view .LVU26
+  88 0032 2046     		mov	r0, r4
+  89 0034 01A9     		add	r1, sp, #4
+  80:../application/Src/usb_hw.c ****   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+  90              		.loc 1 80 31 view .LVU27
+  91 0036 0193     		str	r3, [sp, #4]
+  92              		.loc 1 83 3 is_stmt 1 view .LVU28
+  93 0038 FFF7FEFF 		bl	GPIO_Init
+  94              	.LVL4:
+  84:../application/Src/usb_hw.c **** 	
+  85:../application/Src/usb_hw.c **** 	
+  86:../application/Src/usb_hw.c ****   
+  87:../application/Src/usb_hw.c **** #else /* defined(STM32F37X) || defined(STM32F303xC) */
+  88:../application/Src/usb_hw.c ****   
+  89:../application/Src/usb_hw.c ****   GPIO_InitStructure.GPIO_Pin = GPIO_Pin_11 | GPIO_Pin_12;
+  90:../application/Src/usb_hw.c ****   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+  91:../application/Src/usb_hw.c ****   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
+  92:../application/Src/usb_hw.c ****   GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+  93:../application/Src/usb_hw.c ****   GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
+  94:../application/Src/usb_hw.c ****   GPIO_Init(GPIOA, &GPIO_InitStructure);
+  95:../application/Src/usb_hw.c ****     
+  96:../application/Src/usb_hw.c ****   /*SET PA11,12 for USB: USB_DM,DP*/
+  97:../application/Src/usb_hw.c ****   GPIO_PinAFConfig(GPIOA, GPIO_PinSource11, GPIO_AF_14);
+  98:../application/Src/usb_hw.c ****   GPIO_PinAFConfig(GPIOA, GPIO_PinSource12, GPIO_AF_14);
+  99:../application/Src/usb_hw.c ****   
+ 100:../application/Src/usb_hw.c **** #endif 
+ 101:../application/Src/usb_hw.c ****   
+ 102:../application/Src/usb_hw.c **** }
+  95              		.loc 1 102 1 is_stmt 0 view .LVU29
+  96 003c 02B0     		add	sp, sp, #8
+  97              	.LCFI2:
+  98              		.cfi_def_cfa_offset 8
+  99              		@ sp needed
+ 100 003e 10BD     		pop	{r4, pc}
+ 101              	.L5:
+ 102              		.align	2
+ 103              	.L4:
+ 104 0040 00080140 		.word	1073809408
+ 105 0044 00180310 		.word	268638208
+ 106 0048 00180318 		.word	402855936
+ 107              		.cfi_endproc
+ 108              	.LFE29:
+ 110              		.section	.text.Set_USBClock,"ax",%progbits
+ 111              		.align	1
+ 112              		.p2align 2,,3
+ 113              		.global	Set_USBClock
+ 114              		.syntax unified
+ 115              		.thumb
+ 116              		.thumb_func
+ 117              		.fpu softvfp
+ARM GAS  /tmp/cckrPG3V.s 			page 5
+
+
+ 119              	Set_USBClock:
+ 120              	.LFB30:
+ 103:../application/Src/usb_hw.c **** 
+ 104:../application/Src/usb_hw.c **** /*******************************************************************************
+ 105:../application/Src/usb_hw.c **** * Function Name  : Set_USBClock
+ 106:../application/Src/usb_hw.c **** * Description    : Configures USB Clock input (48MHz).
+ 107:../application/Src/usb_hw.c **** * Input          : None.
+ 108:../application/Src/usb_hw.c **** * Output         : None.
+ 109:../application/Src/usb_hw.c **** * Return         : None.
+ 110:../application/Src/usb_hw.c **** *******************************************************************************/
+ 111:../application/Src/usb_hw.c **** void Set_USBClock(void)
+ 112:../application/Src/usb_hw.c **** {
+ 121              		.loc 1 112 1 is_stmt 1 view -0
+ 122              		.cfi_startproc
+ 123              		@ args = 0, pretend = 0, frame = 0
+ 124              		@ frame_needed = 0, uses_anonymous_args = 0
+ 113:../application/Src/usb_hw.c **** #if defined(STM32L1XX_MD) || defined(STM32L1XX_HD)|| defined(STM32L1XX_MD_PLUS)
+ 114:../application/Src/usb_hw.c ****   /* Enable USB clock */
+ 115:../application/Src/usb_hw.c ****   RCC_APB1PeriphClockCmd(RCC_APB1Periph_USB, ENABLE);
+ 116:../application/Src/usb_hw.c ****   
+ 117:../application/Src/usb_hw.c **** #else
+ 118:../application/Src/usb_hw.c ****   /* Select USBCLK source */
+ 119:../application/Src/usb_hw.c ****   RCC_USBCLKConfig(RCC_USBCLKSource_PLLCLK_1Div5);
+ 125              		.loc 1 119 3 view .LVU31
+ 112:../application/Src/usb_hw.c **** #if defined(STM32L1XX_MD) || defined(STM32L1XX_HD)|| defined(STM32L1XX_MD_PLUS)
+ 126              		.loc 1 112 1 is_stmt 0 view .LVU32
+ 127 0000 08B5     		push	{r3, lr}
+ 128              	.LCFI3:
+ 129              		.cfi_def_cfa_offset 8
+ 130              		.cfi_offset 3, -8
+ 131              		.cfi_offset 14, -4
+ 132              		.loc 1 119 3 view .LVU33
+ 133 0002 0020     		movs	r0, #0
+ 134 0004 FFF7FEFF 		bl	RCC_USBCLKConfig
+ 135              	.LVL5:
+ 120:../application/Src/usb_hw.c ****   
+ 121:../application/Src/usb_hw.c ****   /* Enable the USB clock */
+ 122:../application/Src/usb_hw.c ****   RCC_APB1PeriphClockCmd(RCC_APB1Periph_USB, ENABLE);
+ 136              		.loc 1 122 3 is_stmt 1 view .LVU34
+ 123:../application/Src/usb_hw.c **** #endif /* STM32L1XX_MD */
+ 124:../application/Src/usb_hw.c **** }
+ 137              		.loc 1 124 1 is_stmt 0 view .LVU35
+ 138 0008 BDE80840 		pop	{r3, lr}
+ 139              	.LCFI4:
+ 140              		.cfi_restore 14
+ 141              		.cfi_restore 3
+ 142              		.cfi_def_cfa_offset 0
+ 122:../application/Src/usb_hw.c **** #endif /* STM32L1XX_MD */
+ 143              		.loc 1 122 3 view .LVU36
+ 144 000c 0121     		movs	r1, #1
+ 145 000e 4FF40000 		mov	r0, #8388608
+ 146 0012 FFF7FEBF 		b	RCC_APB1PeriphClockCmd
+ 147              	.LVL6:
+ 148              		.cfi_endproc
+ 149              	.LFE30:
+ 151 0016 00BF     		.section	.text.USB_Interrupts_Config,"ax",%progbits
+ 152              		.align	1
+ARM GAS  /tmp/cckrPG3V.s 			page 6
+
+
+ 153              		.p2align 2,,3
+ 154              		.global	USB_Interrupts_Config
+ 155              		.syntax unified
+ 156              		.thumb
+ 157              		.thumb_func
+ 158              		.fpu softvfp
+ 160              	USB_Interrupts_Config:
+ 161              	.LFB31:
+ 125:../application/Src/usb_hw.c **** 
+ 126:../application/Src/usb_hw.c **** /*******************************************************************************
+ 127:../application/Src/usb_hw.c **** * Function Name  : USB_Interrupts_Config.
+ 128:../application/Src/usb_hw.c **** * Description    : Configures the USB interrupts.
+ 129:../application/Src/usb_hw.c **** * Input          : None.
+ 130:../application/Src/usb_hw.c **** * Output         : None.
+ 131:../application/Src/usb_hw.c **** * Return         : None.
+ 132:../application/Src/usb_hw.c **** *******************************************************************************/
+ 133:../application/Src/usb_hw.c **** void USB_Interrupts_Config(void)
+ 134:../application/Src/usb_hw.c **** {
+ 162              		.loc 1 134 1 is_stmt 1 view -0
+ 163              		.cfi_startproc
+ 164              		@ args = 0, pretend = 0, frame = 8
+ 165              		@ frame_needed = 0, uses_anonymous_args = 0
+ 135:../application/Src/usb_hw.c ****   NVIC_InitTypeDef NVIC_InitStructure; 
+ 166              		.loc 1 135 3 view .LVU38
+ 136:../application/Src/usb_hw.c ****   
+ 137:../application/Src/usb_hw.c ****   /* 2 bit for pre-emption priority, 2 bits for subpriority */
+ 138:../application/Src/usb_hw.c ****   NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);  
+ 167              		.loc 1 138 3 view .LVU39
+ 134:../application/Src/usb_hw.c ****   NVIC_InitTypeDef NVIC_InitStructure; 
+ 168              		.loc 1 134 1 is_stmt 0 view .LVU40
+ 169 0000 00B5     		push	{lr}
+ 170              	.LCFI5:
+ 171              		.cfi_def_cfa_offset 4
+ 172              		.cfi_offset 14, -4
+ 173              		.loc 1 138 3 view .LVU41
+ 174 0002 4FF4A060 		mov	r0, #1280
+ 134:../application/Src/usb_hw.c ****   NVIC_InitTypeDef NVIC_InitStructure; 
+ 175              		.loc 1 134 1 view .LVU42
+ 176 0006 83B0     		sub	sp, sp, #12
+ 177              	.LCFI6:
+ 178              		.cfi_def_cfa_offset 16
+ 179              		.loc 1 138 3 view .LVU43
+ 180 0008 FFF7FEFF 		bl	NVIC_PriorityGroupConfig
+ 181              	.LVL7:
+ 139:../application/Src/usb_hw.c ****   
+ 140:../application/Src/usb_hw.c **** #if defined(STM32L1XX_MD) || defined(STM32L1XX_HD)|| defined(STM32L1XX_MD_PLUS)
+ 141:../application/Src/usb_hw.c ****   NVIC_InitStructure.NVIC_IRQChannel = USB_LP_IRQn;
+ 142:../application/Src/usb_hw.c ****   NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 1;
+ 143:../application/Src/usb_hw.c ****   NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
+ 144:../application/Src/usb_hw.c ****   NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+ 145:../application/Src/usb_hw.c ****   NVIC_Init(&NVIC_InitStructure);
+ 146:../application/Src/usb_hw.c ****   
+ 147:../application/Src/usb_hw.c ****   /* Enable the USB Wake-up interrupt */
+ 148:../application/Src/usb_hw.c ****   NVIC_InitStructure.NVIC_IRQChannel = USB_FS_WKUP_IRQn;
+ 149:../application/Src/usb_hw.c ****   NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
+ 150:../application/Src/usb_hw.c ****   NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+ 151:../application/Src/usb_hw.c ****   NVIC_Init(&NVIC_InitStructure);
+ARM GAS  /tmp/cckrPG3V.s 			page 7
+
+
+ 152:../application/Src/usb_hw.c ****   
+ 153:../application/Src/usb_hw.c **** #elif defined(STM32F37X)
+ 154:../application/Src/usb_hw.c ****   /* Enable the USB interrupt */
+ 155:../application/Src/usb_hw.c ****   NVIC_InitStructure.NVIC_IRQChannel = USB_LP_IRQn;
+ 156:../application/Src/usb_hw.c ****   NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 1;
+ 157:../application/Src/usb_hw.c ****   NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
+ 158:../application/Src/usb_hw.c ****   NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+ 159:../application/Src/usb_hw.c ****   NVIC_Init(&NVIC_InitStructure);
+ 160:../application/Src/usb_hw.c ****   
+ 161:../application/Src/usb_hw.c ****   /* Enable the USB Wake-up interrupt */
+ 162:../application/Src/usb_hw.c ****   NVIC_InitStructure.NVIC_IRQChannel = USBWakeUp_IRQn;
+ 163:../application/Src/usb_hw.c ****   NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
+ 164:../application/Src/usb_hw.c ****   NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+ 165:../application/Src/usb_hw.c ****   NVIC_Init(&NVIC_InitStructure);
+ 166:../application/Src/usb_hw.c ****   
+ 167:../application/Src/usb_hw.c **** #else
+ 168:../application/Src/usb_hw.c ****   /* Enable the USB interrupt */
+ 169:../application/Src/usb_hw.c ****   NVIC_InitStructure.NVIC_IRQChannel = USB_LP_CAN1_RX0_IRQn;
+ 182              		.loc 1 169 3 is_stmt 1 view .LVU44
+ 170:../application/Src/usb_hw.c ****   NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 1;
+ 183              		.loc 1 170 3 view .LVU45
+ 171:../application/Src/usb_hw.c ****   NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
+ 184              		.loc 1 171 3 view .LVU46
+ 172:../application/Src/usb_hw.c ****   NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+ 185              		.loc 1 172 3 view .LVU47
+ 169:../application/Src/usb_hw.c ****   NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 1;
+ 186              		.loc 1 169 38 is_stmt 0 view .LVU48
+ 187 000c 034B     		ldr	r3, .L10
+ 173:../application/Src/usb_hw.c ****   NVIC_Init(&NVIC_InitStructure);
+ 188              		.loc 1 173 3 view .LVU49
+ 189 000e 01A8     		add	r0, sp, #4
+ 169:../application/Src/usb_hw.c ****   NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 1;
+ 190              		.loc 1 169 38 view .LVU50
+ 191 0010 0193     		str	r3, [sp, #4]
+ 192              		.loc 1 173 3 is_stmt 1 view .LVU51
+ 193 0012 FFF7FEFF 		bl	NVIC_Init
+ 194              	.LVL8:
+ 174:../application/Src/usb_hw.c **** #endif /* STM32L1XX_XD */
+ 175:../application/Src/usb_hw.c ****   
+ 176:../application/Src/usb_hw.c **** }
+ 195              		.loc 1 176 1 is_stmt 0 view .LVU52
+ 196 0016 03B0     		add	sp, sp, #12
+ 197              	.LCFI7:
+ 198              		.cfi_def_cfa_offset 4
+ 199              		@ sp needed
+ 200 0018 5DF804FB 		ldr	pc, [sp], #4
+ 201              	.L11:
+ 202              		.align	2
+ 203              	.L10:
+ 204 001c 14010001 		.word	16777492
+ 205              		.cfi_endproc
+ 206              	.LFE31:
+ 208              		.section	.text.Get_SerialNum,"ax",%progbits
+ 209              		.align	1
+ 210              		.p2align 2,,3
+ 211              		.global	Get_SerialNum
+ 212              		.syntax unified
+ARM GAS  /tmp/cckrPG3V.s 			page 8
+
+
+ 213              		.thumb
+ 214              		.thumb_func
+ 215              		.fpu softvfp
+ 217              	Get_SerialNum:
+ 218              	.LFB32:
+ 177:../application/Src/usb_hw.c **** 
+ 178:../application/Src/usb_hw.c **** 
+ 179:../application/Src/usb_hw.c **** /*******************************************************************************
+ 180:../application/Src/usb_hw.c **** * Function Name  : Get_SerialNum.
+ 181:../application/Src/usb_hw.c **** * Description    : Create the serial number string descriptor.
+ 182:../application/Src/usb_hw.c **** * Input          : None.
+ 183:../application/Src/usb_hw.c **** * Output         : None.
+ 184:../application/Src/usb_hw.c **** * Return         : None.
+ 185:../application/Src/usb_hw.c **** *******************************************************************************/
+ 186:../application/Src/usb_hw.c **** void Get_SerialNum(void)
+ 187:../application/Src/usb_hw.c **** {
+ 219              		.loc 1 187 1 is_stmt 1 view -0
+ 220              		.cfi_startproc
+ 221              		@ args = 0, pretend = 0, frame = 0
+ 222              		@ frame_needed = 0, uses_anonymous_args = 0
+ 223              		@ link register save eliminated.
+ 188:../application/Src/usb_hw.c ****   uint32_t Device_Serial0, Device_Serial1, Device_Serial2;
+ 224              		.loc 1 188 3 view .LVU54
+ 189:../application/Src/usb_hw.c ****   
+ 190:../application/Src/usb_hw.c ****   Device_Serial0 = *(uint32_t*)ID1;
+ 225              		.loc 1 190 3 view .LVU55
+ 226              		.loc 1 190 18 is_stmt 0 view .LVU56
+ 227 0000 3C4A     		ldr	r2, .L44
+ 191:../application/Src/usb_hw.c ****   Device_Serial1 = *(uint32_t*)ID2;
+ 192:../application/Src/usb_hw.c ****   Device_Serial2 = *(uint32_t*)ID3;
+ 228              		.loc 1 192 18 view .LVU57
+ 229 0002 3D4B     		ldr	r3, .L44+4
+ 190:../application/Src/usb_hw.c ****   Device_Serial1 = *(uint32_t*)ID2;
+ 230              		.loc 1 190 18 view .LVU58
+ 231 0004 1268     		ldr	r2, [r2]
+ 232              	.LVL9:
+ 191:../application/Src/usb_hw.c ****   Device_Serial1 = *(uint32_t*)ID2;
+ 233              		.loc 1 191 3 is_stmt 1 view .LVU59
+ 234              		.loc 1 192 3 view .LVU60
+ 193:../application/Src/usb_hw.c ****   
+ 194:../application/Src/usb_hw.c ****   Device_Serial0 += Device_Serial2;
+ 235              		.loc 1 194 3 view .LVU61
+ 236              		.loc 1 194 18 is_stmt 0 view .LVU62
+ 237 0006 1B68     		ldr	r3, [r3]
+ 238              	.LVL10:
+ 195:../application/Src/usb_hw.c ****   
+ 196:../application/Src/usb_hw.c ****   if (Device_Serial0 != 0)
+ 239              		.loc 1 196 3 is_stmt 1 view .LVU63
+ 240              		.loc 1 196 6 is_stmt 0 view .LVU64
+ 241 0008 D318     		adds	r3, r2, r3
+ 242              	.LVL11:
+ 243              		.loc 1 196 6 view .LVU65
+ 244 000a 00D1     		bne	.L43
+ 245 000c 7047     		bx	lr
+ 246              	.L43:
+ 187:../application/Src/usb_hw.c ****   uint32_t Device_Serial0, Device_Serial1, Device_Serial2;
+ 247              		.loc 1 187 1 view .LVU66
+ARM GAS  /tmp/cckrPG3V.s 			page 9
+
+
+ 248 000e 10B4     		push	{r4}
+ 249              	.LCFI8:
+ 250              		.cfi_def_cfa_offset 4
+ 251              		.cfi_offset 4, -4
+ 252              	.LBB10:
+ 253              	.LBB11:
+ 197:../application/Src/usb_hw.c ****   {
+ 198:../application/Src/usb_hw.c ****     IntToUnicode (Device_Serial0, &Composite_StringSerial[2] , 8);
+ 199:../application/Src/usb_hw.c ****     IntToUnicode (Device_Serial1, &Composite_StringSerial[18], 4);
+ 200:../application/Src/usb_hw.c ****   }
+ 201:../application/Src/usb_hw.c **** }
+ 202:../application/Src/usb_hw.c **** 
+ 203:../application/Src/usb_hw.c **** /*******************************************************************************
+ 204:../application/Src/usb_hw.c **** * Function Name  : Get_ProductStr.
+ 205:../application/Src/usb_hw.c **** * Description    : Create the product string descriptor.
+ 206:../application/Src/usb_hw.c **** * Input          : None.
+ 207:../application/Src/usb_hw.c **** * Output         : None.
+ 208:../application/Src/usb_hw.c **** * Return         : None.
+ 209:../application/Src/usb_hw.c **** *******************************************************************************/
+ 210:../application/Src/usb_hw.c **** void Get_ProductStr(void)
+ 211:../application/Src/usb_hw.c **** {
+ 212:../application/Src/usb_hw.c **** 	dev_config_t tmp;
+ 213:../application/Src/usb_hw.c **** 	
+ 214:../application/Src/usb_hw.c **** 	DevConfigGet(&tmp);
+ 215:../application/Src/usb_hw.c **** 	
+ 216:../application/Src/usb_hw.c ****   AsciiToUnicode((uint8_t *) &tmp.device_name[0], &Composite_StringProduct[2], sizeof(tmp.device_na
+ 217:../application/Src/usb_hw.c **** }
+ 218:../application/Src/usb_hw.c **** 
+ 219:../application/Src/usb_hw.c **** /*******************************************************************************
+ 220:../application/Src/usb_hw.c **** * Function Name  : HexToChar.
+ 221:../application/Src/usb_hw.c **** * Description    : Convert Hex 32Bits value into char.
+ 222:../application/Src/usb_hw.c **** * Input          : None.
+ 223:../application/Src/usb_hw.c **** * Output         : None.
+ 224:../application/Src/usb_hw.c **** * Return         : None.
+ 225:../application/Src/usb_hw.c **** *******************************************************************************/
+ 226:../application/Src/usb_hw.c **** static void IntToUnicode (uint32_t value , uint8_t *pbuf , uint8_t len)
+ 227:../application/Src/usb_hw.c **** {
+ 228:../application/Src/usb_hw.c ****   uint8_t idx = 0;
+ 229:../application/Src/usb_hw.c ****   
+ 230:../application/Src/usb_hw.c ****   for( idx = 0 ; idx < len ; idx ++)
+ 231:../application/Src/usb_hw.c ****   {
+ 232:../application/Src/usb_hw.c ****     if( ((value >> 28)) < 0xA )
+ 233:../application/Src/usb_hw.c ****     {
+ 234:../application/Src/usb_hw.c ****       pbuf[ 2* idx] = (value >> 28) + '0';
+ 235:../application/Src/usb_hw.c ****     }
+ 236:../application/Src/usb_hw.c ****     else
+ 237:../application/Src/usb_hw.c ****     {
+ 238:../application/Src/usb_hw.c ****       pbuf[2* idx] = (value >> 28) + 'A' - 10; 
+ 239:../application/Src/usb_hw.c ****     }
+ 240:../application/Src/usb_hw.c ****     
+ 241:../application/Src/usb_hw.c ****     value = value << 4;
+ 242:../application/Src/usb_hw.c ****     
+ 243:../application/Src/usb_hw.c ****     pbuf[ 2* idx + 1] = 0;
+ 254              		.loc 1 243 23 view .LVU67
+ 255 0010 0024     		movs	r4, #0
+ 256              	.LBE11:
+ 257              	.LBE10:
+ARM GAS  /tmp/cckrPG3V.s 			page 10
+
+
+ 191:../application/Src/usb_hw.c ****   Device_Serial2 = *(uint32_t*)ID3;
+ 258              		.loc 1 191 18 view .LVU68
+ 259 0012 3A4A     		ldr	r2, .L44+8
+ 260              	.LVL12:
+ 261              	.LBB20:
+ 262              	.LBB12:
+ 232:../application/Src/usb_hw.c ****     {
+ 263              		.loc 1 232 17 view .LVU69
+ 264 0014 180F     		lsrs	r0, r3, #28
+ 265              	.LBE12:
+ 266              	.LBE20:
+ 191:../application/Src/usb_hw.c ****   Device_Serial2 = *(uint32_t*)ID3;
+ 267              		.loc 1 191 18 view .LVU70
+ 268 0016 1168     		ldr	r1, [r2]
+ 269              	.LVL13:
+ 270              	.LBB21:
+ 271              	.LBB13:
+ 232:../application/Src/usb_hw.c ****     {
+ 272              		.loc 1 232 5 is_stmt 1 view .LVU71
+ 232:../application/Src/usb_hw.c ****     {
+ 273              		.loc 1 232 7 is_stmt 0 view .LVU72
+ 274 0018 B3F1204F 		cmp	r3, #-1610612736
+ 238:../application/Src/usb_hw.c ****     }
+ 275              		.loc 1 238 7 is_stmt 1 view .LVU73
+ 234:../application/Src/usb_hw.c ****     }
+ 276              		.loc 1 234 21 is_stmt 0 view .LVU74
+ 277 001c 384A     		ldr	r2, .L44+12
+ 278              	.LVL14:
+ 238:../application/Src/usb_hw.c ****     }
+ 279              		.loc 1 238 42 view .LVU75
+ 280 001e 2CBF     		ite	cs
+ 281 0020 3730     		addcs	r0, r0, #55
+ 234:../application/Src/usb_hw.c ****     }
+ 282              		.loc 1 234 7 is_stmt 1 view .LVU76
+ 241:../application/Src/usb_hw.c ****     
+ 283              		.loc 1 241 5 view .LVU77
+ 284              	.LVL15:
+ 285              		.loc 1 243 5 view .LVU78
+ 234:../application/Src/usb_hw.c ****     }
+ 286              		.loc 1 234 37 is_stmt 0 view .LVU79
+ 287 0022 3030     		addcc	r0, r0, #48
+ 234:../application/Src/usb_hw.c ****     }
+ 288              		.loc 1 234 21 view .LVU80
+ 289 0024 9070     		strb	r0, [r2, #2]
+ 290              	.LVL16:
+ 232:../application/Src/usb_hw.c ****     {
+ 291              		.loc 1 232 17 view .LVU81
+ 292 0026 C3F30360 		ubfx	r0, r3, #24, #4
+ 232:../application/Src/usb_hw.c ****     {
+ 293              		.loc 1 232 7 view .LVU82
+ 294 002a 0928     		cmp	r0, #9
+ 238:../application/Src/usb_hw.c ****     }
+ 295              		.loc 1 238 42 view .LVU83
+ 296 002c 8CBF     		ite	hi
+ 297 002e 3730     		addhi	r0, r0, #55
+ 234:../application/Src/usb_hw.c ****     }
+ 298              		.loc 1 234 37 view .LVU84
+ARM GAS  /tmp/cckrPG3V.s 			page 11
+
+
+ 299 0030 3030     		addls	r0, r0, #48
+ 234:../application/Src/usb_hw.c ****     }
+ 300              		.loc 1 234 21 view .LVU85
+ 301 0032 1071     		strb	r0, [r2, #4]
+ 232:../application/Src/usb_hw.c ****     {
+ 302              		.loc 1 232 17 view .LVU86
+ 303 0034 C3F30350 		ubfx	r0, r3, #20, #4
+ 232:../application/Src/usb_hw.c ****     {
+ 304              		.loc 1 232 7 view .LVU87
+ 305 0038 0928     		cmp	r0, #9
+ 238:../application/Src/usb_hw.c ****     }
+ 306              		.loc 1 238 42 view .LVU88
+ 307 003a 8CBF     		ite	hi
+ 308 003c 3730     		addhi	r0, r0, #55
+ 234:../application/Src/usb_hw.c ****     }
+ 309              		.loc 1 234 37 view .LVU89
+ 310 003e 3030     		addls	r0, r0, #48
+ 234:../application/Src/usb_hw.c ****     }
+ 311              		.loc 1 234 21 view .LVU90
+ 312 0040 9071     		strb	r0, [r2, #6]
+ 232:../application/Src/usb_hw.c ****     {
+ 313              		.loc 1 232 17 view .LVU91
+ 314 0042 C3F30340 		ubfx	r0, r3, #16, #4
+ 232:../application/Src/usb_hw.c ****     {
+ 315              		.loc 1 232 7 view .LVU92
+ 316 0046 0928     		cmp	r0, #9
+ 238:../application/Src/usb_hw.c ****     }
+ 317              		.loc 1 238 42 view .LVU93
+ 318 0048 8CBF     		ite	hi
+ 319 004a 3730     		addhi	r0, r0, #55
+ 234:../application/Src/usb_hw.c ****     }
+ 320              		.loc 1 234 37 view .LVU94
+ 321 004c 3030     		addls	r0, r0, #48
+ 234:../application/Src/usb_hw.c ****     }
+ 322              		.loc 1 234 21 view .LVU95
+ 323 004e 1072     		strb	r0, [r2, #8]
+ 232:../application/Src/usb_hw.c ****     {
+ 324              		.loc 1 232 17 view .LVU96
+ 325 0050 C3F30330 		ubfx	r0, r3, #12, #4
+ 232:../application/Src/usb_hw.c ****     {
+ 326              		.loc 1 232 7 view .LVU97
+ 327 0054 0928     		cmp	r0, #9
+ 238:../application/Src/usb_hw.c ****     }
+ 328              		.loc 1 238 42 view .LVU98
+ 329 0056 8CBF     		ite	hi
+ 330 0058 3730     		addhi	r0, r0, #55
+ 234:../application/Src/usb_hw.c ****     }
+ 331              		.loc 1 234 37 view .LVU99
+ 332 005a 3030     		addls	r0, r0, #48
+ 234:../application/Src/usb_hw.c ****     }
+ 333              		.loc 1 234 21 view .LVU100
+ 334 005c 9072     		strb	r0, [r2, #10]
+ 232:../application/Src/usb_hw.c ****     {
+ 335              		.loc 1 232 17 view .LVU101
+ 336 005e C3F30320 		ubfx	r0, r3, #8, #4
+ 232:../application/Src/usb_hw.c ****     {
+ 337              		.loc 1 232 7 view .LVU102
+ARM GAS  /tmp/cckrPG3V.s 			page 12
+
+
+ 338 0062 0928     		cmp	r0, #9
+ 238:../application/Src/usb_hw.c ****     }
+ 339              		.loc 1 238 42 view .LVU103
+ 340 0064 8CBF     		ite	hi
+ 341 0066 3730     		addhi	r0, r0, #55
+ 234:../application/Src/usb_hw.c ****     }
+ 342              		.loc 1 234 37 view .LVU104
+ 343 0068 3030     		addls	r0, r0, #48
+ 234:../application/Src/usb_hw.c ****     }
+ 344              		.loc 1 234 21 view .LVU105
+ 345 006a 1073     		strb	r0, [r2, #12]
+ 232:../application/Src/usb_hw.c ****     {
+ 346              		.loc 1 232 17 view .LVU106
+ 347 006c C3F30310 		ubfx	r0, r3, #4, #4
+ 232:../application/Src/usb_hw.c ****     {
+ 348              		.loc 1 232 7 view .LVU107
+ 349 0070 0928     		cmp	r0, #9
+ 238:../application/Src/usb_hw.c ****     }
+ 350              		.loc 1 238 42 view .LVU108
+ 351 0072 8CBF     		ite	hi
+ 352 0074 3730     		addhi	r0, r0, #55
+ 234:../application/Src/usb_hw.c ****     }
+ 353              		.loc 1 234 37 view .LVU109
+ 354 0076 3030     		addls	r0, r0, #48
+ 355              		.loc 1 243 23 view .LVU110
+ 356 0078 D470     		strb	r4, [r2, #3]
+ 230:../application/Src/usb_hw.c ****   {
+ 357              		.loc 1 230 30 is_stmt 1 view .LVU111
+ 358              	.LVL17:
+ 230:../application/Src/usb_hw.c ****   {
+ 359              		.loc 1 230 18 view .LVU112
+ 232:../application/Src/usb_hw.c ****     {
+ 360              		.loc 1 232 5 view .LVU113
+ 238:../application/Src/usb_hw.c ****     }
+ 361              		.loc 1 238 7 view .LVU114
+ 234:../application/Src/usb_hw.c ****     }
+ 362              		.loc 1 234 7 view .LVU115
+ 241:../application/Src/usb_hw.c ****     
+ 363              		.loc 1 241 5 view .LVU116
+ 364              		.loc 1 243 5 view .LVU117
+ 234:../application/Src/usb_hw.c ****     }
+ 365              		.loc 1 234 21 is_stmt 0 view .LVU118
+ 366 007a 9073     		strb	r0, [r2, #14]
+ 367              		.loc 1 243 23 view .LVU119
+ 368 007c 0024     		movs	r4, #0
+ 369 007e 0020     		movs	r0, #0
+ 370 0080 5471     		strb	r4, [r2, #5]
+ 230:../application/Src/usb_hw.c ****   {
+ 371              		.loc 1 230 30 is_stmt 1 view .LVU120
+ 372              	.LVL18:
+ 230:../application/Src/usb_hw.c ****   {
+ 373              		.loc 1 230 18 view .LVU121
+ 232:../application/Src/usb_hw.c ****     {
+ 374              		.loc 1 232 5 view .LVU122
+ 238:../application/Src/usb_hw.c ****     }
+ 375              		.loc 1 238 7 view .LVU123
+ 234:../application/Src/usb_hw.c ****     }
+ARM GAS  /tmp/cckrPG3V.s 			page 13
+
+
+ 376              		.loc 1 234 7 view .LVU124
+ 241:../application/Src/usb_hw.c ****     
+ 377              		.loc 1 241 5 view .LVU125
+ 378              		.loc 1 243 5 view .LVU126
+ 379              		.loc 1 243 23 is_stmt 0 view .LVU127
+ 380 0082 D073     		strb	r0, [r2, #15]
+ 381 0084 0024     		movs	r4, #0
+ 382 0086 0020     		movs	r0, #0
+ 383 0088 D471     		strb	r4, [r2, #7]
+ 230:../application/Src/usb_hw.c ****   {
+ 384              		.loc 1 230 30 is_stmt 1 view .LVU128
+ 385              	.LVL19:
+ 230:../application/Src/usb_hw.c ****   {
+ 386              		.loc 1 230 18 view .LVU129
+ 232:../application/Src/usb_hw.c ****     {
+ 387              		.loc 1 232 5 view .LVU130
+ 238:../application/Src/usb_hw.c ****     }
+ 388              		.loc 1 238 7 view .LVU131
+ 234:../application/Src/usb_hw.c ****     }
+ 389              		.loc 1 234 7 view .LVU132
+ 241:../application/Src/usb_hw.c ****     
+ 390              		.loc 1 241 5 view .LVU133
+ 391              		.loc 1 243 5 view .LVU134
+ 392              		.loc 1 243 23 is_stmt 0 view .LVU135
+ 393 008a 5074     		strb	r0, [r2, #17]
+ 394 008c 0024     		movs	r4, #0
+ 395              	.LBE13:
+ 396              	.LBE21:
+ 397              	.LBB22:
+ 398              	.LBB23:
+ 399 008e 0020     		movs	r0, #0
+ 400              	.LBE23:
+ 401              	.LBE22:
+ 402              	.LBB30:
+ 403              	.LBB14:
+ 404 0090 5472     		strb	r4, [r2, #9]
+ 230:../application/Src/usb_hw.c ****   {
+ 405              		.loc 1 230 30 is_stmt 1 view .LVU136
+ 406              	.LVL20:
+ 230:../application/Src/usb_hw.c ****   {
+ 407              		.loc 1 230 18 view .LVU137
+ 232:../application/Src/usb_hw.c ****     {
+ 408              		.loc 1 232 5 view .LVU138
+ 238:../application/Src/usb_hw.c ****     }
+ 409              		.loc 1 238 7 view .LVU139
+ 234:../application/Src/usb_hw.c ****     }
+ 410              		.loc 1 234 7 view .LVU140
+ 241:../application/Src/usb_hw.c ****     
+ 411              		.loc 1 241 5 view .LVU141
+ 412              		.loc 1 243 5 view .LVU142
+ 413              	.LBE14:
+ 414              	.LBE30:
+ 415              	.LBB31:
+ 416              	.LBB24:
+ 417              		.loc 1 243 23 is_stmt 0 view .LVU143
+ 418 0092 D074     		strb	r0, [r2, #19]
+ 419              	.LBE24:
+ARM GAS  /tmp/cckrPG3V.s 			page 14
+
+
+ 420              	.LBE31:
+ 421              	.LBB32:
+ 422              	.LBB15:
+ 423 0094 0024     		movs	r4, #0
+ 424              	.LBE15:
+ 425              	.LBE32:
+ 426              	.LBB33:
+ 427              	.LBB25:
+ 428 0096 0020     		movs	r0, #0
+ 429              	.LBE25:
+ 430              	.LBE33:
+ 431              	.LBB34:
+ 432              	.LBB16:
+ 232:../application/Src/usb_hw.c ****     {
+ 433              		.loc 1 232 17 view .LVU144
+ 434 0098 03F00F03 		and	r3, r3, #15
+ 435              	.LVL21:
+ 232:../application/Src/usb_hw.c ****     {
+ 436              		.loc 1 232 7 view .LVU145
+ 437 009c 092B     		cmp	r3, #9
+ 234:../application/Src/usb_hw.c ****     }
+ 438              		.loc 1 234 37 view .LVU146
+ 439 009e 94BF     		ite	ls
+ 440 00a0 3033     		addls	r3, r3, #48
+ 238:../application/Src/usb_hw.c ****     }
+ 441              		.loc 1 238 42 view .LVU147
+ 442 00a2 3733     		addhi	r3, r3, #55
+ 238:../application/Src/usb_hw.c ****     }
+ 443              		.loc 1 238 20 view .LVU148
+ 444 00a4 1374     		strb	r3, [r2, #16]
+ 445              	.LBE16:
+ 446              	.LBE34:
+ 447              	.LBB35:
+ 448              	.LBB26:
+ 232:../application/Src/usb_hw.c ****     {
+ 449              		.loc 1 232 7 view .LVU149
+ 450 00a6 B1F1204F 		cmp	r1, #-1610612736
+ 232:../application/Src/usb_hw.c ****     {
+ 451              		.loc 1 232 17 view .LVU150
+ 452 00aa 4FEA1173 		lsr	r3, r1, #28
+ 238:../application/Src/usb_hw.c ****     }
+ 453              		.loc 1 238 42 view .LVU151
+ 454 00ae 2CBF     		ite	cs
+ 455 00b0 3733     		addcs	r3, r3, #55
+ 234:../application/Src/usb_hw.c ****     }
+ 456              		.loc 1 234 37 view .LVU152
+ 457 00b2 3033     		addcc	r3, r3, #48
+ 234:../application/Src/usb_hw.c ****     }
+ 458              		.loc 1 234 21 view .LVU153
+ 459 00b4 9374     		strb	r3, [r2, #18]
+ 232:../application/Src/usb_hw.c ****     {
+ 460              		.loc 1 232 17 view .LVU154
+ 461 00b6 C1F30363 		ubfx	r3, r1, #24, #4
+ 232:../application/Src/usb_hw.c ****     {
+ 462              		.loc 1 232 7 view .LVU155
+ 463 00ba 092B     		cmp	r3, #9
+ 238:../application/Src/usb_hw.c ****     }
+ARM GAS  /tmp/cckrPG3V.s 			page 15
+
+
+ 464              		.loc 1 238 42 view .LVU156
+ 465 00bc 8CBF     		ite	hi
+ 466 00be 3733     		addhi	r3, r3, #55
+ 234:../application/Src/usb_hw.c ****     }
+ 467              		.loc 1 234 37 view .LVU157
+ 468 00c0 3033     		addls	r3, r3, #48
+ 234:../application/Src/usb_hw.c ****     }
+ 469              		.loc 1 234 21 view .LVU158
+ 470 00c2 1375     		strb	r3, [r2, #20]
+ 232:../application/Src/usb_hw.c ****     {
+ 471              		.loc 1 232 17 view .LVU159
+ 472 00c4 C1F30353 		ubfx	r3, r1, #20, #4
+ 232:../application/Src/usb_hw.c ****     {
+ 473              		.loc 1 232 7 view .LVU160
+ 474 00c8 092B     		cmp	r3, #9
+ 238:../application/Src/usb_hw.c ****     }
+ 475              		.loc 1 238 42 view .LVU161
+ 476 00ca 8CBF     		ite	hi
+ 477 00cc 3733     		addhi	r3, r3, #55
+ 234:../application/Src/usb_hw.c ****     }
+ 478              		.loc 1 234 37 view .LVU162
+ 479 00ce 3033     		addls	r3, r3, #48
+ 234:../application/Src/usb_hw.c ****     }
+ 480              		.loc 1 234 21 view .LVU163
+ 481 00d0 9375     		strb	r3, [r2, #22]
+ 232:../application/Src/usb_hw.c ****     {
+ 482              		.loc 1 232 17 view .LVU164
+ 483 00d2 C1F30343 		ubfx	r3, r1, #16, #4
+ 232:../application/Src/usb_hw.c ****     {
+ 484              		.loc 1 232 7 view .LVU165
+ 485 00d6 092B     		cmp	r3, #9
+ 234:../application/Src/usb_hw.c ****     }
+ 486              		.loc 1 234 37 view .LVU166
+ 487 00d8 94BF     		ite	ls
+ 488 00da 3033     		addls	r3, r3, #48
+ 238:../application/Src/usb_hw.c ****     }
+ 489              		.loc 1 238 42 view .LVU167
+ 490 00dc 3733     		addhi	r3, r3, #55
+ 491              	.LBE26:
+ 492              	.LBE35:
+ 493              	.LBB36:
+ 494              	.LBB17:
+ 495              		.loc 1 243 23 view .LVU168
+ 496 00de D472     		strb	r4, [r2, #11]
+ 230:../application/Src/usb_hw.c ****   {
+ 497              		.loc 1 230 30 is_stmt 1 view .LVU169
+ 498              	.LVL22:
+ 230:../application/Src/usb_hw.c ****   {
+ 499              		.loc 1 230 18 view .LVU170
+ 232:../application/Src/usb_hw.c ****     {
+ 500              		.loc 1 232 5 view .LVU171
+ 238:../application/Src/usb_hw.c ****     }
+ 501              		.loc 1 238 7 view .LVU172
+ 234:../application/Src/usb_hw.c ****     }
+ 502              		.loc 1 234 7 view .LVU173
+ 241:../application/Src/usb_hw.c ****     
+ 503              		.loc 1 241 5 view .LVU174
+ARM GAS  /tmp/cckrPG3V.s 			page 16
+
+
+ 504              		.loc 1 243 5 view .LVU175
+ 505              	.LBE17:
+ 506              	.LBE36:
+ 507              	.LBB37:
+ 508              	.LBB27:
+ 509              		.loc 1 243 23 is_stmt 0 view .LVU176
+ 510 00e0 5075     		strb	r0, [r2, #21]
+ 511              	.LBE27:
+ 512              	.LBE37:
+ 513              	.LBB38:
+ 514              	.LBB18:
+ 515 00e2 0024     		movs	r4, #0
+ 516              	.LBE18:
+ 517              	.LBE38:
+ 518              	.LBB39:
+ 519              	.LBB28:
+ 238:../application/Src/usb_hw.c ****     }
+ 520              		.loc 1 238 20 view .LVU177
+ 521 00e4 1376     		strb	r3, [r2, #24]
+ 522              		.loc 1 243 23 view .LVU178
+ 523 00e6 0020     		movs	r0, #0
+ 524 00e8 0023     		movs	r3, #0
+ 525              	.LBE28:
+ 526              	.LBE39:
+ 527              	.LBB40:
+ 528              	.LBB19:
+ 529 00ea 5473     		strb	r4, [r2, #13]
+ 230:../application/Src/usb_hw.c ****   {
+ 530              		.loc 1 230 30 is_stmt 1 view .LVU179
+ 531              	.LVL23:
+ 230:../application/Src/usb_hw.c ****   {
+ 532              		.loc 1 230 18 view .LVU180
+ 232:../application/Src/usb_hw.c ****     {
+ 533              		.loc 1 232 5 view .LVU181
+ 238:../application/Src/usb_hw.c ****     }
+ 534              		.loc 1 238 7 view .LVU182
+ 234:../application/Src/usb_hw.c ****     }
+ 535              		.loc 1 234 7 view .LVU183
+ 241:../application/Src/usb_hw.c ****     
+ 536              		.loc 1 241 5 view .LVU184
+ 537              		.loc 1 243 5 view .LVU185
+ 230:../application/Src/usb_hw.c ****   {
+ 538              		.loc 1 230 30 view .LVU186
+ 230:../application/Src/usb_hw.c ****   {
+ 539              		.loc 1 230 18 view .LVU187
+ 232:../application/Src/usb_hw.c ****     {
+ 540              		.loc 1 232 5 view .LVU188
+ 234:../application/Src/usb_hw.c ****     }
+ 541              		.loc 1 234 7 view .LVU189
+ 238:../application/Src/usb_hw.c ****     }
+ 542              		.loc 1 238 7 view .LVU190
+ 241:../application/Src/usb_hw.c ****     
+ 543              		.loc 1 241 5 view .LVU191
+ 544              		.loc 1 243 5 view .LVU192
+ 230:../application/Src/usb_hw.c ****   {
+ 545              		.loc 1 230 30 view .LVU193
+ 230:../application/Src/usb_hw.c ****   {
+ARM GAS  /tmp/cckrPG3V.s 			page 17
+
+
+ 546              		.loc 1 230 18 view .LVU194
+ 230:../application/Src/usb_hw.c ****   {
+ 547              		.loc 1 230 18 is_stmt 0 view .LVU195
+ 548              	.LBE19:
+ 549              	.LBE40:
+ 550              	.LBB41:
+ 551              	.LBB29:
+ 232:../application/Src/usb_hw.c ****     {
+ 552              		.loc 1 232 5 is_stmt 1 view .LVU196
+ 238:../application/Src/usb_hw.c ****     }
+ 553              		.loc 1 238 7 view .LVU197
+ 234:../application/Src/usb_hw.c ****     }
+ 554              		.loc 1 234 7 view .LVU198
+ 241:../application/Src/usb_hw.c ****     
+ 555              		.loc 1 241 5 view .LVU199
+ 556              		.loc 1 243 5 view .LVU200
+ 230:../application/Src/usb_hw.c ****   {
+ 557              		.loc 1 230 30 view .LVU201
+ 230:../application/Src/usb_hw.c ****   {
+ 558              		.loc 1 230 18 view .LVU202
+ 232:../application/Src/usb_hw.c ****     {
+ 559              		.loc 1 232 5 view .LVU203
+ 238:../application/Src/usb_hw.c ****     }
+ 560              		.loc 1 238 7 view .LVU204
+ 234:../application/Src/usb_hw.c ****     }
+ 561              		.loc 1 234 7 view .LVU205
+ 241:../application/Src/usb_hw.c ****     
+ 562              		.loc 1 241 5 view .LVU206
+ 563              		.loc 1 243 5 view .LVU207
+ 230:../application/Src/usb_hw.c ****   {
+ 564              		.loc 1 230 30 view .LVU208
+ 230:../application/Src/usb_hw.c ****   {
+ 565              		.loc 1 230 18 view .LVU209
+ 232:../application/Src/usb_hw.c ****     {
+ 566              		.loc 1 232 5 view .LVU210
+ 238:../application/Src/usb_hw.c ****     }
+ 567              		.loc 1 238 7 view .LVU211
+ 234:../application/Src/usb_hw.c ****     }
+ 568              		.loc 1 234 7 view .LVU212
+ 241:../application/Src/usb_hw.c ****     
+ 569              		.loc 1 241 5 view .LVU213
+ 570              		.loc 1 243 5 view .LVU214
+ 571              		.loc 1 243 23 is_stmt 0 view .LVU215
+ 572 00ec D075     		strb	r0, [r2, #23]
+ 230:../application/Src/usb_hw.c ****   {
+ 573              		.loc 1 230 30 is_stmt 1 view .LVU216
+ 574              	.LVL24:
+ 230:../application/Src/usb_hw.c ****   {
+ 575              		.loc 1 230 18 view .LVU217
+ 232:../application/Src/usb_hw.c ****     {
+ 576              		.loc 1 232 5 view .LVU218
+ 234:../application/Src/usb_hw.c ****     }
+ 577              		.loc 1 234 7 view .LVU219
+ 238:../application/Src/usb_hw.c ****     }
+ 578              		.loc 1 238 7 view .LVU220
+ 241:../application/Src/usb_hw.c ****     
+ 579              		.loc 1 241 5 view .LVU221
+ARM GAS  /tmp/cckrPG3V.s 			page 18
+
+
+ 580              		.loc 1 243 5 view .LVU222
+ 581              		.loc 1 243 23 is_stmt 0 view .LVU223
+ 582 00ee 5376     		strb	r3, [r2, #25]
+ 230:../application/Src/usb_hw.c ****   {
+ 583              		.loc 1 230 30 is_stmt 1 view .LVU224
+ 584              	.LVL25:
+ 230:../application/Src/usb_hw.c ****   {
+ 585              		.loc 1 230 18 view .LVU225
+ 586              	.LBE29:
+ 587              	.LBE41:
+ 201:../application/Src/usb_hw.c **** 
+ 588              		.loc 1 201 1 is_stmt 0 view .LVU226
+ 589 00f0 10BC     		pop	{r4}
+ 590              	.LCFI9:
+ 591              		.cfi_restore 4
+ 592              		.cfi_def_cfa_offset 0
+ 593 00f2 7047     		bx	lr
+ 594              	.L45:
+ 595              		.align	2
+ 596              	.L44:
+ 597 00f4 E8F7FF1F 		.word	536868840
+ 598 00f8 F0F7FF1F 		.word	536868848
+ 599 00fc ECF7FF1F 		.word	536868844
+ 600 0100 00000000 		.word	Composite_StringSerial
+ 601              		.cfi_endproc
+ 602              	.LFE32:
+ 604              		.section	.text.Get_ProductStr,"ax",%progbits
+ 605              		.align	1
+ 606              		.p2align 2,,3
+ 607              		.global	Get_ProductStr
+ 608              		.syntax unified
+ 609              		.thumb
+ 610              		.thumb_func
+ 611              		.fpu softvfp
+ 613              	Get_ProductStr:
+ 614              	.LFB33:
+ 211:../application/Src/usb_hw.c **** 	dev_config_t tmp;
+ 615              		.loc 1 211 1 is_stmt 1 view -0
+ 616              		.cfi_startproc
+ 617              		@ args = 0, pretend = 0, frame = 904
+ 618              		@ frame_needed = 0, uses_anonymous_args = 0
+ 212:../application/Src/usb_hw.c **** 	
+ 619              		.loc 1 212 2 view .LVU228
+ 214:../application/Src/usb_hw.c **** 	
+ 620              		.loc 1 214 2 view .LVU229
+ 211:../application/Src/usb_hw.c **** 	dev_config_t tmp;
+ 621              		.loc 1 211 1 is_stmt 0 view .LVU230
+ 622 0000 10B5     		push	{r4, lr}
+ 623              	.LCFI10:
+ 624              		.cfi_def_cfa_offset 8
+ 625              		.cfi_offset 4, -8
+ 626              		.cfi_offset 14, -4
+ 627              	.LBB42:
+ 628              	.LBB43:
+ 244:../application/Src/usb_hw.c ****   }
+ 245:../application/Src/usb_hw.c **** }
+ 246:../application/Src/usb_hw.c **** 
+ARM GAS  /tmp/cckrPG3V.s 			page 19
+
+
+ 247:../application/Src/usb_hw.c **** /*******************************************************************************
+ 248:../application/Src/usb_hw.c **** * Function Name  : AsciiToUnicode
+ 249:../application/Src/usb_hw.c **** * Description    : Convert ASCII string value into unicode array.
+ 250:../application/Src/usb_hw.c **** * Input          : None.
+ 251:../application/Src/usb_hw.c **** * Output         : None.
+ 252:../application/Src/usb_hw.c **** * Return         : None.
+ 253:../application/Src/usb_hw.c **** *******************************************************************************/
+ 254:../application/Src/usb_hw.c **** static void AsciiToUnicode (uint8_t * pbuf_in , uint8_t *pbuf_out , uint8_t len)
+ 255:../application/Src/usb_hw.c **** {
+ 256:../application/Src/usb_hw.c ****   uint8_t idx = 0;
+ 257:../application/Src/usb_hw.c ****   
+ 258:../application/Src/usb_hw.c ****   for( idx = 0 ; idx < len ; idx ++)
+ 259:../application/Src/usb_hw.c ****   {    
+ 260:../application/Src/usb_hw.c ****     pbuf_out[2* idx] = pbuf_in[idx];
+ 261:../application/Src/usb_hw.c ****     pbuf_out[2* idx + 1] = 0;
+ 629              		.loc 1 261 26 view .LVU231
+ 630 0002 0024     		movs	r4, #0
+ 631              	.LBE43:
+ 632              	.LBE42:
+ 211:../application/Src/usb_hw.c **** 	dev_config_t tmp;
+ 633              		.loc 1 211 1 view .LVU232
+ 634 0004 ADF5627D 		sub	sp, sp, #904
+ 635              	.LCFI11:
+ 636              		.cfi_def_cfa_offset 912
+ 214:../application/Src/usb_hw.c **** 	
+ 637              		.loc 1 214 2 view .LVU233
+ 638 0008 6846     		mov	r0, sp
+ 639 000a FFF7FEFF 		bl	DevConfigGet
+ 640              	.LVL26:
+ 216:../application/Src/usb_hw.c **** }
+ 641              		.loc 1 216 3 is_stmt 1 view .LVU234
+ 642              	.LBB45:
+ 643              	.LBI42:
+ 254:../application/Src/usb_hw.c **** {
+ 644              		.loc 1 254 13 view .LVU235
+ 645              	.LBB44:
+ 256:../application/Src/usb_hw.c ****   
+ 646              		.loc 1 256 3 view .LVU236
+ 258:../application/Src/usb_hw.c ****   {    
+ 647              		.loc 1 258 3 view .LVU237
+ 258:../application/Src/usb_hw.c ****   {    
+ 648              		.loc 1 258 18 view .LVU238
+ 649 000e 084B     		ldr	r3, .L50
+ 650 0010 0DF10102 		add	r2, sp, #1
+ 651 0014 0DF11B00 		add	r0, sp, #27
+ 652              	.LVL27:
+ 653              	.L47:
+ 260:../application/Src/usb_hw.c ****     pbuf_out[2* idx + 1] = 0;
+ 654              		.loc 1 260 5 view .LVU239
+ 260:../application/Src/usb_hw.c ****     pbuf_out[2* idx + 1] = 0;
+ 655              		.loc 1 260 22 is_stmt 0 view .LVU240
+ 656 0018 12F8011F 		ldrb	r1, [r2, #1]!	@ zero_extendqisi2
+ 657              	.LVL28:
+ 658              		.loc 1 261 26 view .LVU241
+ 659 001c DC70     		strb	r4, [r3, #3]
+ 258:../application/Src/usb_hw.c ****   {    
+ 660              		.loc 1 258 3 view .LVU242
+ARM GAS  /tmp/cckrPG3V.s 			page 20
+
+
+ 661 001e 9042     		cmp	r0, r2
+ 260:../application/Src/usb_hw.c ****     pbuf_out[2* idx + 1] = 0;
+ 662              		.loc 1 260 22 view .LVU243
+ 663 0020 9970     		strb	r1, [r3, #2]
+ 664              		.loc 1 261 5 is_stmt 1 view .LVU244
+ 258:../application/Src/usb_hw.c ****   {    
+ 665              		.loc 1 258 30 view .LVU245
+ 666              	.LVL29:
+ 258:../application/Src/usb_hw.c ****   {    
+ 667              		.loc 1 258 18 view .LVU246
+ 668 0022 03F10203 		add	r3, r3, #2
+ 258:../application/Src/usb_hw.c ****   {    
+ 669              		.loc 1 258 3 is_stmt 0 view .LVU247
+ 670 0026 F7D1     		bne	.L47
+ 671              	.LBE44:
+ 672              	.LBE45:
+ 217:../application/Src/usb_hw.c **** 
+ 673              		.loc 1 217 1 view .LVU248
+ 674 0028 0DF5627D 		add	sp, sp, #904
+ 675              	.LCFI12:
+ 676              		.cfi_def_cfa_offset 8
+ 677              		@ sp needed
+ 678 002c 10BD     		pop	{r4, pc}
+ 679              	.LVL30:
+ 680              	.L51:
+ 217:../application/Src/usb_hw.c **** 
+ 681              		.loc 1 217 1 view .LVU249
+ 682 002e 00BF     		.align	2
+ 683              	.L50:
+ 684 0030 00000000 		.word	Composite_StringProduct
+ 685              		.cfi_endproc
+ 686              	.LFE33:
+ 688              		.section	.text.Get_VidPid,"ax",%progbits
+ 689              		.align	1
+ 690              		.p2align 2,,3
+ 691              		.global	Get_VidPid
+ 692              		.syntax unified
+ 693              		.thumb
+ 694              		.thumb_func
+ 695              		.fpu softvfp
+ 697              	Get_VidPid:
+ 698              	.LFB36:
+ 262:../application/Src/usb_hw.c ****   }
+ 263:../application/Src/usb_hw.c **** }
+ 264:../application/Src/usb_hw.c **** 
+ 265:../application/Src/usb_hw.c **** /*******************************************************************************
+ 266:../application/Src/usb_hw.c **** * Function Name  : Get_VidPid.
+ 267:../application/Src/usb_hw.c **** * Description    : Change VID and PID.
+ 268:../application/Src/usb_hw.c **** * Input          : None.
+ 269:../application/Src/usb_hw.c **** * Output         : None.
+ 270:../application/Src/usb_hw.c **** * Return         : None.
+ 271:../application/Src/usb_hw.c **** *******************************************************************************/
+ 272:../application/Src/usb_hw.c **** void Get_VidPid(void)
+ 273:../application/Src/usb_hw.c **** {
+ 699              		.loc 1 273 1 is_stmt 1 view -0
+ 700              		.cfi_startproc
+ 701              		@ args = 0, pretend = 0, frame = 904
+ARM GAS  /tmp/cckrPG3V.s 			page 21
+
+
+ 702              		@ frame_needed = 0, uses_anonymous_args = 0
+ 274:../application/Src/usb_hw.c **** 	dev_config_t tmp;
+ 703              		.loc 1 274 2 view .LVU251
+ 275:../application/Src/usb_hw.c **** 	
+ 276:../application/Src/usb_hw.c **** 	DevConfigGet(&tmp);
+ 704              		.loc 1 276 2 view .LVU252
+ 273:../application/Src/usb_hw.c **** 	dev_config_t tmp;
+ 705              		.loc 1 273 1 is_stmt 0 view .LVU253
+ 706 0000 10B5     		push	{r4, lr}
+ 707              	.LCFI13:
+ 708              		.cfi_def_cfa_offset 8
+ 709              		.cfi_offset 4, -8
+ 710              		.cfi_offset 14, -4
+ 711 0002 ADF5627D 		sub	sp, sp, #904
+ 712              	.LCFI14:
+ 713              		.cfi_def_cfa_offset 912
+ 714              		.loc 1 276 2 view .LVU254
+ 715 0006 6846     		mov	r0, sp
+ 716 0008 FFF7FEFF 		bl	DevConfigGet
+ 717              	.LVL31:
+ 277:../application/Src/usb_hw.c **** 	
+ 278:../application/Src/usb_hw.c ****   Composite_DeviceDescriptor[8] = LOBYTE(tmp.vid);
+ 718              		.loc 1 278 3 is_stmt 1 view .LVU255
+ 719              		.loc 1 278 35 is_stmt 0 view .LVU256
+ 720 000c BDF83C13 		ldrh	r1, [sp, #828]
+ 279:../application/Src/usb_hw.c **** 	Composite_DeviceDescriptor[9] = HIBYTE(tmp.vid);
+ 280:../application/Src/usb_hw.c **** 	Composite_DeviceDescriptor[10] = LOBYTE(tmp.pid);
+ 721              		.loc 1 280 35 view .LVU257
+ 722 0010 BDF83E23 		ldrh	r2, [sp, #830]
+ 278:../application/Src/usb_hw.c **** 	Composite_DeviceDescriptor[9] = HIBYTE(tmp.vid);
+ 723              		.loc 1 278 33 view .LVU258
+ 724 0014 044B     		ldr	r3, .L54
+ 279:../application/Src/usb_hw.c **** 	Composite_DeviceDescriptor[9] = HIBYTE(tmp.vid);
+ 725              		.loc 1 279 34 view .LVU259
+ 726 0016 0C0A     		lsrs	r4, r1, #8
+ 281:../application/Src/usb_hw.c **** 	Composite_DeviceDescriptor[11] = HIBYTE(tmp.pid);
+ 727              		.loc 1 281 35 view .LVU260
+ 728 0018 100A     		lsrs	r0, r2, #8
+ 279:../application/Src/usb_hw.c **** 	Composite_DeviceDescriptor[9] = HIBYTE(tmp.vid);
+ 729              		.loc 1 279 34 view .LVU261
+ 730 001a 5C72     		strb	r4, [r3, #9]
+ 278:../application/Src/usb_hw.c **** 	Composite_DeviceDescriptor[9] = HIBYTE(tmp.vid);
+ 731              		.loc 1 278 35 view .LVU262
+ 732 001c 1972     		strb	r1, [r3, #8]
+ 279:../application/Src/usb_hw.c **** 	Composite_DeviceDescriptor[9] = HIBYTE(tmp.vid);
+ 733              		.loc 1 279 2 is_stmt 1 view .LVU263
+ 280:../application/Src/usb_hw.c **** 	Composite_DeviceDescriptor[11] = HIBYTE(tmp.pid);
+ 734              		.loc 1 280 2 view .LVU264
+ 280:../application/Src/usb_hw.c **** 	Composite_DeviceDescriptor[11] = HIBYTE(tmp.pid);
+ 735              		.loc 1 280 35 is_stmt 0 view .LVU265
+ 736 001e 9A72     		strb	r2, [r3, #10]
+ 737              		.loc 1 281 2 is_stmt 1 view .LVU266
+ 738              		.loc 1 281 35 is_stmt 0 view .LVU267
+ 739 0020 D872     		strb	r0, [r3, #11]
+ 282:../application/Src/usb_hw.c **** }
+ 740              		.loc 1 282 1 view .LVU268
+ 741 0022 0DF5627D 		add	sp, sp, #904
+ARM GAS  /tmp/cckrPG3V.s 			page 22
+
+
+ 742              	.LCFI15:
+ 743              		.cfi_def_cfa_offset 8
+ 744              		@ sp needed
+ 745 0026 10BD     		pop	{r4, pc}
+ 746              	.L55:
+ 747              		.align	2
+ 748              	.L54:
+ 749 0028 00000000 		.word	Composite_DeviceDescriptor
+ 750              		.cfi_endproc
+ 751              	.LFE36:
+ 753              		.section	.text.Get_ReportDesc,"ax",%progbits
+ 754              		.align	1
+ 755              		.p2align 2,,3
+ 756              		.global	Get_ReportDesc
+ 757              		.syntax unified
+ 758              		.thumb
+ 759              		.thumb_func
+ 760              		.fpu softvfp
+ 762              	Get_ReportDesc:
+ 763              	.LFB37:
+ 283:../application/Src/usb_hw.c **** 
+ 284:../application/Src/usb_hw.c **** /*******************************************************************************
+ 285:../application/Src/usb_hw.c **** * Function Name  : Get_ReportDesc.
+ 286:../application/Src/usb_hw.c **** * Description    : Change VID and PID.
+ 287:../application/Src/usb_hw.c **** * Input          : None.
+ 288:../application/Src/usb_hw.c **** * Output         : None.
+ 289:../application/Src/usb_hw.c **** * Return         : Report size.
+ 290:../application/Src/usb_hw.c **** *******************************************************************************/
+ 291:../application/Src/usb_hw.c **** uint8_t Get_ReportDesc(void)
+ 292:../application/Src/usb_hw.c **** {
+ 764              		.loc 1 292 1 is_stmt 1 view -0
+ 765              		.cfi_startproc
+ 766              		@ args = 0, pretend = 0, frame = 8
+ 767              		@ frame_needed = 0, uses_anonymous_args = 0
+ 293:../application/Src/usb_hw.c **** 	app_config_t tmp_app_config;
+ 768              		.loc 1 293 2 view .LVU270
+ 294:../application/Src/usb_hw.c **** 	uint16_t i = 0;
+ 769              		.loc 1 294 2 view .LVU271
+ 770              	.LVL32:
+ 295:../application/Src/usb_hw.c **** 	
+ 296:../application/Src/usb_hw.c **** 	AppConfigGet(&tmp_app_config);
+ 771              		.loc 1 296 2 view .LVU272
+ 292:../application/Src/usb_hw.c **** 	app_config_t tmp_app_config;
+ 772              		.loc 1 292 1 is_stmt 0 view .LVU273
+ 773 0000 2DE9F04F 		push	{r4, r5, r6, r7, r8, r9, r10, fp, lr}
+ 774              	.LCFI16:
+ 775              		.cfi_def_cfa_offset 36
+ 776              		.cfi_offset 4, -36
+ 777              		.cfi_offset 5, -32
+ 778              		.cfi_offset 6, -28
+ 779              		.cfi_offset 7, -24
+ 780              		.cfi_offset 8, -20
+ 781              		.cfi_offset 9, -16
+ 782              		.cfi_offset 10, -12
+ 783              		.cfi_offset 11, -8
+ 784              		.cfi_offset 14, -4
+ 785 0004 83B0     		sub	sp, sp, #12
+ARM GAS  /tmp/cckrPG3V.s 			page 23
+
+
+ 786              	.LCFI17:
+ 787              		.cfi_def_cfa_offset 48
+ 788              		.loc 1 296 2 view .LVU274
+ 789 0006 6846     		mov	r0, sp
+ 790 0008 FFF7FEFF 		bl	AppConfigGet
+ 791              	.LVL33:
+ 297:../application/Src/usb_hw.c **** 	
+ 298:../application/Src/usb_hw.c **** 	// ---- Header ---- //
+ 299:../application/Src/usb_hw.c **** 	JoystickHID_ReportDescriptor[i++] = 0x05;												// User Page
+ 792              		.loc 1 299 2 is_stmt 1 view .LVU275
+ 300:../application/Src/usb_hw.c **** 	JoystickHID_ReportDescriptor[i++] = 0x01;												// (Generic Desktop)
+ 793              		.loc 1 300 2 view .LVU276
+ 301:../application/Src/usb_hw.c **** 	JoystickHID_ReportDescriptor[i++] = 0x09;												// Usage
+ 794              		.loc 1 301 2 view .LVU277
+ 302:../application/Src/usb_hw.c **** 	JoystickHID_ReportDescriptor[i++] = 0x04;												// (Joystick)
+ 795              		.loc 1 302 2 view .LVU278
+ 303:../application/Src/usb_hw.c **** 	JoystickHID_ReportDescriptor[i++] = 0xA1;												// Collection
+ 796              		.loc 1 303 2 view .LVU279
+ 304:../application/Src/usb_hw.c **** 	JoystickHID_ReportDescriptor[i++] = 0x01;												// (Application)
+ 797              		.loc 1 304 2 view .LVU280
+ 305:../application/Src/usb_hw.c **** 	JoystickHID_ReportDescriptor[i++] = 0x85;												// Report ID
+ 798              		.loc 1 305 2 view .LVU281
+ 306:../application/Src/usb_hw.c **** 	JoystickHID_ReportDescriptor[i++] = REPORT_ID_JOY;							// (REPORT_ID_JOY)
+ 799              		.loc 1 306 2 view .LVU282
+ 299:../application/Src/usb_hw.c **** 	JoystickHID_ReportDescriptor[i++] = 0x01;												// (Generic Desktop)
+ 800              		.loc 1 299 36 is_stmt 0 view .LVU283
+ 801 000c BC4B     		ldr	r3, .L105
+ 802 000e BD48     		ldr	r0, .L105+4
+ 803 0010 BD49     		ldr	r1, .L105+8
+ 307:../application/Src/usb_hw.c **** 
+ 308:../application/Src/usb_hw.c **** 	// --- Buttons section --- //
+ 309:../application/Src/usb_hw.c **** 	if (tmp_app_config.buttons_cnt > 0)
+ 804              		.loc 1 309 20 view .LVU284
+ 805 0012 9DF80220 		ldrb	r2, [sp, #2]	@ zero_extendqisi2
+ 299:../application/Src/usb_hw.c **** 	JoystickHID_ReportDescriptor[i++] = 0x01;												// (Generic Desktop)
+ 806              		.loc 1 299 36 view .LVU285
+ 807 0016 1860     		str	r0, [r3]	@ unaligned
+ 808 0018 5960     		str	r1, [r3, #4]	@ unaligned
+ 809              		.loc 1 309 2 is_stmt 1 view .LVU286
+ 810              		.loc 1 309 5 is_stmt 0 view .LVU287
+ 811 001a 002A     		cmp	r2, #0
+ 812 001c 00F05D81 		beq	.L70
+ 310:../application/Src/usb_hw.c **** 	{
+ 311:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0x05;												// Usage Page
+ 813              		.loc 1 311 3 is_stmt 1 view .LVU288
+ 814              	.LVL34:
+ 312:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0x09;												// (Button)
+ 815              		.loc 1 312 3 view .LVU289
+ 313:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0x19;												// Usage Minimum
+ 816              		.loc 1 313 3 view .LVU290
+ 314:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0x01;												// (Button 1)
+ 817              		.loc 1 314 3 view .LVU291
+ 315:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0x29;												// Usage Maximum
+ 316:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = tmp_app_config.buttons_cnt;	
+ 317:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0x15;												// Logical Minimum
+ 318:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0x00;												// (0)
+ 319:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0x25;												// Logical Maximum
+ARM GAS  /tmp/cckrPG3V.s 			page 24
+
+
+ 320:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0x01;												// (1)
+ 321:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0x75;												// Report Size
+ 322:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0x01;												// (1)
+ 323:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0x95;												// Report Count
+ 324:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = ((tmp_app_config.buttons_cnt - 1)/8 + 1) * 8;	
+ 325:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0x81;												// Input
+ 818              		.loc 1 325 37 is_stmt 0 view .LVU292
+ 819 0020 8120     		movs	r0, #129
+ 326:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0x02;												// (Data, Var, Abs)
+ 820              		.loc 1 326 37 view .LVU293
+ 821 0022 0221     		movs	r1, #2
+ 822 0024 1926     		movs	r6, #25
+ 823 0026 1824     		movs	r4, #24
+ 316:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0x15;												// Logical Minimum
+ 824              		.loc 1 316 37 view .LVU294
+ 825 0028 5A73     		strb	r2, [r3, #13]
+ 324:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0x81;												// Input
+ 826              		.loc 1 324 68 view .LVU295
+ 827 002a 013A     		subs	r2, r2, #1
+ 324:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0x81;												// Input
+ 828              		.loc 1 324 75 view .LVU296
+ 829 002c 22F00702 		bic	r2, r2, #7
+ 318:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0x25;												// Logical Maximum
+ 830              		.loc 1 318 37 view .LVU297
+ 831 0030 0025     		movs	r5, #0
+ 324:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0x81;												// Input
+ 832              		.loc 1 324 37 view .LVU298
+ 833 0032 0832     		adds	r2, r2, #8
+ 834 0034 5A75     		strb	r2, [r3, #21]
+ 319:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0x01;												// (1)
+ 835              		.loc 1 319 37 view .LVU299
+ 836 0036 B54A     		ldr	r2, .L105+12
+ 315:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = tmp_app_config.buttons_cnt;	
+ 837              		.loc 1 315 37 view .LVU300
+ 838 0038 4FF0290E 		mov	lr, #41
+ 317:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0x00;												// (0)
+ 839              		.loc 1 317 37 view .LVU301
+ 840 003c 4FF0150C 		mov	ip, #21
+ 323:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = ((tmp_app_config.buttons_cnt - 1)/8 + 1) * 8;	
+ 841              		.loc 1 323 37 view .LVU302
+ 842 0040 9527     		movs	r7, #149
+ 325:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0x02;												// (Data, Var, Abs)
+ 843              		.loc 1 325 37 view .LVU303
+ 844 0042 9875     		strb	r0, [r3, #22]
+ 845              		.loc 1 326 37 view .LVU304
+ 846 0044 D975     		strb	r1, [r3, #23]
+ 319:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0x01;												// (1)
+ 847              		.loc 1 319 37 view .LVU305
+ 848 0046 1A61     		str	r2, [r3, #16]	@ unaligned
+ 849              		.loc 1 326 37 view .LVU306
+ 850 0048 3046     		mov	r0, r6
+ 851              		.loc 1 326 33 view .LVU307
+ 852 004a 2146     		mov	r1, r4
+ 853              		.loc 1 326 37 view .LVU308
+ 854 004c 1A22     		movs	r2, #26
+ 318:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0x25;												// Logical Maximum
+ 855              		.loc 1 318 37 view .LVU309
+ARM GAS  /tmp/cckrPG3V.s 			page 25
+
+
+ 856 004e DD73     		strb	r5, [r3, #15]
+ 311:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0x09;												// (Button)
+ 857              		.loc 1 311 37 view .LVU310
+ 858 0050 AF4D     		ldr	r5, .L105+16
+ 315:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = tmp_app_config.buttons_cnt;	
+ 859              		.loc 1 315 37 view .LVU311
+ 860 0052 83F80CE0 		strb	lr, [r3, #12]
+ 317:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0x00;												// (0)
+ 861              		.loc 1 317 37 view .LVU312
+ 862 0056 83F80EC0 		strb	ip, [r3, #14]
+ 323:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = ((tmp_app_config.buttons_cnt - 1)/8 + 1) * 8;	
+ 863              		.loc 1 323 37 view .LVU313
+ 864 005a 1F75     		strb	r7, [r3, #20]
+ 311:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0x09;												// (Button)
+ 865              		.loc 1 311 37 view .LVU314
+ 866 005c 9D60     		str	r5, [r3, #8]	@ unaligned
+ 315:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = tmp_app_config.buttons_cnt;	
+ 867              		.loc 1 315 3 is_stmt 1 view .LVU315
+ 868              	.LVL35:
+ 316:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0x15;												// Logical Minimum
+ 869              		.loc 1 316 3 view .LVU316
+ 317:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0x00;												// (0)
+ 870              		.loc 1 317 3 view .LVU317
+ 318:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0x25;												// Logical Maximum
+ 871              		.loc 1 318 3 view .LVU318
+ 319:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0x01;												// (1)
+ 872              		.loc 1 319 3 view .LVU319
+ 320:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0x75;												// Report Size
+ 873              		.loc 1 320 3 view .LVU320
+ 321:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0x01;												// (1)
+ 874              		.loc 1 321 3 view .LVU321
+ 322:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0x95;												// Report Count
+ 875              		.loc 1 322 3 view .LVU322
+ 323:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = ((tmp_app_config.buttons_cnt - 1)/8 + 1) * 8;	
+ 876              		.loc 1 323 3 view .LVU323
+ 324:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0x81;												// Input
+ 877              		.loc 1 324 3 view .LVU324
+ 325:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0x02;												// (Data, Var, Abs)
+ 878              		.loc 1 325 3 view .LVU325
+ 879              		.loc 1 326 3 view .LVU326
+ 880              	.L57:
+ 327:../application/Src/usb_hw.c **** 	}
+ 328:../application/Src/usb_hw.c **** 	
+ 329:../application/Src/usb_hw.c **** 	// --- Axis section --- //
+ 330:../application/Src/usb_hw.c **** 	if (tmp_app_config.axis_cnt > 0)
+ 881              		.loc 1 330 2 view .LVU327
+ 882              		.loc 1 330 20 is_stmt 0 view .LVU328
+ 883 005e 9DF80150 		ldrb	r5, [sp, #1]	@ zero_extendqisi2
+ 884              		.loc 1 330 5 view .LVU329
+ 885 0062 002D     		cmp	r5, #0
+ 886 0064 00F09680 		beq	.L58
+ 331:../application/Src/usb_hw.c **** 	{	
+ 332:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0x05;												// User Page
+ 887              		.loc 1 332 3 is_stmt 1 view .LVU330
+ 888              		.loc 1 332 37 is_stmt 0 view .LVU331
+ 889 0068 0521     		movs	r1, #5
+ 333:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0x01;												// (Generic Desktop)	
+ARM GAS  /tmp/cckrPG3V.s 			page 26
+
+
+ 890              		.loc 1 333 37 view .LVU332
+ 891 006a 0120     		movs	r0, #1
+ 332:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0x01;												// (Generic Desktop)	
+ 892              		.loc 1 332 37 view .LVU333
+ 893 006c 1955     		strb	r1, [r3, r4]
+ 894              		.loc 1 333 3 is_stmt 1 view .LVU334
+ 895              	.LBB46:
+ 334:../application/Src/usb_hw.c **** 		for (uint8_t axis = 0; axis < 6; axis++)
+ 335:../application/Src/usb_hw.c **** 		{
+ 336:../application/Src/usb_hw.c **** 			if (tmp_app_config.axis & (1<<axis))
+ 896              		.loc 1 336 22 is_stmt 0 view .LVU335
+ 897 006e 9DF80010 		ldrb	r1, [sp]	@ zero_extendqisi2
+ 898              	.LBE46:
+ 333:../application/Src/usb_hw.c **** 		for (uint8_t axis = 0; axis < 6; axis++)
+ 899              		.loc 1 333 37 view .LVU336
+ 900 0072 9855     		strb	r0, [r3, r6]
+ 334:../application/Src/usb_hw.c **** 		for (uint8_t axis = 0; axis < 6; axis++)
+ 901              		.loc 1 334 3 is_stmt 1 view .LVU337
+ 902              	.LBB47:
+ 334:../application/Src/usb_hw.c **** 		for (uint8_t axis = 0; axis < 6; axis++)
+ 903              		.loc 1 334 8 view .LVU338
+ 904              	.LVL36:
+ 334:../application/Src/usb_hw.c **** 		for (uint8_t axis = 0; axis < 6; axis++)
+ 905              		.loc 1 334 26 view .LVU339
+ 906              		.loc 1 336 4 view .LVU340
+ 907              		.loc 1 336 7 is_stmt 0 view .LVU341
+ 908 0074 CE07     		lsls	r6, r1, #31
+ 909 0076 07D5     		bpl	.L59
+ 337:../application/Src/usb_hw.c **** 			{
+ 338:../application/Src/usb_hw.c **** 				JoystickHID_ReportDescriptor[i++] = 0x09;										// Usage
+ 910              		.loc 1 338 5 is_stmt 1 view .LVU342
+ 911              		.loc 1 338 39 is_stmt 0 view .LVU343
+ 912 0078 0926     		movs	r6, #9
+ 339:../application/Src/usb_hw.c **** 				JoystickHID_ReportDescriptor[i++] = 0x30 + axis;						// Main axis
+ 913              		.loc 1 339 39 view .LVU344
+ 914 007a 3024     		movs	r4, #48
+ 338:../application/Src/usb_hw.c **** 				JoystickHID_ReportDescriptor[i++] = 0x30 + axis;						// Main axis
+ 915              		.loc 1 338 35 view .LVU345
+ 916 007c 1018     		adds	r0, r2, r0
+ 338:../application/Src/usb_hw.c **** 				JoystickHID_ReportDescriptor[i++] = 0x30 + axis;						// Main axis
+ 917              		.loc 1 338 39 view .LVU346
+ 918 007e 9E54     		strb	r6, [r3, r2]
+ 338:../application/Src/usb_hw.c **** 				JoystickHID_ReportDescriptor[i++] = 0x30 + axis;						// Main axis
+ 919              		.loc 1 338 35 view .LVU347
+ 920 0080 80B2     		uxth	r0, r0
+ 921              	.LVL37:
+ 922              		.loc 1 339 5 is_stmt 1 view .LVU348
+ 923              		.loc 1 339 35 is_stmt 0 view .LVU349
+ 924 0082 0232     		adds	r2, r2, #2
+ 925 0084 92B2     		uxth	r2, r2
+ 926              	.LVL38:
+ 927              		.loc 1 339 39 view .LVU350
+ 928 0086 1C54     		strb	r4, [r3, r0]
+ 929              	.L59:
+ 334:../application/Src/usb_hw.c **** 		{
+ 930              		.loc 1 334 36 is_stmt 1 view .LVU351
+ 931              	.LVL39:
+ARM GAS  /tmp/cckrPG3V.s 			page 27
+
+
+ 334:../application/Src/usb_hw.c **** 		{
+ 932              		.loc 1 334 26 view .LVU352
+ 336:../application/Src/usb_hw.c **** 			{
+ 933              		.loc 1 336 4 view .LVU353
+ 336:../application/Src/usb_hw.c **** 			{
+ 934              		.loc 1 336 7 is_stmt 0 view .LVU354
+ 935 0088 8C07     		lsls	r4, r1, #30
+ 936 008a 07D5     		bpl	.L60
+ 338:../application/Src/usb_hw.c **** 				JoystickHID_ReportDescriptor[i++] = 0x30 + axis;						// Main axis
+ 937              		.loc 1 338 5 is_stmt 1 view .LVU355
+ 338:../application/Src/usb_hw.c **** 				JoystickHID_ReportDescriptor[i++] = 0x30 + axis;						// Main axis
+ 938              		.loc 1 338 39 is_stmt 0 view .LVU356
+ 939 008c 0926     		movs	r6, #9
+ 940              		.loc 1 339 39 view .LVU357
+ 941 008e 3124     		movs	r4, #49
+ 338:../application/Src/usb_hw.c **** 				JoystickHID_ReportDescriptor[i++] = 0x30 + axis;						// Main axis
+ 942              		.loc 1 338 35 view .LVU358
+ 943 0090 501C     		adds	r0, r2, #1
+ 338:../application/Src/usb_hw.c **** 				JoystickHID_ReportDescriptor[i++] = 0x30 + axis;						// Main axis
+ 944              		.loc 1 338 39 view .LVU359
+ 945 0092 9E54     		strb	r6, [r3, r2]
+ 338:../application/Src/usb_hw.c **** 				JoystickHID_ReportDescriptor[i++] = 0x30 + axis;						// Main axis
+ 946              		.loc 1 338 35 view .LVU360
+ 947 0094 80B2     		uxth	r0, r0
+ 948              	.LVL40:
+ 949              		.loc 1 339 5 is_stmt 1 view .LVU361
+ 950              		.loc 1 339 35 is_stmt 0 view .LVU362
+ 951 0096 0232     		adds	r2, r2, #2
+ 952 0098 92B2     		uxth	r2, r2
+ 953              	.LVL41:
+ 954              		.loc 1 339 39 view .LVU363
+ 955 009a 1C54     		strb	r4, [r3, r0]
+ 956              	.L60:
+ 334:../application/Src/usb_hw.c **** 		{
+ 957              		.loc 1 334 36 is_stmt 1 view .LVU364
+ 958              	.LVL42:
+ 334:../application/Src/usb_hw.c **** 		{
+ 959              		.loc 1 334 26 view .LVU365
+ 336:../application/Src/usb_hw.c **** 			{
+ 960              		.loc 1 336 4 view .LVU366
+ 336:../application/Src/usb_hw.c **** 			{
+ 961              		.loc 1 336 7 is_stmt 0 view .LVU367
+ 962 009c 4807     		lsls	r0, r1, #29
+ 963 009e 07D5     		bpl	.L61
+ 338:../application/Src/usb_hw.c **** 				JoystickHID_ReportDescriptor[i++] = 0x30 + axis;						// Main axis
+ 964              		.loc 1 338 5 is_stmt 1 view .LVU368
+ 338:../application/Src/usb_hw.c **** 				JoystickHID_ReportDescriptor[i++] = 0x30 + axis;						// Main axis
+ 965              		.loc 1 338 39 is_stmt 0 view .LVU369
+ 966 00a0 0926     		movs	r6, #9
+ 967              		.loc 1 339 39 view .LVU370
+ 968 00a2 3224     		movs	r4, #50
+ 338:../application/Src/usb_hw.c **** 				JoystickHID_ReportDescriptor[i++] = 0x30 + axis;						// Main axis
+ 969              		.loc 1 338 35 view .LVU371
+ 970 00a4 501C     		adds	r0, r2, #1
+ 338:../application/Src/usb_hw.c **** 				JoystickHID_ReportDescriptor[i++] = 0x30 + axis;						// Main axis
+ 971              		.loc 1 338 39 view .LVU372
+ 972 00a6 9E54     		strb	r6, [r3, r2]
+ARM GAS  /tmp/cckrPG3V.s 			page 28
+
+
+ 338:../application/Src/usb_hw.c **** 				JoystickHID_ReportDescriptor[i++] = 0x30 + axis;						// Main axis
+ 973              		.loc 1 338 35 view .LVU373
+ 974 00a8 80B2     		uxth	r0, r0
+ 975              	.LVL43:
+ 976              		.loc 1 339 5 is_stmt 1 view .LVU374
+ 977              		.loc 1 339 35 is_stmt 0 view .LVU375
+ 978 00aa 0232     		adds	r2, r2, #2
+ 979 00ac 92B2     		uxth	r2, r2
+ 980              	.LVL44:
+ 981              		.loc 1 339 39 view .LVU376
+ 982 00ae 1C54     		strb	r4, [r3, r0]
+ 983              	.L61:
+ 334:../application/Src/usb_hw.c **** 		{
+ 984              		.loc 1 334 36 is_stmt 1 view .LVU377
+ 985              	.LVL45:
+ 334:../application/Src/usb_hw.c **** 		{
+ 986              		.loc 1 334 26 view .LVU378
+ 336:../application/Src/usb_hw.c **** 			{
+ 987              		.loc 1 336 4 view .LVU379
+ 336:../application/Src/usb_hw.c **** 			{
+ 988              		.loc 1 336 7 is_stmt 0 view .LVU380
+ 989 00b0 0F07     		lsls	r7, r1, #28
+ 990 00b2 07D5     		bpl	.L62
+ 338:../application/Src/usb_hw.c **** 				JoystickHID_ReportDescriptor[i++] = 0x30 + axis;						// Main axis
+ 991              		.loc 1 338 5 is_stmt 1 view .LVU381
+ 338:../application/Src/usb_hw.c **** 				JoystickHID_ReportDescriptor[i++] = 0x30 + axis;						// Main axis
+ 992              		.loc 1 338 39 is_stmt 0 view .LVU382
+ 993 00b4 0926     		movs	r6, #9
+ 994              		.loc 1 339 39 view .LVU383
+ 995 00b6 3324     		movs	r4, #51
+ 338:../application/Src/usb_hw.c **** 				JoystickHID_ReportDescriptor[i++] = 0x30 + axis;						// Main axis
+ 996              		.loc 1 338 35 view .LVU384
+ 997 00b8 501C     		adds	r0, r2, #1
+ 338:../application/Src/usb_hw.c **** 				JoystickHID_ReportDescriptor[i++] = 0x30 + axis;						// Main axis
+ 998              		.loc 1 338 39 view .LVU385
+ 999 00ba 9E54     		strb	r6, [r3, r2]
+ 338:../application/Src/usb_hw.c **** 				JoystickHID_ReportDescriptor[i++] = 0x30 + axis;						// Main axis
+ 1000              		.loc 1 338 35 view .LVU386
+ 1001 00bc 80B2     		uxth	r0, r0
+ 1002              	.LVL46:
+ 1003              		.loc 1 339 5 is_stmt 1 view .LVU387
+ 1004              		.loc 1 339 35 is_stmt 0 view .LVU388
+ 1005 00be 0232     		adds	r2, r2, #2
+ 1006 00c0 92B2     		uxth	r2, r2
+ 1007              	.LVL47:
+ 1008              		.loc 1 339 39 view .LVU389
+ 1009 00c2 1C54     		strb	r4, [r3, r0]
+ 1010              	.L62:
+ 334:../application/Src/usb_hw.c **** 		{
+ 1011              		.loc 1 334 36 is_stmt 1 view .LVU390
+ 1012              	.LVL48:
+ 334:../application/Src/usb_hw.c **** 		{
+ 1013              		.loc 1 334 26 view .LVU391
+ 336:../application/Src/usb_hw.c **** 			{
+ 1014              		.loc 1 336 4 view .LVU392
+ 336:../application/Src/usb_hw.c **** 			{
+ 1015              		.loc 1 336 7 is_stmt 0 view .LVU393
+ARM GAS  /tmp/cckrPG3V.s 			page 29
+
+
+ 1016 00c4 CE06     		lsls	r6, r1, #27
+ 1017 00c6 07D5     		bpl	.L63
+ 338:../application/Src/usb_hw.c **** 				JoystickHID_ReportDescriptor[i++] = 0x30 + axis;						// Main axis
+ 1018              		.loc 1 338 5 is_stmt 1 view .LVU394
+ 338:../application/Src/usb_hw.c **** 				JoystickHID_ReportDescriptor[i++] = 0x30 + axis;						// Main axis
+ 1019              		.loc 1 338 39 is_stmt 0 view .LVU395
+ 1020 00c8 0926     		movs	r6, #9
+ 1021              		.loc 1 339 39 view .LVU396
+ 1022 00ca 3424     		movs	r4, #52
+ 338:../application/Src/usb_hw.c **** 				JoystickHID_ReportDescriptor[i++] = 0x30 + axis;						// Main axis
+ 1023              		.loc 1 338 35 view .LVU397
+ 1024 00cc 501C     		adds	r0, r2, #1
+ 338:../application/Src/usb_hw.c **** 				JoystickHID_ReportDescriptor[i++] = 0x30 + axis;						// Main axis
+ 1025              		.loc 1 338 39 view .LVU398
+ 1026 00ce 9E54     		strb	r6, [r3, r2]
+ 338:../application/Src/usb_hw.c **** 				JoystickHID_ReportDescriptor[i++] = 0x30 + axis;						// Main axis
+ 1027              		.loc 1 338 35 view .LVU399
+ 1028 00d0 80B2     		uxth	r0, r0
+ 1029              	.LVL49:
+ 1030              		.loc 1 339 5 is_stmt 1 view .LVU400
+ 1031              		.loc 1 339 35 is_stmt 0 view .LVU401
+ 1032 00d2 0232     		adds	r2, r2, #2
+ 1033 00d4 92B2     		uxth	r2, r2
+ 1034              	.LVL50:
+ 1035              		.loc 1 339 39 view .LVU402
+ 1036 00d6 1C54     		strb	r4, [r3, r0]
+ 1037              	.L63:
+ 334:../application/Src/usb_hw.c **** 		{
+ 1038              		.loc 1 334 36 is_stmt 1 view .LVU403
+ 1039              	.LVL51:
+ 334:../application/Src/usb_hw.c **** 		{
+ 1040              		.loc 1 334 26 view .LVU404
+ 336:../application/Src/usb_hw.c **** 			{
+ 1041              		.loc 1 336 4 view .LVU405
+ 336:../application/Src/usb_hw.c **** 			{
+ 1042              		.loc 1 336 7 is_stmt 0 view .LVU406
+ 1043 00d8 8C06     		lsls	r4, r1, #26
+ 1044 00da 07D5     		bpl	.L64
+ 338:../application/Src/usb_hw.c **** 				JoystickHID_ReportDescriptor[i++] = 0x30 + axis;						// Main axis
+ 1045              		.loc 1 338 5 is_stmt 1 view .LVU407
+ 338:../application/Src/usb_hw.c **** 				JoystickHID_ReportDescriptor[i++] = 0x30 + axis;						// Main axis
+ 1046              		.loc 1 338 39 is_stmt 0 view .LVU408
+ 1047 00dc 0926     		movs	r6, #9
+ 1048              		.loc 1 339 39 view .LVU409
+ 1049 00de 3524     		movs	r4, #53
+ 338:../application/Src/usb_hw.c **** 				JoystickHID_ReportDescriptor[i++] = 0x30 + axis;						// Main axis
+ 1050              		.loc 1 338 35 view .LVU410
+ 1051 00e0 501C     		adds	r0, r2, #1
+ 338:../application/Src/usb_hw.c **** 				JoystickHID_ReportDescriptor[i++] = 0x30 + axis;						// Main axis
+ 1052              		.loc 1 338 39 view .LVU411
+ 1053 00e2 9E54     		strb	r6, [r3, r2]
+ 338:../application/Src/usb_hw.c **** 				JoystickHID_ReportDescriptor[i++] = 0x30 + axis;						// Main axis
+ 1054              		.loc 1 338 35 view .LVU412
+ 1055 00e4 80B2     		uxth	r0, r0
+ 1056              	.LVL52:
+ 1057              		.loc 1 339 5 is_stmt 1 view .LVU413
+ 1058              		.loc 1 339 35 is_stmt 0 view .LVU414
+ARM GAS  /tmp/cckrPG3V.s 			page 30
+
+
+ 1059 00e6 0232     		adds	r2, r2, #2
+ 1060 00e8 92B2     		uxth	r2, r2
+ 1061              	.LVL53:
+ 1062              		.loc 1 339 39 view .LVU415
+ 1063 00ea 1C54     		strb	r4, [r3, r0]
+ 1064              	.L64:
+ 334:../application/Src/usb_hw.c **** 		{
+ 1065              		.loc 1 334 36 is_stmt 1 discriminator 2 view .LVU416
+ 1066              	.LVL54:
+ 334:../application/Src/usb_hw.c **** 		{
+ 1067              		.loc 1 334 26 discriminator 2 view .LVU417
+ 334:../application/Src/usb_hw.c **** 		{
+ 1068              		.loc 1 334 26 is_stmt 0 discriminator 2 view .LVU418
+ 1069              	.LBE47:
+ 1070              	.LBB48:
+ 340:../application/Src/usb_hw.c **** 			}
+ 341:../application/Src/usb_hw.c **** 		}
+ 342:../application/Src/usb_hw.c **** 		for (uint8_t axis = 6; axis < 8; axis++)
+ 1071              		.loc 1 342 26 is_stmt 1 discriminator 2 view .LVU419
+ 343:../application/Src/usb_hw.c **** 		{
+ 344:../application/Src/usb_hw.c **** 			if (tmp_app_config.axis & (1<<axis))
+ 1072              		.loc 1 344 4 discriminator 2 view .LVU420
+ 1073              		.loc 1 344 7 is_stmt 0 discriminator 2 view .LVU421
+ 1074 00ec 4806     		lsls	r0, r1, #25
+ 1075 00ee 07D5     		bpl	.L65
+ 345:../application/Src/usb_hw.c **** 			{
+ 346:../application/Src/usb_hw.c **** 				JoystickHID_ReportDescriptor[i++] = 0x09;										// Usage
+ 1076              		.loc 1 346 5 is_stmt 1 view .LVU422
+ 1077              		.loc 1 346 39 is_stmt 0 view .LVU423
+ 1078 00f0 0926     		movs	r6, #9
+ 347:../application/Src/usb_hw.c **** 				JoystickHID_ReportDescriptor[i++] = 0x36;										// Slider axis
+ 1079              		.loc 1 347 39 view .LVU424
+ 1080 00f2 3624     		movs	r4, #54
+ 346:../application/Src/usb_hw.c **** 				JoystickHID_ReportDescriptor[i++] = 0x36;										// Slider axis
+ 1081              		.loc 1 346 35 view .LVU425
+ 1082 00f4 501C     		adds	r0, r2, #1
+ 346:../application/Src/usb_hw.c **** 				JoystickHID_ReportDescriptor[i++] = 0x36;										// Slider axis
+ 1083              		.loc 1 346 39 view .LVU426
+ 1084 00f6 9E54     		strb	r6, [r3, r2]
+ 346:../application/Src/usb_hw.c **** 				JoystickHID_ReportDescriptor[i++] = 0x36;										// Slider axis
+ 1085              		.loc 1 346 35 view .LVU427
+ 1086 00f8 80B2     		uxth	r0, r0
+ 1087              	.LVL55:
+ 1088              		.loc 1 347 5 is_stmt 1 view .LVU428
+ 1089              		.loc 1 347 35 is_stmt 0 view .LVU429
+ 1090 00fa 0232     		adds	r2, r2, #2
+ 1091 00fc 92B2     		uxth	r2, r2
+ 1092              	.LVL56:
+ 1093              		.loc 1 347 39 view .LVU430
+ 1094 00fe 1C54     		strb	r4, [r3, r0]
+ 1095              	.L65:
+ 342:../application/Src/usb_hw.c **** 		{
+ 1096              		.loc 1 342 36 is_stmt 1 view .LVU431
+ 1097              	.LVL57:
+ 342:../application/Src/usb_hw.c **** 		{
+ 1098              		.loc 1 342 26 view .LVU432
+ 344:../application/Src/usb_hw.c **** 			{
+ARM GAS  /tmp/cckrPG3V.s 			page 31
+
+
+ 1099              		.loc 1 344 4 view .LVU433
+ 344:../application/Src/usb_hw.c **** 			{
+ 1100              		.loc 1 344 7 is_stmt 0 view .LVU434
+ 1101 0100 C909     		lsrs	r1, r1, #7
+ 1102 0102 40F0F080 		bne	.L103
+ 1103              	.L66:
+ 342:../application/Src/usb_hw.c **** 		{
+ 1104              		.loc 1 342 36 is_stmt 1 view .LVU435
+ 1105              	.LVL58:
+ 342:../application/Src/usb_hw.c **** 		{
+ 1106              		.loc 1 342 26 view .LVU436
+ 1107              	.LBE48:
+ 348:../application/Src/usb_hw.c **** 			}
+ 349:../application/Src/usb_hw.c **** 		}
+ 350:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0x16;												// Logical Minimum
+ 1108              		.loc 1 350 3 view .LVU437
+ 1109              		.loc 1 350 37 is_stmt 0 view .LVU438
+ 1110 0106 1620     		movs	r0, #22
+ 351:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0x01;												// (-32767)
+ 1111              		.loc 1 351 37 view .LVU439
+ 1112 0108 4FF0010B 		mov	fp, #1
+ 352:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0x80;												// 
+ 1113              		.loc 1 352 37 view .LVU440
+ 1114 010c 4FF0800A 		mov	r10, #128
+ 353:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0x26;												// Logical Maximum
+ 1115              		.loc 1 353 37 view .LVU441
+ 1116 0110 4FF02609 		mov	r9, #38
+ 354:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0xFF;												// (32767)
+ 1117              		.loc 1 354 37 view .LVU442
+ 1118 0114 4FF0FF08 		mov	r8, #255
+ 355:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0x7F;												//
+ 1119              		.loc 1 355 37 view .LVU443
+ 1120 0118 4FF07F0E 		mov	lr, #127
+ 356:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0x75;												// Report Size
+ 1121              		.loc 1 356 37 view .LVU444
+ 1122 011c 4FF0750C 		mov	ip, #117
+ 357:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0x10;												// (16)		
+ 1123              		.loc 1 357 37 view .LVU445
+ 1124 0120 1027     		movs	r7, #16
+ 358:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0x95;												// Report count
+ 1125              		.loc 1 358 37 view .LVU446
+ 1126 0122 9526     		movs	r6, #149
+ 350:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0x01;												// (-32767)
+ 1127              		.loc 1 350 37 view .LVU447
+ 1128 0124 9854     		strb	r0, [r3, r2]
+ 350:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0x01;												// (-32767)
+ 1129              		.loc 1 350 33 view .LVU448
+ 1130 0126 02EB0B00 		add	r0, r2, fp
+ 351:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0x80;												// 
+ 1131              		.loc 1 351 33 view .LVU449
+ 1132 012a 80B2     		uxth	r0, r0
+ 351:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0x80;												// 
+ 1133              		.loc 1 351 37 view .LVU450
+ 1134 012c 03F800B0 		strb	fp, [r3, r0]
+ 351:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0x80;												// 
+ 1135              		.loc 1 351 33 view .LVU451
+ 1136 0130 901C     		adds	r0, r2, #2
+ARM GAS  /tmp/cckrPG3V.s 			page 32
+
+
+ 352:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0x26;												// Logical Maximum
+ 1137              		.loc 1 352 33 view .LVU452
+ 1138 0132 80B2     		uxth	r0, r0
+ 352:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0x26;												// Logical Maximum
+ 1139              		.loc 1 352 37 view .LVU453
+ 1140 0134 03F800A0 		strb	r10, [r3, r0]
+ 352:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0x26;												// Logical Maximum
+ 1141              		.loc 1 352 33 view .LVU454
+ 1142 0138 D01C     		adds	r0, r2, #3
+ 353:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0xFF;												// (32767)
+ 1143              		.loc 1 353 33 view .LVU455
+ 1144 013a 80B2     		uxth	r0, r0
+ 353:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0xFF;												// (32767)
+ 1145              		.loc 1 353 37 view .LVU456
+ 1146 013c 03F80090 		strb	r9, [r3, r0]
+ 353:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0xFF;												// (32767)
+ 1147              		.loc 1 353 33 view .LVU457
+ 1148 0140 101D     		adds	r0, r2, #4
+ 354:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0x7F;												//
+ 1149              		.loc 1 354 33 view .LVU458
+ 1150 0142 80B2     		uxth	r0, r0
+ 354:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0x7F;												//
+ 1151              		.loc 1 354 37 view .LVU459
+ 1152 0144 03F80080 		strb	r8, [r3, r0]
+ 354:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0x7F;												//
+ 1153              		.loc 1 354 33 view .LVU460
+ 1154 0148 501D     		adds	r0, r2, #5
+ 355:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0x75;												// Report Size
+ 1155              		.loc 1 355 33 view .LVU461
+ 1156 014a 80B2     		uxth	r0, r0
+ 355:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0x75;												// Report Size
+ 1157              		.loc 1 355 37 view .LVU462
+ 1158 014c 03F800E0 		strb	lr, [r3, r0]
+ 355:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0x75;												// Report Size
+ 1159              		.loc 1 355 33 view .LVU463
+ 1160 0150 901D     		adds	r0, r2, #6
+ 356:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0x10;												// (16)		
+ 1161              		.loc 1 356 33 view .LVU464
+ 1162 0152 80B2     		uxth	r0, r0
+ 356:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0x10;												// (16)		
+ 1163              		.loc 1 356 37 view .LVU465
+ 1164 0154 03F800C0 		strb	ip, [r3, r0]
+ 356:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0x10;												// (16)		
+ 1165              		.loc 1 356 33 view .LVU466
+ 1166 0158 D01D     		adds	r0, r2, #7
+ 357:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0x95;												// Report count
+ 1167              		.loc 1 357 33 view .LVU467
+ 1168 015a 80B2     		uxth	r0, r0
+ 357:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0x95;												// Report count
+ 1169              		.loc 1 357 37 view .LVU468
+ 1170 015c 1F54     		strb	r7, [r3, r0]
+ 357:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0x95;												// Report count
+ 1171              		.loc 1 357 33 view .LVU469
+ 1172 015e 02F10800 		add	r0, r2, #8
+ 1173              		.loc 1 358 33 view .LVU470
+ 1174 0162 80B2     		uxth	r0, r0
+ 1175              		.loc 1 358 37 view .LVU471
+ARM GAS  /tmp/cckrPG3V.s 			page 33
+
+
+ 1176 0164 1E54     		strb	r6, [r3, r0]
+ 1177              		.loc 1 358 33 view .LVU472
+ 1178 0166 02F10900 		add	r0, r2, #9
+ 359:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = tmp_app_config.axis_cnt;		
+ 1179              		.loc 1 359 33 view .LVU473
+ 1180 016a 80B2     		uxth	r0, r0
+ 1181              		.loc 1 359 37 view .LVU474
+ 1182 016c 1D54     		strb	r5, [r3, r0]
+ 360:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0x81;												// Input
+ 1183              		.loc 1 360 37 view .LVU475
+ 1184 016e 6FF07E05 		mvn	r5, #126
+ 359:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = tmp_app_config.axis_cnt;		
+ 1185              		.loc 1 359 33 view .LVU476
+ 1186 0172 02F10A00 		add	r0, r2, #10
+ 361:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0x02;												// (Data, Var, Abs)
+ 1187              		.loc 1 361 33 view .LVU477
+ 1188 0176 02F10C01 		add	r1, r2, #12
+ 351:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0x80;												// 
+ 1189              		.loc 1 351 3 is_stmt 1 view .LVU478
+ 1190              	.LVL59:
+ 352:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0x26;												// Logical Maximum
+ 1191              		.loc 1 352 3 view .LVU479
+ 353:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0xFF;												// (32767)
+ 1192              		.loc 1 353 3 view .LVU480
+ 354:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0x7F;												//
+ 1193              		.loc 1 354 3 view .LVU481
+ 355:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0x75;												// Report Size
+ 1194              		.loc 1 355 3 view .LVU482
+ 356:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0x10;												// (16)		
+ 1195              		.loc 1 356 3 view .LVU483
+ 357:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0x95;												// Report count
+ 1196              		.loc 1 357 3 view .LVU484
+ 358:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = tmp_app_config.axis_cnt;		
+ 1197              		.loc 1 358 3 view .LVU485
+ 359:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0x81;												// Input
+ 1198              		.loc 1 359 3 view .LVU486
+ 360:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0x02;												// (Data, Var, Abs)
+ 1199              		.loc 1 360 3 view .LVU487
+ 360:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0x02;												// (Data, Var, Abs)
+ 1200              		.loc 1 360 33 is_stmt 0 view .LVU488
+ 1201 017a 80B2     		uxth	r0, r0
+ 360:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0x02;												// (Data, Var, Abs)
+ 1202              		.loc 1 360 37 view .LVU489
+ 1203 017c 1D54     		strb	r5, [r3, r0]
+ 1204              		.loc 1 361 3 is_stmt 1 view .LVU490
+ 1205              	.LVL60:
+ 1206              		.loc 1 361 33 is_stmt 0 view .LVU491
+ 1207 017e 89B2     		uxth	r1, r1
+ 1208              	.LVL61:
+ 360:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0x02;												// (Data, Var, Abs)
+ 1209              		.loc 1 360 33 view .LVU492
+ 1210 0180 02F10B05 		add	r5, r2, #11
+ 1211 0184 02F10D00 		add	r0, r2, #13
+ 1212              		.loc 1 361 37 view .LVU493
+ 1213 0188 4FF00202 		mov	r2, #2
+ 1214              	.LVL62:
+ 1215              		.loc 1 361 37 view .LVU494
+ARM GAS  /tmp/cckrPG3V.s 			page 34
+
+
+ 1216 018c 0C46     		mov	r4, r1
+ 1217              		.loc 1 361 33 view .LVU495
+ 1218 018e ADB2     		uxth	r5, r5
+ 1219 0190 80B2     		uxth	r0, r0
+ 1220              	.LVL63:
+ 1221              		.loc 1 361 37 view .LVU496
+ 1222 0192 5A55     		strb	r2, [r3, r5]
+ 1223              	.LVL64:
+ 1224              	.L58:
+ 362:../application/Src/usb_hw.c **** 	}
+ 363:../application/Src/usb_hw.c **** 	
+ 364:../application/Src/usb_hw.c **** 	// --- POV section --- //
+ 365:../application/Src/usb_hw.c **** 	if (tmp_app_config.pov_cnt > 0)
+ 1225              		.loc 1 365 2 is_stmt 1 view .LVU497
+ 1226              		.loc 1 365 20 is_stmt 0 view .LVU498
+ 1227 0194 9DF80420 		ldrb	r2, [sp, #4]	@ zero_extendqisi2
+ 1228              		.loc 1 365 5 view .LVU499
+ 1229 0198 002A     		cmp	r2, #0
+ 1230 019a 00F09480 		beq	.L67
+ 366:../application/Src/usb_hw.c **** 	{
+ 367:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0x09;												// Usage
+ 1231              		.loc 1 367 3 is_stmt 1 view .LVU500
+ 1232              		.loc 1 367 37 is_stmt 0 view .LVU501
+ 1233 019e 4FF0090C 		mov	ip, #9
+ 368:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0x39;												// (Hat switch)
+ 369:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0x15;												// Logical Minimum
+ 370:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0x00;												// (0)
+ 371:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0x25;												// Logical Maximum
+ 372:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0x07;												// (7)
+ 373:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0x35;												// Physical Minimum
+ 374:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0x00;												// (0)
+ 375:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0x46;												// Physical Maximum
+ 376:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0x3B;												// (315)
+ 377:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0x01;												// (0)
+ 378:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0x65;												// Unit
+ 379:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0x12;												// (SI Rot:Angular Pos)
+ 380:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0x75;												// Report Size
+ 381:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0x08;												// (8)
+ 382:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0x95;												// Report Count
+ 383:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0x01;												// (1)			
+ 384:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0x81;												// Input
+ 385:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0x02;												// (Data, Var, Abs)
+ 1234              		.loc 1 385 37 view .LVU502
+ 1235 01a2 0225     		movs	r5, #2
+ 368:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0x39;												// (Hat switch)
+ 1236              		.loc 1 368 37 view .LVU503
+ 1237 01a4 3927     		movs	r7, #57
+ 369:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0x00;												// (0)
+ 1238              		.loc 1 369 37 view .LVU504
+ 1239 01a6 4FF0150B 		mov	fp, #21
+ 370:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0x25;												// Logical Maximum
+ 1240              		.loc 1 370 37 view .LVU505
+ 1241 01aa 4FF00008 		mov	r8, #0
+ 371:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0x07;												// (7)
+ 1242              		.loc 1 371 37 view .LVU506
+ 1243 01ae 4FF0250A 		mov	r10, #37
+ 372:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0x35;												// Physical Minimum
+ARM GAS  /tmp/cckrPG3V.s 			page 35
+
+
+ 1244              		.loc 1 372 37 view .LVU507
+ 1245 01b2 4FF00709 		mov	r9, #7
+ 367:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0x39;												// (Hat switch)
+ 1246              		.loc 1 367 37 view .LVU508
+ 1247 01b6 03F804C0 		strb	ip, [r3, r4]
+ 368:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0x15;												// Logical Minimum
+ 1248              		.loc 1 368 3 is_stmt 1 view .LVU509
+ 373:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0x00;												// (0)
+ 1249              		.loc 1 373 37 is_stmt 0 view .LVU510
+ 1250 01ba 4FF03504 		mov	r4, #53
+ 368:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0x15;												// Logical Minimum
+ 1251              		.loc 1 368 37 view .LVU511
+ 1252 01be 1F54     		strb	r7, [r3, r0]
+ 369:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0x00;												// (0)
+ 1253              		.loc 1 369 3 is_stmt 1 view .LVU512
+ 368:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0x15;												// Logical Minimum
+ 1254              		.loc 1 368 33 is_stmt 0 view .LVU513
+ 1255 01c0 4819     		adds	r0, r1, r5
+ 369:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0x00;												// (0)
+ 1256              		.loc 1 369 33 view .LVU514
+ 1257 01c2 80B2     		uxth	r0, r0
+ 369:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0x00;												// (0)
+ 1258              		.loc 1 369 37 view .LVU515
+ 1259 01c4 03F800B0 		strb	fp, [r3, r0]
+ 370:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0x25;												// Logical Maximum
+ 1260              		.loc 1 370 3 is_stmt 1 view .LVU516
+ 369:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0x00;												// (0)
+ 1261              		.loc 1 369 33 is_stmt 0 view .LVU517
+ 1262 01c8 C81C     		adds	r0, r1, #3
+ 370:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0x25;												// Logical Maximum
+ 1263              		.loc 1 370 33 view .LVU518
+ 1264 01ca 80B2     		uxth	r0, r0
+ 370:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0x25;												// Logical Maximum
+ 1265              		.loc 1 370 37 view .LVU519
+ 1266 01cc 03F80080 		strb	r8, [r3, r0]
+ 371:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0x07;												// (7)
+ 1267              		.loc 1 371 3 is_stmt 1 view .LVU520
+ 370:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0x25;												// Logical Maximum
+ 1268              		.loc 1 370 33 is_stmt 0 view .LVU521
+ 1269 01d0 081D     		adds	r0, r1, #4
+ 371:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0x07;												// (7)
+ 1270              		.loc 1 371 33 view .LVU522
+ 1271 01d2 80B2     		uxth	r0, r0
+ 371:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0x07;												// (7)
+ 1272              		.loc 1 371 37 view .LVU523
+ 1273 01d4 03F800A0 		strb	r10, [r3, r0]
+ 372:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0x35;												// Physical Minimum
+ 1274              		.loc 1 372 3 is_stmt 1 view .LVU524
+ 371:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0x07;												// (7)
+ 1275              		.loc 1 371 33 is_stmt 0 view .LVU525
+ 1276 01d8 481D     		adds	r0, r1, #5
+ 372:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0x35;												// Physical Minimum
+ 1277              		.loc 1 372 33 view .LVU526
+ 1278 01da 80B2     		uxth	r0, r0
+ 372:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0x35;												// Physical Minimum
+ 1279              		.loc 1 372 37 view .LVU527
+ 1280 01dc 03F80090 		strb	r9, [r3, r0]
+ARM GAS  /tmp/cckrPG3V.s 			page 36
+
+
+ 373:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0x00;												// (0)
+ 1281              		.loc 1 373 3 is_stmt 1 view .LVU528
+ 372:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0x35;												// Physical Minimum
+ 1282              		.loc 1 372 33 is_stmt 0 view .LVU529
+ 1283 01e0 881D     		adds	r0, r1, #6
+ 373:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0x00;												// (0)
+ 1284              		.loc 1 373 33 view .LVU530
+ 1285 01e2 80B2     		uxth	r0, r0
+ 373:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0x00;												// (0)
+ 1286              		.loc 1 373 37 view .LVU531
+ 1287 01e4 1C54     		strb	r4, [r3, r0]
+ 374:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0x46;												// Physical Maximum
+ 1288              		.loc 1 374 3 is_stmt 1 view .LVU532
+ 375:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0x3B;												// (315)
+ 1289              		.loc 1 375 37 is_stmt 0 view .LVU533
+ 1290 01e6 4FF04604 		mov	r4, #70
+ 373:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0x00;												// (0)
+ 1291              		.loc 1 373 33 view .LVU534
+ 1292 01ea 01EB0900 		add	r0, r1, r9
+ 374:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0x46;												// Physical Maximum
+ 1293              		.loc 1 374 33 view .LVU535
+ 1294 01ee 80B2     		uxth	r0, r0
+ 374:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0x46;												// Physical Maximum
+ 1295              		.loc 1 374 37 view .LVU536
+ 1296 01f0 03F80080 		strb	r8, [r3, r0]
+ 375:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0x3B;												// (315)
+ 1297              		.loc 1 375 3 is_stmt 1 view .LVU537
+ 374:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0x46;												// Physical Maximum
+ 1298              		.loc 1 374 33 is_stmt 0 view .LVU538
+ 1299 01f4 01F10800 		add	r0, r1, #8
+ 375:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0x3B;												// (315)
+ 1300              		.loc 1 375 33 view .LVU539
+ 1301 01f8 80B2     		uxth	r0, r0
+ 375:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0x3B;												// (315)
+ 1302              		.loc 1 375 37 view .LVU540
+ 1303 01fa 1C54     		strb	r4, [r3, r0]
+ 376:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0x01;												// (0)
+ 1304              		.loc 1 376 3 is_stmt 1 view .LVU541
+ 376:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0x01;												// (0)
+ 1305              		.loc 1 376 37 is_stmt 0 view .LVU542
+ 1306 01fc 4FF03B04 		mov	r4, #59
+ 377:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0x65;												// Unit
+ 1307              		.loc 1 377 37 view .LVU543
+ 1308 0200 4FF0010E 		mov	lr, #1
+ 375:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0x3B;												// (315)
+ 1309              		.loc 1 375 33 view .LVU544
+ 1310 0204 01EB0C00 		add	r0, r1, ip
+ 376:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0x01;												// (0)
+ 1311              		.loc 1 376 33 view .LVU545
+ 1312 0208 80B2     		uxth	r0, r0
+ 376:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0x01;												// (0)
+ 1313              		.loc 1 376 37 view .LVU546
+ 1314 020a 1C54     		strb	r4, [r3, r0]
+ 377:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0x65;												// Unit
+ 1315              		.loc 1 377 3 is_stmt 1 view .LVU547
+ 378:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0x12;												// (SI Rot:Angular Pos)
+ 1316              		.loc 1 378 37 is_stmt 0 view .LVU548
+ARM GAS  /tmp/cckrPG3V.s 			page 37
+
+
+ 1317 020c 4FF06504 		mov	r4, #101
+ 376:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0x01;												// (0)
+ 1318              		.loc 1 376 33 view .LVU549
+ 1319 0210 01F10A00 		add	r0, r1, #10
+ 377:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0x65;												// Unit
+ 1320              		.loc 1 377 33 view .LVU550
+ 1321 0214 80B2     		uxth	r0, r0
+ 377:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0x65;												// Unit
+ 1322              		.loc 1 377 37 view .LVU551
+ 1323 0216 03F800E0 		strb	lr, [r3, r0]
+ 378:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0x12;												// (SI Rot:Angular Pos)
+ 1324              		.loc 1 378 3 is_stmt 1 view .LVU552
+ 377:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0x65;												// Unit
+ 1325              		.loc 1 377 33 is_stmt 0 view .LVU553
+ 1326 021a 01F10B00 		add	r0, r1, #11
+ 378:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0x12;												// (SI Rot:Angular Pos)
+ 1327              		.loc 1 378 33 view .LVU554
+ 1328 021e 80B2     		uxth	r0, r0
+ 378:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0x12;												// (SI Rot:Angular Pos)
+ 1329              		.loc 1 378 37 view .LVU555
+ 1330 0220 1C54     		strb	r4, [r3, r0]
+ 379:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0x75;												// Report Size
+ 1331              		.loc 1 379 3 is_stmt 1 view .LVU556
+ 379:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0x75;												// Report Size
+ 1332              		.loc 1 379 37 is_stmt 0 view .LVU557
+ 1333 0222 4FF01204 		mov	r4, #18
+ 378:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0x12;												// (SI Rot:Angular Pos)
+ 1334              		.loc 1 378 33 view .LVU558
+ 1335 0226 01F10C00 		add	r0, r1, #12
+ 379:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0x75;												// Report Size
+ 1336              		.loc 1 379 33 view .LVU559
+ 1337 022a 80B2     		uxth	r0, r0
+ 379:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0x75;												// Report Size
+ 1338              		.loc 1 379 37 view .LVU560
+ 1339 022c 1C54     		strb	r4, [r3, r0]
+ 380:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0x08;												// (8)
+ 1340              		.loc 1 380 3 is_stmt 1 view .LVU561
+ 380:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0x08;												// (8)
+ 1341              		.loc 1 380 37 is_stmt 0 view .LVU562
+ 1342 022e 4FF07504 		mov	r4, #117
+ 379:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0x75;												// Report Size
+ 1343              		.loc 1 379 33 view .LVU563
+ 1344 0232 01F10D00 		add	r0, r1, #13
+ 380:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0x08;												// (8)
+ 1345              		.loc 1 380 33 view .LVU564
+ 1346 0236 80B2     		uxth	r0, r0
+ 380:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0x08;												// (8)
+ 1347              		.loc 1 380 37 view .LVU565
+ 1348 0238 1C54     		strb	r4, [r3, r0]
+ 381:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0x95;												// Report Count
+ 1349              		.loc 1 381 3 is_stmt 1 view .LVU566
+ 381:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0x95;												// Report Count
+ 1350              		.loc 1 381 37 is_stmt 0 view .LVU567
+ 1351 023a 4FF00804 		mov	r4, #8
+ 380:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0x08;												// (8)
+ 1352              		.loc 1 380 33 view .LVU568
+ 1353 023e 01F10E00 		add	r0, r1, #14
+ARM GAS  /tmp/cckrPG3V.s 			page 38
+
+
+ 381:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0x95;												// Report Count
+ 1354              		.loc 1 381 33 view .LVU569
+ 1355 0242 80B2     		uxth	r0, r0
+ 381:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0x95;												// Report Count
+ 1356              		.loc 1 381 37 view .LVU570
+ 1357 0244 1C54     		strb	r4, [r3, r0]
+ 382:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0x01;												// (1)			
+ 1358              		.loc 1 382 3 is_stmt 1 view .LVU571
+ 382:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0x01;												// (1)			
+ 1359              		.loc 1 382 37 is_stmt 0 view .LVU572
+ 1360 0246 6FF06A04 		mvn	r4, #106
+ 384:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0x02;												// (Data, Var, Abs)
+ 1361              		.loc 1 384 37 view .LVU573
+ 1362 024a 8126     		movs	r6, #129
+ 381:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0x95;												// Report Count
+ 1363              		.loc 1 381 33 view .LVU574
+ 1364 024c 01F10F00 		add	r0, r1, #15
+ 382:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0x01;												// (1)			
+ 1365              		.loc 1 382 33 view .LVU575
+ 1366 0250 80B2     		uxth	r0, r0
+ 382:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0x01;												// (1)			
+ 1367              		.loc 1 382 37 view .LVU576
+ 1368 0252 1C54     		strb	r4, [r3, r0]
+ 383:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0x81;												// Input
+ 1369              		.loc 1 383 3 is_stmt 1 view .LVU577
+ 382:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0x01;												// (1)			
+ 1370              		.loc 1 382 33 is_stmt 0 view .LVU578
+ 1371 0254 01F11000 		add	r0, r1, #16
+ 383:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0x81;												// Input
+ 1372              		.loc 1 383 33 view .LVU579
+ 1373 0258 80B2     		uxth	r0, r0
+ 1374 025a 01F11104 		add	r4, r1, #17
+ 383:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0x81;												// Input
+ 1375              		.loc 1 383 37 view .LVU580
+ 1376 025e 03F800E0 		strb	lr, [r3, r0]
+ 384:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0x02;												// (Data, Var, Abs)
+ 1377              		.loc 1 384 3 is_stmt 1 view .LVU581
+ 384:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0x02;												// (Data, Var, Abs)
+ 1378              		.loc 1 384 33 is_stmt 0 view .LVU582
+ 1379 0262 A4B2     		uxth	r4, r4
+ 1380 0264 01F11200 		add	r0, r1, #18
+ 384:../application/Src/usb_hw.c **** 		JoystickHID_ReportDescriptor[i++] = 0x02;												// (Data, Var, Abs)
+ 1381              		.loc 1 384 37 view .LVU583
+ 1382 0268 1E55     		strb	r6, [r3, r4]
+ 1383              		.loc 1 385 3 is_stmt 1 view .LVU584
+ 1384              		.loc 1 385 33 is_stmt 0 view .LVU585
+ 1385 026a 80B2     		uxth	r0, r0
+ 1386 026c 01F11304 		add	r4, r1, #19
+ 1387              	.LBB49:
+ 386:../application/Src/usb_hw.c **** 		
+ 387:../application/Src/usb_hw.c **** 		for (uint8_t j=1; j<tmp_app_config.pov_cnt;	 j++)
+ 1388              		.loc 1 387 3 view .LVU586
+ 1389 0270 7245     		cmp	r2, lr
+ 1390              	.LBE49:
+ 385:../application/Src/usb_hw.c **** 		
+ 1391              		.loc 1 385 37 view .LVU587
+ 1392 0272 1D54     		strb	r5, [r3, r0]
+ARM GAS  /tmp/cckrPG3V.s 			page 39
+
+
+ 385:../application/Src/usb_hw.c **** 		
+ 1393              		.loc 1 385 33 view .LVU588
+ 1394 0274 A4B2     		uxth	r4, r4
+ 1395              	.LVL65:
+ 1396              		.loc 1 387 3 is_stmt 1 view .LVU589
+ 1397              	.LBB50:
+ 1398              		.loc 1 387 8 view .LVU590
+ 1399              		.loc 1 387 21 view .LVU591
+ 1400              		.loc 1 387 3 is_stmt 0 view .LVU592
+ 1401 0276 3FD9     		bls	.L104
+ 1402              	.LBE50:
+ 385:../application/Src/usb_hw.c **** 		
+ 1403              		.loc 1 385 33 view .LVU593
+ 1404 0278 2046     		mov	r0, r4
+ 1405 027a 023A     		subs	r2, r2, #2
+ 1406 027c D2B2     		uxtb	r2, r2
+ 1407 027e 9200     		lsls	r2, r2, #2
+ 1408 0280 02F1170E 		add	lr, r2, #23
+ 1409 0284 7144     		add	r1, r1, lr
+ 1410 0286 89B2     		uxth	r1, r1
+ 1411              	.LVL66:
+ 1412              	.L69:
+ 1413              	.LBB51:
+ 388:../application/Src/usb_hw.c **** 		{
+ 389:../application/Src/usb_hw.c **** 			JoystickHID_ReportDescriptor[i++] = 0x09;												// Usage
+ 1414              		.loc 1 389 4 is_stmt 1 discriminator 3 view .LVU594
+ 390:../application/Src/usb_hw.c **** 			JoystickHID_ReportDescriptor[i++] = 0x39;												// (Hat switch)
+ 391:../application/Src/usb_hw.c **** 			JoystickHID_ReportDescriptor[i++] = 0x81;												// Input
+ 392:../application/Src/usb_hw.c **** 			JoystickHID_ReportDescriptor[i++] = 0x02;												// (Data, Var, Abs)
+ 1415              		.loc 1 392 34 is_stmt 0 discriminator 3 view .LVU595
+ 1416 0288 00F1040A 		add	r10, r0, #4
+ 389:../application/Src/usb_hw.c **** 			JoystickHID_ReportDescriptor[i++] = 0x39;												// (Hat switch)
+ 1417              		.loc 1 389 38 discriminator 3 view .LVU596
+ 1418 028c 03F800C0 		strb	ip, [r3, r0]
+ 390:../application/Src/usb_hw.c **** 			JoystickHID_ReportDescriptor[i++] = 0x39;												// (Hat switch)
+ 1419              		.loc 1 390 4 is_stmt 1 discriminator 3 view .LVU597
+ 1420              	.LVL67:
+ 389:../application/Src/usb_hw.c **** 			JoystickHID_ReportDescriptor[i++] = 0x39;												// (Hat switch)
+ 1421              		.loc 1 389 34 is_stmt 0 discriminator 3 view .LVU598
+ 1422 0290 00F10109 		add	r9, r0, #1
+ 390:../application/Src/usb_hw.c **** 			JoystickHID_ReportDescriptor[i++] = 0x39;												// (Hat switch)
+ 1423              		.loc 1 390 34 discriminator 3 view .LVU599
+ 1424 0294 00F10208 		add	r8, r0, #2
+ 391:../application/Src/usb_hw.c **** 			JoystickHID_ReportDescriptor[i++] = 0x02;												// (Data, Var, Abs)
+ 1425              		.loc 1 391 34 discriminator 3 view .LVU600
+ 1426 0298 00F1030E 		add	lr, r0, #3
+ 1427              		.loc 1 392 34 discriminator 3 view .LVU601
+ 1428 029c 1FFA8AF0 		uxth	r0, r10
+ 1429              	.LVL68:
+ 390:../application/Src/usb_hw.c **** 			JoystickHID_ReportDescriptor[i++] = 0x39;												// (Hat switch)
+ 1430              		.loc 1 390 34 discriminator 3 view .LVU602
+ 1431 02a0 1FFA89F9 		uxth	r9, r9
+ 391:../application/Src/usb_hw.c **** 			JoystickHID_ReportDescriptor[i++] = 0x02;												// (Data, Var, Abs)
+ 1432              		.loc 1 391 34 discriminator 3 view .LVU603
+ 1433 02a4 1FFA88F8 		uxth	r8, r8
+ 1434 02a8 1FFA8EFE 		uxth	lr, lr
+ 1435              	.LVL69:
+ARM GAS  /tmp/cckrPG3V.s 			page 40
+
+
+ 387:../application/Src/usb_hw.c **** 		{
+ 1436              		.loc 1 387 3 discriminator 3 view .LVU604
+ 1437 02ac 8842     		cmp	r0, r1
+ 390:../application/Src/usb_hw.c **** 			JoystickHID_ReportDescriptor[i++] = 0x81;												// Input
+ 1438              		.loc 1 390 38 discriminator 3 view .LVU605
+ 1439 02ae 03F80970 		strb	r7, [r3, r9]
+ 391:../application/Src/usb_hw.c **** 			JoystickHID_ReportDescriptor[i++] = 0x02;												// (Data, Var, Abs)
+ 1440              		.loc 1 391 4 is_stmt 1 discriminator 3 view .LVU606
+ 1441              	.LVL70:
+ 391:../application/Src/usb_hw.c **** 			JoystickHID_ReportDescriptor[i++] = 0x02;												// (Data, Var, Abs)
+ 1442              		.loc 1 391 38 is_stmt 0 discriminator 3 view .LVU607
+ 1443 02b2 03F80860 		strb	r6, [r3, r8]
+ 1444              		.loc 1 392 4 is_stmt 1 discriminator 3 view .LVU608
+ 1445              	.LVL71:
+ 1446              		.loc 1 392 38 is_stmt 0 discriminator 3 view .LVU609
+ 1447 02b6 03F80E50 		strb	r5, [r3, lr]
+ 387:../application/Src/usb_hw.c **** 		{
+ 1448              		.loc 1 387 48 is_stmt 1 discriminator 3 view .LVU610
+ 387:../application/Src/usb_hw.c **** 		{
+ 1449              		.loc 1 387 21 discriminator 3 view .LVU611
+ 387:../application/Src/usb_hw.c **** 		{
+ 1450              		.loc 1 387 3 is_stmt 0 discriminator 3 view .LVU612
+ 1451 02ba E5D1     		bne	.L69
+ 1452 02bc 0432     		adds	r2, r2, #4
+ 1453 02be 1444     		add	r4, r4, r2
+ 1454 02c0 A4B2     		uxth	r4, r4
+ 1455 02c2 601C     		adds	r0, r4, #1
+ 1456              	.LVL72:
+ 387:../application/Src/usb_hw.c **** 		{
+ 1457              		.loc 1 387 3 discriminator 3 view .LVU613
+ 1458 02c4 80B2     		uxth	r0, r0
+ 1459              	.LVL73:
+ 1460              	.L67:
+ 387:../application/Src/usb_hw.c **** 		{
+ 1461              		.loc 1 387 3 discriminator 3 view .LVU614
+ 1462              	.LBE51:
+ 393:../application/Src/usb_hw.c **** 		}
+ 394:../application/Src/usb_hw.c **** 	}
+ 395:../application/Src/usb_hw.c **** 	
+ 396:../application/Src/usb_hw.c **** 	JoystickHID_ReportDescriptor[i++] = 0xc0;													// End Collection
+ 1463              		.loc 1 396 2 is_stmt 1 view .LVU615
+ 1464              		.loc 1 396 36 is_stmt 0 view .LVU616
+ 1465 02c6 C025     		movs	r5, #192
+ 397:../application/Src/usb_hw.c **** 	
+ 398:../application/Src/usb_hw.c **** 	// Set Report Size in Config descriptor
+ 399:../application/Src/usb_hw.c **** 	Composite_ConfigDescriptor[25] = LOBYTE(i);
+ 1466              		.loc 1 399 33 view .LVU617
+ 1467 02c8 124A     		ldr	r2, .L105+20
+ 400:../application/Src/usb_hw.c **** 	Composite_ConfigDescriptor[26] = HIBYTE(i);
+ 1468              		.loc 1 400 35 view .LVU618
+ 1469 02ca 010A     		lsrs	r1, r0, #8
+ 399:../application/Src/usb_hw.c **** 	Composite_ConfigDescriptor[26] = HIBYTE(i);
+ 1470              		.loc 1 399 35 view .LVU619
+ 1471 02cc C0B2     		uxtb	r0, r0
+ 396:../application/Src/usb_hw.c **** 	
+ 1472              		.loc 1 396 36 view .LVU620
+ 1473 02ce 1D55     		strb	r5, [r3, r4]
+ARM GAS  /tmp/cckrPG3V.s 			page 41
+
+
+ 399:../application/Src/usb_hw.c **** 	Composite_ConfigDescriptor[26] = HIBYTE(i);
+ 1474              		.loc 1 399 2 is_stmt 1 view .LVU621
+ 1475              		.loc 1 400 35 is_stmt 0 view .LVU622
+ 1476 02d0 9176     		strb	r1, [r2, #26]
+ 399:../application/Src/usb_hw.c **** 	Composite_ConfigDescriptor[26] = HIBYTE(i);
+ 1477              		.loc 1 399 33 view .LVU623
+ 1478 02d2 5076     		strb	r0, [r2, #25]
+ 1479              		.loc 1 400 2 is_stmt 1 view .LVU624
+ 401:../application/Src/usb_hw.c **** 	
+ 402:../application/Src/usb_hw.c **** 	return i;
+ 1480              		.loc 1 402 2 view .LVU625
+ 403:../application/Src/usb_hw.c **** }
+ 1481              		.loc 1 403 1 is_stmt 0 view .LVU626
+ 1482 02d4 03B0     		add	sp, sp, #12
+ 1483              	.LCFI18:
+ 1484              		.cfi_remember_state
+ 1485              		.cfi_def_cfa_offset 36
+ 1486              		@ sp needed
+ 1487 02d6 BDE8F08F 		pop	{r4, r5, r6, r7, r8, r9, r10, fp, pc}
+ 1488              	.LVL74:
+ 1489              	.L70:
+ 1490              	.LCFI19:
+ 1491              		.cfi_restore_state
+ 1492              		.loc 1 403 1 view .LVU627
+ 1493 02da 0926     		movs	r6, #9
+ 1494 02dc 0824     		movs	r4, #8
+ 1495 02de 3046     		mov	r0, r6
+ 306:../application/Src/usb_hw.c **** 
+ 1496              		.loc 1 306 32 view .LVU628
+ 1497 02e0 2146     		mov	r1, r4
+ 1498 02e2 0A22     		movs	r2, #10
+ 1499 02e4 BBE6     		b	.L57
+ 1500              	.LVL75:
+ 1501              	.L103:
+ 1502              	.LBB52:
+ 346:../application/Src/usb_hw.c **** 				JoystickHID_ReportDescriptor[i++] = 0x36;										// Slider axis
+ 1503              		.loc 1 346 5 is_stmt 1 view .LVU629
+ 346:../application/Src/usb_hw.c **** 				JoystickHID_ReportDescriptor[i++] = 0x36;										// Slider axis
+ 1504              		.loc 1 346 39 is_stmt 0 view .LVU630
+ 1505 02e6 0924     		movs	r4, #9
+ 347:../application/Src/usb_hw.c **** 			}
+ 1506              		.loc 1 347 39 view .LVU631
+ 1507 02e8 3620     		movs	r0, #54
+ 346:../application/Src/usb_hw.c **** 				JoystickHID_ReportDescriptor[i++] = 0x36;										// Slider axis
+ 1508              		.loc 1 346 35 view .LVU632
+ 1509 02ea 511C     		adds	r1, r2, #1
+ 346:../application/Src/usb_hw.c **** 				JoystickHID_ReportDescriptor[i++] = 0x36;										// Slider axis
+ 1510              		.loc 1 346 39 view .LVU633
+ 1511 02ec 9C54     		strb	r4, [r3, r2]
+ 346:../application/Src/usb_hw.c **** 				JoystickHID_ReportDescriptor[i++] = 0x36;										// Slider axis
+ 1512              		.loc 1 346 35 view .LVU634
+ 1513 02ee 89B2     		uxth	r1, r1
+ 1514              	.LVL76:
+ 347:../application/Src/usb_hw.c **** 			}
+ 1515              		.loc 1 347 5 is_stmt 1 view .LVU635
+ 347:../application/Src/usb_hw.c **** 			}
+ 1516              		.loc 1 347 35 is_stmt 0 view .LVU636
+ARM GAS  /tmp/cckrPG3V.s 			page 42
+
+
+ 1517 02f0 0232     		adds	r2, r2, #2
+ 1518 02f2 92B2     		uxth	r2, r2
+ 1519              	.LVL77:
+ 347:../application/Src/usb_hw.c **** 			}
+ 1520              		.loc 1 347 39 view .LVU637
+ 1521 02f4 5854     		strb	r0, [r3, r1]
+ 1522 02f6 06E7     		b	.L66
+ 1523              	.LVL78:
+ 1524              	.L104:
+ 347:../application/Src/usb_hw.c **** 			}
+ 1525              		.loc 1 347 39 view .LVU638
+ 1526 02f8 1431     		adds	r1, r1, #20
+ 1527 02fa 88B2     		uxth	r0, r1
+ 1528 02fc E3E7     		b	.L67
+ 1529              	.L106:
+ 1530 02fe 00BF     		.align	2
+ 1531              	.L105:
+ 1532 0300 00000000 		.word	JoystickHID_ReportDescriptor
+ 1533 0304 05010904 		.word	67698949
+ 1534 0308 A1018501 		.word	25493921
+ 1535 030c 25017501 		.word	24445221
+ 1536 0310 05091901 		.word	18417925
+ 1537 0314 00000000 		.word	Composite_ConfigDescriptor
+ 1538              	.LBE52:
+ 1539              		.cfi_endproc
+ 1540              	.LFE37:
+ 1542              		.section	.text.USB_HW_Init,"ax",%progbits
+ 1543              		.align	1
+ 1544              		.p2align 2,,3
+ 1545              		.global	USB_HW_Init
+ 1546              		.syntax unified
+ 1547              		.thumb
+ 1548              		.thumb_func
+ 1549              		.fpu softvfp
+ 1551              	USB_HW_Init:
+ 1552              	.LFB38:
+ 404:../application/Src/usb_hw.c **** 
+ 405:../application/Src/usb_hw.c **** void USB_HW_Init(void)
+ 406:../application/Src/usb_hw.c **** {
+ 1553              		.loc 1 406 1 is_stmt 1 view -0
+ 1554              		.cfi_startproc
+ 1555              		@ args = 0, pretend = 0, frame = 8
+ 1556              		@ frame_needed = 0, uses_anonymous_args = 0
+ 407:../application/Src/usb_hw.c **** 	Set_System();
+ 1557              		.loc 1 407 2 view .LVU640
+ 1558              	.LBB59:
+ 1559              	.LBI59:
+  31:../application/Src/usb_hw.c **** {
+ 1560              		.loc 1 31 6 view .LVU641
+ 1561              	.LBB60:
+  33:../application/Src/usb_hw.c ****   /*!< At this stage the microcontroller clock setting is already configured, 
+ 1562              		.loc 1 33 3 view .LVU642
+  45:../application/Src/usb_hw.c **** #endif
+ 1563              		.loc 1 45 3 view .LVU643
+ 1564              	.LBE60:
+ 1565              	.LBE59:
+ 406:../application/Src/usb_hw.c **** 	Set_System();
+ARM GAS  /tmp/cckrPG3V.s 			page 43
+
+
+ 1566              		.loc 1 406 1 is_stmt 0 view .LVU644
+ 1567 0000 10B5     		push	{r4, lr}
+ 1568              	.LCFI20:
+ 1569              		.cfi_def_cfa_offset 8
+ 1570              		.cfi_offset 4, -8
+ 1571              		.cfi_offset 14, -4
+ 1572              	.LBB63:
+ 1573              	.LBB61:
+  45:../application/Src/usb_hw.c **** #endif
+ 1574              		.loc 1 45 3 view .LVU645
+ 1575 0002 0121     		movs	r1, #1
+ 1576              	.LBE61:
+ 1577              	.LBE63:
+ 406:../application/Src/usb_hw.c **** 	Set_System();
+ 1578              		.loc 1 406 1 view .LVU646
+ 1579 0004 82B0     		sub	sp, sp, #8
+ 1580              	.LCFI21:
+ 1581              		.cfi_def_cfa_offset 16
+ 1582              	.LBB64:
+ 1583              	.LBB62:
+  45:../application/Src/usb_hw.c **** #endif
+ 1584              		.loc 1 45 3 view .LVU647
+ 1585 0006 0420     		movs	r0, #4
+ 1586 0008 FFF7FEFF 		bl	RCC_APB2PeriphClockCmd
+ 1587              	.LVL79:
+  70:../application/Src/usb_hw.c **** 	
+ 1588              		.loc 1 70 3 is_stmt 1 view .LVU648
+  75:../application/Src/usb_hw.c **** 	
+ 1589              		.loc 1 75 3 is_stmt 0 view .LVU649
+ 1590 000c 164C     		ldr	r4, .L109
+  70:../application/Src/usb_hw.c **** 	
+ 1591              		.loc 1 70 3 view .LVU650
+ 1592 000e 0121     		movs	r1, #1
+ 1593 0010 0420     		movs	r0, #4
+ 1594 0012 FFF7FEFF 		bl	RCC_APB2PeriphClockCmd
+ 1595              	.LVL80:
+  72:../application/Src/usb_hw.c ****   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+ 1596              		.loc 1 72 2 is_stmt 1 view .LVU651
+  73:../application/Src/usb_hw.c ****   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
+ 1597              		.loc 1 73 3 view .LVU652
+  74:../application/Src/usb_hw.c ****   GPIO_Init(GPIOA, &GPIO_InitStructure);
+ 1598              		.loc 1 74 3 view .LVU653
+  72:../application/Src/usb_hw.c ****   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+ 1599              		.loc 1 72 30 is_stmt 0 view .LVU654
+ 1600 0016 154B     		ldr	r3, .L109+4
+  75:../application/Src/usb_hw.c **** 	
+ 1601              		.loc 1 75 3 view .LVU655
+ 1602 0018 01A9     		add	r1, sp, #4
+ 1603 001a 2046     		mov	r0, r4
+  72:../application/Src/usb_hw.c ****   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+ 1604              		.loc 1 72 30 view .LVU656
+ 1605 001c 0193     		str	r3, [sp, #4]
+  75:../application/Src/usb_hw.c **** 	
+ 1606              		.loc 1 75 3 is_stmt 1 view .LVU657
+ 1607 001e FFF7FEFF 		bl	GPIO_Init
+ 1608              	.LVL81:
+  77:../application/Src/usb_hw.c **** 	Delay_ms(5); //delay
+ARM GAS  /tmp/cckrPG3V.s 			page 44
+
+
+ 1609              		.loc 1 77 2 view .LVU658
+  77:../application/Src/usb_hw.c **** 	Delay_ms(5); //delay
+ 1610              		.loc 1 77 13 is_stmt 0 view .LVU659
+ 1611 0022 E368     		ldr	r3, [r4, #12]
+  78:../application/Src/usb_hw.c **** 	
+ 1612              		.loc 1 78 2 view .LVU660
+ 1613 0024 0520     		movs	r0, #5
+  77:../application/Src/usb_hw.c **** 	Delay_ms(5); //delay
+ 1614              		.loc 1 77 13 view .LVU661
+ 1615 0026 23F48053 		bic	r3, r3, #4096
+ 1616 002a E360     		str	r3, [r4, #12]
+  78:../application/Src/usb_hw.c **** 	
+ 1617              		.loc 1 78 2 is_stmt 1 view .LVU662
+ 1618 002c FFF7FEFF 		bl	Delay_ms
+ 1619              	.LVL82:
+  80:../application/Src/usb_hw.c ****   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+ 1620              		.loc 1 80 3 view .LVU663
+  81:../application/Src/usb_hw.c ****   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;
+ 1621              		.loc 1 81 3 view .LVU664
+  82:../application/Src/usb_hw.c ****   GPIO_Init(GPIOA, &GPIO_InitStructure);
+ 1622              		.loc 1 82 3 view .LVU665
+  80:../application/Src/usb_hw.c ****   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+ 1623              		.loc 1 80 31 is_stmt 0 view .LVU666
+ 1624 0030 0F4B     		ldr	r3, .L109+8
+  83:../application/Src/usb_hw.c **** 	
+ 1625              		.loc 1 83 3 view .LVU667
+ 1626 0032 01A9     		add	r1, sp, #4
+ 1627 0034 2046     		mov	r0, r4
+  80:../application/Src/usb_hw.c ****   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+ 1628              		.loc 1 80 31 view .LVU668
+ 1629 0036 0193     		str	r3, [sp, #4]
+  83:../application/Src/usb_hw.c **** 	
+ 1630              		.loc 1 83 3 is_stmt 1 view .LVU669
+ 1631 0038 FFF7FEFF 		bl	GPIO_Init
+ 1632              	.LVL83:
+ 1633              	.LBE62:
+ 1634              	.LBE64:
+ 408:../application/Src/usb_hw.c **** 
+ 409:../application/Src/usb_hw.c ****   USB_Interrupts_Config();
+ 1635              		.loc 1 409 3 view .LVU670
+ 1636              	.LBB65:
+ 1637              	.LBI65:
+ 133:../application/Src/usb_hw.c **** {
+ 1638              		.loc 1 133 6 view .LVU671
+ 1639              	.LBB66:
+ 135:../application/Src/usb_hw.c ****   
+ 1640              		.loc 1 135 3 view .LVU672
+ 138:../application/Src/usb_hw.c ****   
+ 1641              		.loc 1 138 3 view .LVU673
+ 1642 003c 4FF4A060 		mov	r0, #1280
+ 1643 0040 FFF7FEFF 		bl	NVIC_PriorityGroupConfig
+ 1644              	.LVL84:
+ 169:../application/Src/usb_hw.c ****   NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 1;
+ 1645              		.loc 1 169 3 view .LVU674
+ 170:../application/Src/usb_hw.c ****   NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
+ 1646              		.loc 1 170 3 view .LVU675
+ 171:../application/Src/usb_hw.c ****   NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+ARM GAS  /tmp/cckrPG3V.s 			page 45
+
+
+ 1647              		.loc 1 171 3 view .LVU676
+ 172:../application/Src/usb_hw.c ****   NVIC_Init(&NVIC_InitStructure);
+ 1648              		.loc 1 172 3 view .LVU677
+ 169:../application/Src/usb_hw.c ****   NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 1;
+ 1649              		.loc 1 169 38 is_stmt 0 view .LVU678
+ 1650 0044 0B4B     		ldr	r3, .L109+12
+ 173:../application/Src/usb_hw.c **** #endif /* STM32L1XX_XD */
+ 1651              		.loc 1 173 3 view .LVU679
+ 1652 0046 01A8     		add	r0, sp, #4
+ 169:../application/Src/usb_hw.c ****   NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 1;
+ 1653              		.loc 1 169 38 view .LVU680
+ 1654 0048 0193     		str	r3, [sp, #4]
+ 173:../application/Src/usb_hw.c **** #endif /* STM32L1XX_XD */
+ 1655              		.loc 1 173 3 is_stmt 1 view .LVU681
+ 1656 004a FFF7FEFF 		bl	NVIC_Init
+ 1657              	.LVL85:
+ 1658              	.LBE66:
+ 1659              	.LBE65:
+ 410:../application/Src/usb_hw.c **** 
+ 411:../application/Src/usb_hw.c ****   Set_USBClock();
+ 1660              		.loc 1 411 3 view .LVU682
+ 1661              	.LBB67:
+ 1662              	.LBI67:
+ 111:../application/Src/usb_hw.c **** {
+ 1663              		.loc 1 111 6 view .LVU683
+ 1664              	.LBB68:
+ 119:../application/Src/usb_hw.c ****   
+ 1665              		.loc 1 119 3 view .LVU684
+ 1666 004e 0020     		movs	r0, #0
+ 1667 0050 FFF7FEFF 		bl	RCC_USBCLKConfig
+ 1668              	.LVL86:
+ 122:../application/Src/usb_hw.c **** #endif /* STM32L1XX_MD */
+ 1669              		.loc 1 122 3 view .LVU685
+ 1670 0054 0121     		movs	r1, #1
+ 1671 0056 4FF40000 		mov	r0, #8388608
+ 1672 005a FFF7FEFF 		bl	RCC_APB1PeriphClockCmd
+ 1673              	.LVL87:
+ 1674              	.LBE68:
+ 1675              	.LBE67:
+ 412:../application/Src/usb_hw.c **** 
+ 413:../application/Src/usb_hw.c ****   USB_Init();
+ 1676              		.loc 1 413 3 view .LVU686
+ 1677 005e FFF7FEFF 		bl	USB_Init
+ 1678              	.LVL88:
+ 414:../application/Src/usb_hw.c **** 	
+ 415:../application/Src/usb_hw.c **** }
+ 1679              		.loc 1 415 1 is_stmt 0 view .LVU687
+ 1680 0062 02B0     		add	sp, sp, #8
+ 1681              	.LCFI22:
+ 1682              		.cfi_def_cfa_offset 8
+ 1683              		@ sp needed
+ 1684 0064 10BD     		pop	{r4, pc}
+ 1685              	.L110:
+ 1686 0066 00BF     		.align	2
+ 1687              	.L109:
+ 1688 0068 00080140 		.word	1073809408
+ 1689 006c 00180310 		.word	268638208
+ARM GAS  /tmp/cckrPG3V.s 			page 46
+
+
+ 1690 0070 00180318 		.word	402855936
+ 1691 0074 14010001 		.word	16777492
+ 1692              		.cfi_endproc
+ 1693              	.LFE38:
+ 1695              		.section	.text.USB_HW_DeInit,"ax",%progbits
+ 1696              		.align	1
+ 1697              		.p2align 2,,3
+ 1698              		.global	USB_HW_DeInit
+ 1699              		.syntax unified
+ 1700              		.thumb
+ 1701              		.thumb_func
+ 1702              		.fpu softvfp
+ 1704              	USB_HW_DeInit:
+ 1705              	.LFB39:
+ 416:../application/Src/usb_hw.c **** 
+ 417:../application/Src/usb_hw.c **** void USB_HW_DeInit(void)
+ 418:../application/Src/usb_hw.c **** {
+ 1706              		.loc 1 418 1 is_stmt 1 view -0
+ 1707              		.cfi_startproc
+ 1708              		@ args = 0, pretend = 0, frame = 8
+ 1709              		@ frame_needed = 0, uses_anonymous_args = 0
+ 419:../application/Src/usb_hw.c **** 	GPIO_InitTypeDef  GPIO_InitStructure;  
+ 1710              		.loc 1 419 2 view .LVU689
+ 420:../application/Src/usb_hw.c **** 
+ 421:../application/Src/usb_hw.c **** 	// Disable USB Clocks
+ 422:../application/Src/usb_hw.c **** 	RCC_APB1PeriphClockCmd(RCC_APB1Periph_USB, DISABLE);
+ 1711              		.loc 1 422 2 view .LVU690
+ 418:../application/Src/usb_hw.c **** 	GPIO_InitTypeDef  GPIO_InitStructure;  
+ 1712              		.loc 1 418 1 is_stmt 0 view .LVU691
+ 1713 0000 10B5     		push	{r4, lr}
+ 1714              	.LCFI23:
+ 1715              		.cfi_def_cfa_offset 8
+ 1716              		.cfi_offset 4, -8
+ 1717              		.cfi_offset 14, -4
+ 1718              		.loc 1 422 2 view .LVU692
+ 1719 0002 0021     		movs	r1, #0
+ 418:../application/Src/usb_hw.c **** 	GPIO_InitTypeDef  GPIO_InitStructure;  
+ 1720              		.loc 1 418 1 view .LVU693
+ 1721 0004 82B0     		sub	sp, sp, #8
+ 1722              	.LCFI24:
+ 1723              		.cfi_def_cfa_offset 16
+ 1724              		.loc 1 422 2 view .LVU694
+ 1725 0006 4FF40000 		mov	r0, #8388608
+ 1726 000a FFF7FEFF 		bl	RCC_APB1PeriphClockCmd
+ 1727              	.LVL89:
+ 423:../application/Src/usb_hw.c **** 	
+ 424:../application/Src/usb_hw.c **** 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);
+ 1728              		.loc 1 424 2 is_stmt 1 view .LVU695
+ 425:../application/Src/usb_hw.c **** 	
+ 426:../application/Src/usb_hw.c **** 	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_11 | GPIO_Pin_12;
+ 427:../application/Src/usb_hw.c ****   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+ 428:../application/Src/usb_hw.c ****   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
+ 429:../application/Src/usb_hw.c ****   GPIO_Init(GPIOA, &GPIO_InitStructure);
+ 1729              		.loc 1 429 3 is_stmt 0 view .LVU696
+ 1730 000e 084C     		ldr	r4, .L113
+ 424:../application/Src/usb_hw.c **** 	
+ 1731              		.loc 1 424 2 view .LVU697
+ARM GAS  /tmp/cckrPG3V.s 			page 47
+
+
+ 1732 0010 0121     		movs	r1, #1
+ 1733 0012 0420     		movs	r0, #4
+ 1734 0014 FFF7FEFF 		bl	RCC_APB2PeriphClockCmd
+ 1735              	.LVL90:
+ 426:../application/Src/usb_hw.c ****   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+ 1736              		.loc 1 426 2 is_stmt 1 view .LVU698
+ 427:../application/Src/usb_hw.c ****   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
+ 1737              		.loc 1 427 3 view .LVU699
+ 428:../application/Src/usb_hw.c ****   GPIO_Init(GPIOA, &GPIO_InitStructure);
+ 1738              		.loc 1 428 3 view .LVU700
+ 426:../application/Src/usb_hw.c ****   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+ 1739              		.loc 1 426 30 is_stmt 0 view .LVU701
+ 1740 0018 064B     		ldr	r3, .L113+4
+ 1741              		.loc 1 429 3 view .LVU702
+ 1742 001a 2046     		mov	r0, r4
+ 1743 001c 01A9     		add	r1, sp, #4
+ 426:../application/Src/usb_hw.c ****   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+ 1744              		.loc 1 426 30 view .LVU703
+ 1745 001e 0193     		str	r3, [sp, #4]
+ 1746              		.loc 1 429 3 is_stmt 1 view .LVU704
+ 1747 0020 FFF7FEFF 		bl	GPIO_Init
+ 1748              	.LVL91:
+ 430:../application/Src/usb_hw.c **** 	
+ 431:../application/Src/usb_hw.c **** 	GPIOA->ODR &= ~(GPIO_Pin_11 | GPIO_Pin_12);
+ 1749              		.loc 1 431 2 view .LVU705
+ 1750              		.loc 1 431 13 is_stmt 0 view .LVU706
+ 1751 0024 E368     		ldr	r3, [r4, #12]
+ 1752 0026 23F4C053 		bic	r3, r3, #6144
+ 1753 002a E360     		str	r3, [r4, #12]
+ 432:../application/Src/usb_hw.c **** }
+ 1754              		.loc 1 432 1 view .LVU707
+ 1755 002c 02B0     		add	sp, sp, #8
+ 1756              	.LCFI25:
+ 1757              		.cfi_def_cfa_offset 8
+ 1758              		@ sp needed
+ 1759 002e 10BD     		pop	{r4, pc}
+ 1760              	.L114:
+ 1761              		.align	2
+ 1762              	.L113:
+ 1763 0030 00080140 		.word	1073809408
+ 1764 0034 00180310 		.word	268638208
+ 1765              		.cfi_endproc
+ 1766              	.LFE39:
+ 1768              		.comm	HSEStartUpStatus,1,1
+ 1769              		.text
+ 1770              	.Letext0:
+ 1771              		.file 2 "/usr/lib/gcc/arm-none-eabi/9.2.1/include/stdint.h"
+ 1772              		.file 3 "../Drivers/CMSIS/CM3/CoreSupport/core_cm3.h"
+ 1773              		.file 4 "../Drivers/CMSIS/CM3/DeviceSupport/ST/STM32F10x/system_stm32f10x.h"
+ 1774              		.file 5 "../Drivers/CMSIS/CM3/DeviceSupport/ST/STM32F10x/stm32f10x.h"
+ 1775              		.file 6 "../Drivers/STM32F10x_StdPeriph_Driver/inc/stm32f10x_gpio.h"
+ 1776              		.file 7 "../Drivers/STM32F10x_StdPeriph_Driver/inc/misc.h"
+ 1777              		.file 8 "../application/Inc/common_defines.h"
+ 1778              		.file 9 "../application/Inc/common_types.h"
+ 1779              		.file 10 "../Drivers/STM32_USB-FS-Device_Driver/inc/usb_type.h"
+ 1780              		.file 11 "../Drivers/STM32_USB-FS-Device_Driver/inc/usb_regs.h"
+ 1781              		.file 12 "../Drivers/STM32_USB-FS-Device_Driver/inc/usb_core.h"
+ARM GAS  /tmp/cckrPG3V.s 			page 48
+
+
+ 1782              		.file 13 "../Drivers/STM32_USB-FS-Device_Driver/inc/usb_init.h"
+ 1783              		.file 14 "../Drivers/STM32_USB-FS-Device_Driver/inc/usb_lib.h"
+ 1784              		.file 15 "../application/Inc/usb_desc.h"
+ 1785              		.file 16 "../application/Inc/usb_pwr.h"
+ 1786              		.file 17 "/usr/lib/gcc/arm-none-eabi/9.2.1/include/stddef.h"
+ 1787              		.file 18 "/usr/include/newlib/sys/_types.h"
+ 1788              		.file 19 "/usr/include/newlib/sys/reent.h"
+ 1789              		.file 20 "/usr/include/newlib/sys/lock.h"
+ 1790              		.file 21 "../application/Inc/periphery.h"
+ 1791              		.file 22 "../Drivers/STM32F10x_StdPeriph_Driver/inc/stm32f10x_rcc.h"
+ 1792              		.file 23 "../application/Inc/config.h"
+ARM GAS  /tmp/cckrPG3V.s 			page 49
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 usb_hw.c
+     /tmp/cckrPG3V.s:16     .text.Set_System:0000000000000000 $t
+     /tmp/cckrPG3V.s:25     .text.Set_System:0000000000000000 Set_System
+     /tmp/cckrPG3V.s:104    .text.Set_System:0000000000000040 $d
+     /tmp/cckrPG3V.s:111    .text.Set_USBClock:0000000000000000 $t
+     /tmp/cckrPG3V.s:119    .text.Set_USBClock:0000000000000000 Set_USBClock
+     /tmp/cckrPG3V.s:152    .text.USB_Interrupts_Config:0000000000000000 $t
+     /tmp/cckrPG3V.s:160    .text.USB_Interrupts_Config:0000000000000000 USB_Interrupts_Config
+     /tmp/cckrPG3V.s:204    .text.USB_Interrupts_Config:000000000000001c $d
+     /tmp/cckrPG3V.s:209    .text.Get_SerialNum:0000000000000000 $t
+     /tmp/cckrPG3V.s:217    .text.Get_SerialNum:0000000000000000 Get_SerialNum
+     /tmp/cckrPG3V.s:597    .text.Get_SerialNum:00000000000000f4 $d
+     /tmp/cckrPG3V.s:605    .text.Get_ProductStr:0000000000000000 $t
+     /tmp/cckrPG3V.s:613    .text.Get_ProductStr:0000000000000000 Get_ProductStr
+     /tmp/cckrPG3V.s:684    .text.Get_ProductStr:0000000000000030 $d
+     /tmp/cckrPG3V.s:689    .text.Get_VidPid:0000000000000000 $t
+     /tmp/cckrPG3V.s:697    .text.Get_VidPid:0000000000000000 Get_VidPid
+     /tmp/cckrPG3V.s:749    .text.Get_VidPid:0000000000000028 $d
+     /tmp/cckrPG3V.s:754    .text.Get_ReportDesc:0000000000000000 $t
+     /tmp/cckrPG3V.s:762    .text.Get_ReportDesc:0000000000000000 Get_ReportDesc
+     /tmp/cckrPG3V.s:1532   .text.Get_ReportDesc:0000000000000300 $d
+     /tmp/cckrPG3V.s:1543   .text.USB_HW_Init:0000000000000000 $t
+     /tmp/cckrPG3V.s:1551   .text.USB_HW_Init:0000000000000000 USB_HW_Init
+     /tmp/cckrPG3V.s:1688   .text.USB_HW_Init:0000000000000068 $d
+     /tmp/cckrPG3V.s:1696   .text.USB_HW_DeInit:0000000000000000 $t
+     /tmp/cckrPG3V.s:1704   .text.USB_HW_DeInit:0000000000000000 USB_HW_DeInit
+     /tmp/cckrPG3V.s:1763   .text.USB_HW_DeInit:0000000000000030 $d
+                            *COM*:0000000000000001 HSEStartUpStatus
+
+UNDEFINED SYMBOLS
+RCC_APB2PeriphClockCmd
+GPIO_Init
+Delay_ms
+RCC_USBCLKConfig
+RCC_APB1PeriphClockCmd
+NVIC_PriorityGroupConfig
+NVIC_Init
+Composite_StringSerial
+DevConfigGet
+Composite_StringProduct
+Composite_DeviceDescriptor
+AppConfigGet
+JoystickHID_ReportDescriptor
+Composite_ConfigDescriptor
+USB_Init

@@ -1,0 +1,942 @@
+ARM GAS  /tmp/ccoHmOhj.s 			page 1
+
+
+   1              		.cpu cortex-m3
+   2              		.eabi_attribute 20, 1
+   3              		.eabi_attribute 21, 1
+   4              		.eabi_attribute 23, 3
+   5              		.eabi_attribute 24, 1
+   6              		.eabi_attribute 25, 1
+   7              		.eabi_attribute 26, 1
+   8              		.eabi_attribute 30, 2
+   9              		.eabi_attribute 34, 1
+  10              		.eabi_attribute 18, 4
+  11              		.file	"crc16.c"
+  12              		.text
+  13              	.Ltext0:
+  14              		.cfi_sections	.debug_frame
+  15              		.section	.text.MakeCrc16Table,"ax",%progbits
+  16              		.align	1
+  17              		.p2align 2,,3
+  18              		.global	MakeCrc16Table
+  19              		.arch armv7-m
+  20              		.syntax unified
+  21              		.thumb
+  22              		.thumb_func
+  23              		.fpu softvfp
+  25              	MakeCrc16Table:
+  26              	.LFB29:
+  27              		.file 1 "../utils/crc16.c"
+   1:../utils/crc16.c **** /**
+   2:../utils/crc16.c ****   ******************************************************************************
+   3:../utils/crc16.c ****   * @file           : crc16.c
+   4:../utils/crc16.c ****   * @brief          : CRC-16 implementation
+   5:../utils/crc16.c **** 		
+   6:../utils/crc16.c **** 		FreeJoy software for game device controllers
+   7:../utils/crc16.c ****     Copyright (C) 2020  Yury Vostrenkov (yuvostrenkov@gmail.com)
+   8:../utils/crc16.c **** 
+   9:../utils/crc16.c ****     This program is free software: you can redistribute it and/or modify
+  10:../utils/crc16.c ****     it under the terms of the GNU General Public License as published by
+  11:../utils/crc16.c ****     the Free Software Foundation, either version 3 of the License, or
+  12:../utils/crc16.c ****     (at your option) any later version.
+  13:../utils/crc16.c **** 
+  14:../utils/crc16.c ****     This program is distributed in the hope that it will be useful,
+  15:../utils/crc16.c ****     but WITHOUT ANY WARRANTY; without even the implied warranty of
+  16:../utils/crc16.c ****     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  17:../utils/crc16.c ****     GNU General Public License for more details.
+  18:../utils/crc16.c **** 
+  19:../utils/crc16.c ****     You should have received a copy of the GNU General Public License
+  20:../utils/crc16.c ****     along with this program.  If not, see <https://www.gnu.org/licenses/>.
+  21:../utils/crc16.c **** 		
+  22:../utils/crc16.c ****   ******************************************************************************
+  23:../utils/crc16.c ****   */
+  24:../utils/crc16.c **** 
+  25:../utils/crc16.c **** #include "crc16.h"
+  26:../utils/crc16.c **** 
+  27:../utils/crc16.c **** uint16_t crctable[256];
+  28:../utils/crc16.c **** 
+  29:../utils/crc16.c **** void MakeCrc16Table(void)
+  30:../utils/crc16.c **** {
+  28              		.loc 1 30 1 view -0
+ARM GAS  /tmp/ccoHmOhj.s 			page 2
+
+
+  29              		.cfi_startproc
+  30              		@ args = 0, pretend = 0, frame = 0
+  31              		@ frame_needed = 0, uses_anonymous_args = 0
+  32              		@ link register save eliminated.
+  31:../utils/crc16.c **** 	uint16_t value;
+  33              		.loc 1 31 2 view .LVU1
+  32:../utils/crc16.c **** 	uint16_t temp;
+  34              		.loc 1 32 2 view .LVU2
+  33:../utils/crc16.c **** 	
+  34:../utils/crc16.c ****   for(uint16_t i=0; i<256; ++i)
+  35              		.loc 1 34 3 view .LVU3
+  36              	.LBB8:
+  37              		.loc 1 34 7 view .LVU4
+  38              	.LVL0:
+  39              		.loc 1 34 21 view .LVU5
+  40              	.LBE8:
+  30:../utils/crc16.c **** 	uint16_t value;
+  41              		.loc 1 30 1 is_stmt 0 view .LVU6
+  42 0000 0021     		movs	r1, #0
+  43              	.LBB15:
+  44              	.LBB9:
+  35:../utils/crc16.c ****   {
+  36:../utils/crc16.c ****     value = 0;
+  37:../utils/crc16.c ****     temp = i;		
+  38:../utils/crc16.c ****     for(uint8_t j=0; j<8; ++j)
+  39:../utils/crc16.c ****     {
+  40:../utils/crc16.c **** 			if(((value ^ temp) & 0x0001) != 0)
+  41:../utils/crc16.c **** 			{				
+  42:../utils/crc16.c **** 				value=(value>>1)^POLINOM;
+  45              		.loc 1 42 10 view .LVU7
+  46 0002 4AF20100 		movw	r0, #40961
+  47              	.LBE9:
+  48              	.LBE15:
+  30:../utils/crc16.c **** 	uint16_t value;
+  49              		.loc 1 30 1 view .LVU8
+  50 0006 F0B4     		push	{r4, r5, r6, r7}
+  51              	.LCFI0:
+  52              		.cfi_def_cfa_offset 16
+  53              		.cfi_offset 4, -16
+  54              		.cfi_offset 5, -12
+  55              		.cfi_offset 6, -8
+  56              		.cfi_offset 7, -4
+  57 0008 2C4C     		ldr	r4, .L30
+  58              	.LVL1:
+  59              	.L16:
+  60              	.LBB16:
+  61              	.LBB10:
+  40:../utils/crc16.c **** 			{				
+  62              		.loc 1 40 6 view .LVU9
+  63 000a 11F00105 		ands	r5, r1, #1
+  64 000e 8AB2     		uxth	r2, r1
+  65              	.LVL2:
+  38:../utils/crc16.c ****     {
+  66              		.loc 1 38 22 is_stmt 1 view .LVU10
+  40:../utils/crc16.c **** 			{				
+  67              		.loc 1 40 4 view .LVU11
+  40:../utils/crc16.c **** 			{				
+ARM GAS  /tmp/ccoHmOhj.s 			page 3
+
+
+  68              		.loc 1 40 6 is_stmt 0 view .LVU12
+  69 0010 48D1     		bne	.L17
+  70              	.L29:
+  40:../utils/crc16.c **** 			{				
+  71              		.loc 1 40 6 view .LVU13
+  72 0012 2B46     		mov	r3, r5
+  73 0014 2E46     		mov	r6, r5
+  74 0016 4FF4A047 		mov	r7, #20480
+  75 001a 4AF2010C 		movw	ip, #40961
+  76              	.L2:
+  77              	.LVL3:
+  43:../utils/crc16.c **** 			}
+  44:../utils/crc16.c **** 			else	
+  45:../utils/crc16.c **** 			{
+  46:../utils/crc16.c **** 				value=value>>1;  	
+  47:../utils/crc16.c **** 			}
+  48:../utils/crc16.c **** 			temp >>= 1;
+  78              		.loc 1 48 4 is_stmt 1 view .LVU14
+  38:../utils/crc16.c ****     {
+  79              		.loc 1 38 27 view .LVU15
+  38:../utils/crc16.c ****     {
+  80              		.loc 1 38 22 view .LVU16
+  40:../utils/crc16.c **** 			{				
+  81              		.loc 1 40 4 view .LVU17
+  40:../utils/crc16.c **** 			{				
+  82              		.loc 1 40 23 is_stmt 0 view .LVU18
+  83 001e 85EA5205 		eor	r5, r5, r2, lsr #1
+  84              	.LVL4:
+  40:../utils/crc16.c **** 			{				
+  85              		.loc 1 40 6 view .LVU19
+  86 0022 05F00105 		and	r5, r5, #1
+  87 0026 002D     		cmp	r5, #0
+  88 0028 1CBF     		itt	ne
+  89 002a 6646     		movne	r6, ip
+  90              	.LVL5:
+  91              		.loc 1 48 4 is_stmt 1 view .LVU20
+  38:../utils/crc16.c ****     {
+  92              		.loc 1 38 27 view .LVU21
+  38:../utils/crc16.c ****     {
+  93              		.loc 1 38 22 view .LVU22
+  40:../utils/crc16.c **** 			{				
+  94              		.loc 1 40 4 view .LVU23
+  40:../utils/crc16.c **** 			{				
+  95              		.loc 1 40 6 is_stmt 0 view .LVU24
+  96 002c 3B46     		movne	r3, r7
+  40:../utils/crc16.c **** 			{				
+  97              		.loc 1 40 23 view .LVU25
+  98 002e 86EA9206 		eor	r6, r6, r2, lsr #2
+  99              	.LVL6:
+  40:../utils/crc16.c **** 			{				
+ 100              		.loc 1 40 6 view .LVU26
+ 101 0032 F607     		lsls	r6, r6, #31
+  42:../utils/crc16.c **** 			}
+ 102              		.loc 1 42 5 is_stmt 1 view .LVU27
+  42:../utils/crc16.c **** 			}
+ 103              		.loc 1 42 10 is_stmt 0 view .LVU28
+ 104 0034 44BF     		itt	mi
+ARM GAS  /tmp/ccoHmOhj.s 			page 4
+
+
+ 105 0036 4340     		eormi	r3, r3, r0
+ 106 0038 9BB2     		uxthmi	r3, r3
+ 107              	.LVL7:
+ 108              		.loc 1 48 4 is_stmt 1 view .LVU29
+  38:../utils/crc16.c ****     {
+ 109              		.loc 1 38 27 view .LVU30
+  38:../utils/crc16.c ****     {
+ 110              		.loc 1 38 22 view .LVU31
+  40:../utils/crc16.c **** 			{				
+ 111              		.loc 1 40 4 view .LVU32
+  46:../utils/crc16.c **** 			}
+ 112              		.loc 1 46 5 view .LVU33
+  40:../utils/crc16.c **** 			{				
+ 113              		.loc 1 40 23 is_stmt 0 view .LVU34
+ 114 003a 83EAD205 		eor	r5, r3, r2, lsr #3
+  40:../utils/crc16.c **** 			{				
+ 115              		.loc 1 40 6 view .LVU35
+ 116 003e ED07     		lsls	r5, r5, #31
+  42:../utils/crc16.c **** 			}
+ 117              		.loc 1 42 10 view .LVU36
+ 118 0040 C3F34F03 		ubfx	r3, r3, #1, #16
+ 119              	.LVL8:
+  42:../utils/crc16.c **** 			}
+ 120              		.loc 1 42 5 is_stmt 1 view .LVU37
+  42:../utils/crc16.c **** 			}
+ 121              		.loc 1 42 10 is_stmt 0 view .LVU38
+ 122 0044 48BF     		it	mi
+ 123 0046 4340     		eormi	r3, r3, r0
+ 124              	.LVL9:
+ 125              		.loc 1 48 4 is_stmt 1 view .LVU39
+  38:../utils/crc16.c ****     {
+ 126              		.loc 1 38 27 view .LVU40
+  38:../utils/crc16.c ****     {
+ 127              		.loc 1 38 22 view .LVU41
+  40:../utils/crc16.c **** 			{				
+ 128              		.loc 1 40 4 view .LVU42
+  46:../utils/crc16.c **** 			}
+ 129              		.loc 1 46 5 view .LVU43
+  40:../utils/crc16.c **** 			{				
+ 130              		.loc 1 40 23 is_stmt 0 view .LVU44
+ 131 0048 83EA1215 		eor	r5, r3, r2, lsr #4
+  40:../utils/crc16.c **** 			{				
+ 132              		.loc 1 40 6 view .LVU45
+ 133 004c EF07     		lsls	r7, r5, #31
+  46:../utils/crc16.c **** 			}
+ 134              		.loc 1 46 10 view .LVU46
+ 135 004e 54BF     		ite	pl
+ 136 0050 5B08     		lsrpl	r3, r3, #1
+ 137              	.LVL10:
+  42:../utils/crc16.c **** 			}
+ 138              		.loc 1 42 5 is_stmt 1 view .LVU47
+  42:../utils/crc16.c **** 			}
+ 139              		.loc 1 42 10 is_stmt 0 view .LVU48
+ 140 0052 80EA5303 		eormi	r3, r0, r3, lsr #1
+ 141              	.LVL11:
+ 142              		.loc 1 48 4 is_stmt 1 view .LVU49
+  38:../utils/crc16.c ****     {
+ARM GAS  /tmp/ccoHmOhj.s 			page 5
+
+
+ 143              		.loc 1 38 27 view .LVU50
+  38:../utils/crc16.c ****     {
+ 144              		.loc 1 38 22 view .LVU51
+  40:../utils/crc16.c **** 			{				
+ 145              		.loc 1 40 4 view .LVU52
+  46:../utils/crc16.c **** 			}
+ 146              		.loc 1 46 5 view .LVU53
+  40:../utils/crc16.c **** 			{				
+ 147              		.loc 1 40 23 is_stmt 0 view .LVU54
+ 148 0056 83EA5215 		eor	r5, r3, r2, lsr #5
+  40:../utils/crc16.c **** 			{				
+ 149              		.loc 1 40 6 view .LVU55
+ 150 005a EE07     		lsls	r6, r5, #31
+  46:../utils/crc16.c **** 			}
+ 151              		.loc 1 46 10 view .LVU56
+ 152 005c 54BF     		ite	pl
+ 153 005e 5B08     		lsrpl	r3, r3, #1
+ 154              	.LVL12:
+  42:../utils/crc16.c **** 			}
+ 155              		.loc 1 42 5 is_stmt 1 view .LVU57
+  42:../utils/crc16.c **** 			}
+ 156              		.loc 1 42 10 is_stmt 0 view .LVU58
+ 157 0060 80EA5303 		eormi	r3, r0, r3, lsr #1
+ 158              	.LVL13:
+ 159              		.loc 1 48 4 is_stmt 1 view .LVU59
+  38:../utils/crc16.c ****     {
+ 160              		.loc 1 38 27 view .LVU60
+  38:../utils/crc16.c ****     {
+ 161              		.loc 1 38 22 view .LVU61
+  40:../utils/crc16.c **** 			{				
+ 162              		.loc 1 40 4 view .LVU62
+  46:../utils/crc16.c **** 			}
+ 163              		.loc 1 46 5 view .LVU63
+  40:../utils/crc16.c **** 			{				
+ 164              		.loc 1 40 23 is_stmt 0 view .LVU64
+ 165 0064 83EA9215 		eor	r5, r3, r2, lsr #6
+  40:../utils/crc16.c **** 			{				
+ 166              		.loc 1 40 6 view .LVU65
+ 167 0068 ED07     		lsls	r5, r5, #31
+  46:../utils/crc16.c **** 			}
+ 168              		.loc 1 46 10 view .LVU66
+ 169 006a 54BF     		ite	pl
+ 170 006c 5B08     		lsrpl	r3, r3, #1
+ 171              	.LVL14:
+  42:../utils/crc16.c **** 			}
+ 172              		.loc 1 42 5 is_stmt 1 view .LVU67
+  42:../utils/crc16.c **** 			}
+ 173              		.loc 1 42 10 is_stmt 0 view .LVU68
+ 174 006e 80EA5303 		eormi	r3, r0, r3, lsr #1
+ 175              	.LVL15:
+ 176              		.loc 1 48 4 is_stmt 1 view .LVU69
+  38:../utils/crc16.c ****     {
+ 177              		.loc 1 38 27 view .LVU70
+  38:../utils/crc16.c ****     {
+ 178              		.loc 1 38 22 view .LVU71
+  40:../utils/crc16.c **** 			{				
+ 179              		.loc 1 40 4 view .LVU72
+ARM GAS  /tmp/ccoHmOhj.s 			page 6
+
+
+  40:../utils/crc16.c **** 			{				
+ 180              		.loc 1 40 23 is_stmt 0 view .LVU73
+ 181 0072 83EAD212 		eor	r2, r3, r2, lsr #7
+ 182              	.LVL16:
+  40:../utils/crc16.c **** 			{				
+ 183              		.loc 1 40 6 view .LVU74
+ 184 0076 D207     		lsls	r2, r2, #31
+ 185 0078 08D4     		bmi	.L13
+  46:../utils/crc16.c **** 			}
+ 186              		.loc 1 46 5 is_stmt 1 view .LVU75
+ 187              	.LVL17:
+ 188              		.loc 1 48 4 view .LVU76
+  38:../utils/crc16.c ****     {
+ 189              		.loc 1 38 27 view .LVU77
+  38:../utils/crc16.c ****     {
+ 190              		.loc 1 38 22 view .LVU78
+ 191              	.LBE10:
+  49:../utils/crc16.c **** 		}		
+  50:../utils/crc16.c **** 		crctable[i]=value;
+ 192              		.loc 1 50 3 view .LVU79
+ 193 007a 0131     		adds	r1, r1, #1
+ 194              	.LBB11:
+  46:../utils/crc16.c **** 			}
+ 195              		.loc 1 46 10 is_stmt 0 view .LVU80
+ 196 007c 5B08     		lsrs	r3, r3, #1
+ 197              	.LVL18:
+  46:../utils/crc16.c **** 			}
+ 198              		.loc 1 46 10 view .LVU81
+ 199              	.LBE11:
+  34:../utils/crc16.c ****   {
+ 200              		.loc 1 34 3 view .LVU82
+ 201 007e B1F5807F 		cmp	r1, #256
+ 202              		.loc 1 50 14 view .LVU83
+ 203 0082 24F8023F 		strh	r3, [r4, #2]!	@ movhi
+  34:../utils/crc16.c ****   {
+ 204              		.loc 1 34 28 is_stmt 1 view .LVU84
+  34:../utils/crc16.c ****   {
+ 205              		.loc 1 34 21 view .LVU85
+  34:../utils/crc16.c ****   {
+ 206              		.loc 1 34 3 is_stmt 0 view .LVU86
+ 207 0086 C0D1     		bne	.L16
+ 208              	.L1:
+  34:../utils/crc16.c ****   {
+ 209              		.loc 1 34 3 view .LVU87
+ 210              	.LBE16:
+  51:../utils/crc16.c ****    }
+  52:../utils/crc16.c **** }
+ 211              		.loc 1 52 1 view .LVU88
+ 212 0088 F0BC     		pop	{r4, r5, r6, r7}
+ 213              	.LCFI1:
+ 214              		.cfi_remember_state
+ 215              		.cfi_restore 7
+ 216              		.cfi_restore 6
+ 217              		.cfi_restore 5
+ 218              		.cfi_restore 4
+ 219              		.cfi_def_cfa_offset 0
+ 220 008a 7047     		bx	lr
+ARM GAS  /tmp/ccoHmOhj.s 			page 7
+
+
+ 221              	.LVL19:
+ 222              	.L13:
+ 223              	.LCFI2:
+ 224              		.cfi_restore_state
+ 225              	.LBB17:
+ 226              	.LBB12:
+  42:../utils/crc16.c **** 			}
+ 227              		.loc 1 42 5 is_stmt 1 view .LVU89
+  48:../utils/crc16.c **** 		}		
+ 228              		.loc 1 48 4 view .LVU90
+  38:../utils/crc16.c ****     {
+ 229              		.loc 1 38 27 view .LVU91
+  38:../utils/crc16.c ****     {
+ 230              		.loc 1 38 22 view .LVU92
+ 231              	.LBE12:
+  50:../utils/crc16.c ****    }
+ 232              		.loc 1 50 3 view .LVU93
+ 233 008c 0131     		adds	r1, r1, #1
+ 234              	.LBB13:
+  42:../utils/crc16.c **** 			}
+ 235              		.loc 1 42 10 is_stmt 0 view .LVU94
+ 236 008e 80EA5303 		eor	r3, r0, r3, lsr #1
+ 237              	.LVL20:
+  42:../utils/crc16.c **** 			}
+ 238              		.loc 1 42 10 view .LVU95
+ 239              	.LBE13:
+  34:../utils/crc16.c ****   {
+ 240              		.loc 1 34 3 view .LVU96
+ 241 0092 B1F5807F 		cmp	r1, #256
+  50:../utils/crc16.c ****    }
+ 242              		.loc 1 50 14 view .LVU97
+ 243 0096 24F8023F 		strh	r3, [r4, #2]!	@ movhi
+  34:../utils/crc16.c ****   {
+ 244              		.loc 1 34 28 is_stmt 1 view .LVU98
+  34:../utils/crc16.c ****   {
+ 245              		.loc 1 34 21 view .LVU99
+  34:../utils/crc16.c ****   {
+ 246              		.loc 1 34 3 is_stmt 0 view .LVU100
+ 247 009a F5D0     		beq	.L1
+ 248              	.LBB14:
+  40:../utils/crc16.c **** 			{				
+ 249              		.loc 1 40 6 view .LVU101
+ 250 009c 11F00105 		ands	r5, r1, #1
+ 251 00a0 8AB2     		uxth	r2, r1
+ 252              	.LVL21:
+  38:../utils/crc16.c ****     {
+ 253              		.loc 1 38 22 is_stmt 1 view .LVU102
+  40:../utils/crc16.c **** 			{				
+ 254              		.loc 1 40 4 view .LVU103
+  40:../utils/crc16.c **** 			{				
+ 255              		.loc 1 40 6 is_stmt 0 view .LVU104
+ 256 00a2 B6D0     		beq	.L29
+ 257              	.L17:
+  40:../utils/crc16.c **** 			{				
+ 258              		.loc 1 40 6 view .LVU105
+ 259 00a4 4FF42053 		mov	r3, #10240
+ 260 00a8 4FF4F047 		mov	r7, #30720
+ARM GAS  /tmp/ccoHmOhj.s 			page 8
+
+
+ 261 00ac 4FF2010C 		movw	ip, #61441
+ 262 00b0 4FF4A046 		mov	r6, #20480
+  42:../utils/crc16.c **** 			}
+ 263              		.loc 1 42 10 view .LVU106
+ 264 00b4 4AF20105 		movw	r5, #40961
+ 265 00b8 B1E7     		b	.L2
+ 266              	.L31:
+ 267 00ba 00BF     		.align	2
+ 268              	.L30:
+ 269 00bc FEFFFFFF 		.word	crctable-2
+ 270              	.LBE14:
+ 271              	.LBE17:
+ 272              		.cfi_endproc
+ 273              	.LFE29:
+ 275              		.section	.text.Crc16,"ax",%progbits
+ 276              		.align	1
+ 277              		.p2align 2,,3
+ 278              		.global	Crc16
+ 279              		.syntax unified
+ 280              		.thumb
+ 281              		.thumb_func
+ 282              		.fpu softvfp
+ 284              	Crc16:
+ 285              	.LVL22:
+ 286              	.LFB30:
+  53:../utils/crc16.c **** 
+  54:../utils/crc16.c **** uint16_t Crc16(uint8_t* buf, uint16_t len)
+  55:../utils/crc16.c **** {
+ 287              		.loc 1 55 1 is_stmt 1 view -0
+ 288              		.cfi_startproc
+ 289              		@ args = 0, pretend = 0, frame = 0
+ 290              		@ frame_needed = 0, uses_anonymous_args = 0
+  56:../utils/crc16.c **** 	uint16_t crc = 0;
+ 291              		.loc 1 56 2 view .LVU108
+  57:../utils/crc16.c **** 	
+  58:../utils/crc16.c **** 	MakeCrc16Table();
+ 292              		.loc 1 58 2 view .LVU109
+ 293              	.LBB18:
+ 294              	.LBI18:
+  29:../utils/crc16.c **** {
+ 295              		.loc 1 29 6 view .LVU110
+ 296              	.LBB19:
+  31:../utils/crc16.c **** 	uint16_t temp;
+ 297              		.loc 1 31 2 view .LVU111
+  32:../utils/crc16.c **** 	
+ 298              		.loc 1 32 2 view .LVU112
+  34:../utils/crc16.c ****   {
+ 299              		.loc 1 34 3 view .LVU113
+ 300              	.LBB20:
+  34:../utils/crc16.c ****   {
+ 301              		.loc 1 34 7 view .LVU114
+  34:../utils/crc16.c ****   {
+ 302              		.loc 1 34 21 view .LVU115
+ 303              	.LBE20:
+ 304              	.LBE19:
+ 305              	.LBE18:
+  55:../utils/crc16.c **** 	uint16_t crc = 0;
+ARM GAS  /tmp/ccoHmOhj.s 			page 9
+
+
+ 306              		.loc 1 55 1 is_stmt 0 view .LVU116
+ 307 0000 2DE9F041 		push	{r4, r5, r6, r7, r8, lr}
+ 308              	.LCFI3:
+ 309              		.cfi_def_cfa_offset 24
+ 310              		.cfi_offset 4, -24
+ 311              		.cfi_offset 5, -20
+ 312              		.cfi_offset 6, -16
+ 313              		.cfi_offset 7, -12
+ 314              		.cfi_offset 8, -8
+ 315              		.cfi_offset 14, -4
+  55:../utils/crc16.c **** 	uint16_t crc = 0;
+ 316              		.loc 1 55 1 view .LVU117
+ 317 0004 0546     		mov	r5, r0
+ 318 0006 0E46     		mov	r6, r1
+ 319              	.LBB33:
+ 320              	.LBB30:
+ 321              	.LBB27:
+ 322              	.LBB21:
+  42:../utils/crc16.c **** 			}
+ 323              		.loc 1 42 10 view .LVU118
+ 324 0008 4AF20100 		movw	r0, #40961
+ 325              	.LVL23:
+  42:../utils/crc16.c **** 			}
+ 326              		.loc 1 42 10 view .LVU119
+ 327              	.LBE21:
+ 328              	.LBE27:
+ 329              	.LBE30:
+ 330              	.LBE33:
+  55:../utils/crc16.c **** 	uint16_t crc = 0;
+ 331              		.loc 1 55 1 view .LVU120
+ 332 000c 0021     		movs	r1, #0
+ 333              	.LVL24:
+  55:../utils/crc16.c **** 	uint16_t crc = 0;
+ 334              		.loc 1 55 1 view .LVU121
+ 335 000e 374C     		ldr	r4, .L64
+ 336              	.LVL25:
+ 337              	.L47:
+ 338              	.LBB34:
+ 339              	.LBB31:
+ 340              	.LBB28:
+ 341              	.LBB22:
+  40:../utils/crc16.c **** 			{				
+ 342              		.loc 1 40 6 view .LVU122
+ 343 0010 11F00107 		ands	r7, r1, #1
+ 344 0014 8AB2     		uxth	r2, r1
+ 345              	.LVL26:
+  38:../utils/crc16.c ****     {
+ 346              		.loc 1 38 22 is_stmt 1 view .LVU123
+  40:../utils/crc16.c **** 			{				
+ 347              		.loc 1 40 4 view .LVU124
+  40:../utils/crc16.c **** 			{				
+ 348              		.loc 1 40 6 is_stmt 0 view .LVU125
+ 349 0016 5AD1     		bne	.L50
+ 350              	.L63:
+  40:../utils/crc16.c **** 			{				
+ 351              		.loc 1 40 6 view .LVU126
+ 352 0018 3B46     		mov	r3, r7
+ARM GAS  /tmp/ccoHmOhj.s 			page 10
+
+
+ 353 001a BC46     		mov	ip, r7
+ 354 001c 4FF4A04E 		mov	lr, #20480
+ 355 0020 4AF20108 		movw	r8, #40961
+ 356              	.L33:
+ 357              	.LVL27:
+  48:../utils/crc16.c **** 		}		
+ 358              		.loc 1 48 4 is_stmt 1 view .LVU127
+  38:../utils/crc16.c ****     {
+ 359              		.loc 1 38 27 view .LVU128
+  38:../utils/crc16.c ****     {
+ 360              		.loc 1 38 22 view .LVU129
+  40:../utils/crc16.c **** 			{				
+ 361              		.loc 1 40 4 view .LVU130
+  40:../utils/crc16.c **** 			{				
+ 362              		.loc 1 40 23 is_stmt 0 view .LVU131
+ 363 0024 87EA5207 		eor	r7, r7, r2, lsr #1
+ 364              	.LVL28:
+  40:../utils/crc16.c **** 			{				
+ 365              		.loc 1 40 6 view .LVU132
+ 366 0028 07F00107 		and	r7, r7, #1
+ 367 002c 002F     		cmp	r7, #0
+ 368 002e 1CBF     		itt	ne
+ 369 0030 C446     		movne	ip, r8
+ 370              	.LVL29:
+  48:../utils/crc16.c **** 		}		
+ 371              		.loc 1 48 4 is_stmt 1 view .LVU133
+  38:../utils/crc16.c ****     {
+ 372              		.loc 1 38 27 view .LVU134
+  38:../utils/crc16.c ****     {
+ 373              		.loc 1 38 22 view .LVU135
+  40:../utils/crc16.c **** 			{				
+ 374              		.loc 1 40 4 view .LVU136
+  40:../utils/crc16.c **** 			{				
+ 375              		.loc 1 40 6 is_stmt 0 view .LVU137
+ 376 0032 7346     		movne	r3, lr
+  40:../utils/crc16.c **** 			{				
+ 377              		.loc 1 40 23 view .LVU138
+ 378 0034 8CEA920C 		eor	ip, ip, r2, lsr #2
+ 379              	.LVL30:
+  40:../utils/crc16.c **** 			{				
+ 380              		.loc 1 40 6 view .LVU139
+ 381 0038 1CF0010F 		tst	ip, #1
+  42:../utils/crc16.c **** 			}
+ 382              		.loc 1 42 5 is_stmt 1 view .LVU140
+  42:../utils/crc16.c **** 			}
+ 383              		.loc 1 42 10 is_stmt 0 view .LVU141
+ 384 003c 1CBF     		itt	ne
+ 385 003e 4340     		eorne	r3, r3, r0
+ 386 0040 9BB2     		uxthne	r3, r3
+ 387              	.LVL31:
+  48:../utils/crc16.c **** 		}		
+ 388              		.loc 1 48 4 is_stmt 1 view .LVU142
+  38:../utils/crc16.c ****     {
+ 389              		.loc 1 38 27 view .LVU143
+  38:../utils/crc16.c ****     {
+ 390              		.loc 1 38 22 view .LVU144
+  40:../utils/crc16.c **** 			{				
+ARM GAS  /tmp/ccoHmOhj.s 			page 11
+
+
+ 391              		.loc 1 40 4 view .LVU145
+  46:../utils/crc16.c **** 			}
+ 392              		.loc 1 46 5 view .LVU146
+  40:../utils/crc16.c **** 			{				
+ 393              		.loc 1 40 23 is_stmt 0 view .LVU147
+ 394 0042 83EAD207 		eor	r7, r3, r2, lsr #3
+  40:../utils/crc16.c **** 			{				
+ 395              		.loc 1 40 6 view .LVU148
+ 396 0046 FF07     		lsls	r7, r7, #31
+  42:../utils/crc16.c **** 			}
+ 397              		.loc 1 42 10 view .LVU149
+ 398 0048 C3F34F03 		ubfx	r3, r3, #1, #16
+ 399              	.LVL32:
+  42:../utils/crc16.c **** 			}
+ 400              		.loc 1 42 5 is_stmt 1 view .LVU150
+  42:../utils/crc16.c **** 			}
+ 401              		.loc 1 42 10 is_stmt 0 view .LVU151
+ 402 004c 48BF     		it	mi
+ 403 004e 4340     		eormi	r3, r3, r0
+ 404              	.LVL33:
+  48:../utils/crc16.c **** 		}		
+ 405              		.loc 1 48 4 is_stmt 1 view .LVU152
+  38:../utils/crc16.c ****     {
+ 406              		.loc 1 38 27 view .LVU153
+  38:../utils/crc16.c ****     {
+ 407              		.loc 1 38 22 view .LVU154
+  40:../utils/crc16.c **** 			{				
+ 408              		.loc 1 40 4 view .LVU155
+  46:../utils/crc16.c **** 			}
+ 409              		.loc 1 46 5 view .LVU156
+  40:../utils/crc16.c **** 			{				
+ 410              		.loc 1 40 23 is_stmt 0 view .LVU157
+ 411 0050 83EA1217 		eor	r7, r3, r2, lsr #4
+  40:../utils/crc16.c **** 			{				
+ 412              		.loc 1 40 6 view .LVU158
+ 413 0054 FF07     		lsls	r7, r7, #31
+  46:../utils/crc16.c **** 			}
+ 414              		.loc 1 46 10 view .LVU159
+ 415 0056 54BF     		ite	pl
+ 416 0058 5B08     		lsrpl	r3, r3, #1
+ 417              	.LVL34:
+  42:../utils/crc16.c **** 			}
+ 418              		.loc 1 42 5 is_stmt 1 view .LVU160
+  42:../utils/crc16.c **** 			}
+ 419              		.loc 1 42 10 is_stmt 0 view .LVU161
+ 420 005a 80EA5303 		eormi	r3, r0, r3, lsr #1
+ 421              	.LVL35:
+  48:../utils/crc16.c **** 		}		
+ 422              		.loc 1 48 4 is_stmt 1 view .LVU162
+  38:../utils/crc16.c ****     {
+ 423              		.loc 1 38 27 view .LVU163
+  38:../utils/crc16.c ****     {
+ 424              		.loc 1 38 22 view .LVU164
+  40:../utils/crc16.c **** 			{				
+ 425              		.loc 1 40 4 view .LVU165
+  46:../utils/crc16.c **** 			}
+ 426              		.loc 1 46 5 view .LVU166
+ARM GAS  /tmp/ccoHmOhj.s 			page 12
+
+
+  40:../utils/crc16.c **** 			{				
+ 427              		.loc 1 40 23 is_stmt 0 view .LVU167
+ 428 005e 83EA5217 		eor	r7, r3, r2, lsr #5
+  40:../utils/crc16.c **** 			{				
+ 429              		.loc 1 40 6 view .LVU168
+ 430 0062 FF07     		lsls	r7, r7, #31
+  46:../utils/crc16.c **** 			}
+ 431              		.loc 1 46 10 view .LVU169
+ 432 0064 54BF     		ite	pl
+ 433 0066 5B08     		lsrpl	r3, r3, #1
+ 434              	.LVL36:
+  42:../utils/crc16.c **** 			}
+ 435              		.loc 1 42 5 is_stmt 1 view .LVU170
+  42:../utils/crc16.c **** 			}
+ 436              		.loc 1 42 10 is_stmt 0 view .LVU171
+ 437 0068 80EA5303 		eormi	r3, r0, r3, lsr #1
+ 438              	.LVL37:
+  48:../utils/crc16.c **** 		}		
+ 439              		.loc 1 48 4 is_stmt 1 view .LVU172
+  38:../utils/crc16.c ****     {
+ 440              		.loc 1 38 27 view .LVU173
+  38:../utils/crc16.c ****     {
+ 441              		.loc 1 38 22 view .LVU174
+  40:../utils/crc16.c **** 			{				
+ 442              		.loc 1 40 4 view .LVU175
+  46:../utils/crc16.c **** 			}
+ 443              		.loc 1 46 5 view .LVU176
+  40:../utils/crc16.c **** 			{				
+ 444              		.loc 1 40 23 is_stmt 0 view .LVU177
+ 445 006c 83EA9217 		eor	r7, r3, r2, lsr #6
+  40:../utils/crc16.c **** 			{				
+ 446              		.loc 1 40 6 view .LVU178
+ 447 0070 FF07     		lsls	r7, r7, #31
+  46:../utils/crc16.c **** 			}
+ 448              		.loc 1 46 10 view .LVU179
+ 449 0072 54BF     		ite	pl
+ 450 0074 5B08     		lsrpl	r3, r3, #1
+ 451              	.LVL38:
+  42:../utils/crc16.c **** 			}
+ 452              		.loc 1 42 5 is_stmt 1 view .LVU180
+  42:../utils/crc16.c **** 			}
+ 453              		.loc 1 42 10 is_stmt 0 view .LVU181
+ 454 0076 80EA5303 		eormi	r3, r0, r3, lsr #1
+ 455              	.LVL39:
+  48:../utils/crc16.c **** 		}		
+ 456              		.loc 1 48 4 is_stmt 1 view .LVU182
+  38:../utils/crc16.c ****     {
+ 457              		.loc 1 38 27 view .LVU183
+  38:../utils/crc16.c ****     {
+ 458              		.loc 1 38 22 view .LVU184
+  40:../utils/crc16.c **** 			{				
+ 459              		.loc 1 40 4 view .LVU185
+  40:../utils/crc16.c **** 			{				
+ 460              		.loc 1 40 23 is_stmt 0 view .LVU186
+ 461 007a 83EAD212 		eor	r2, r3, r2, lsr #7
+ 462              	.LVL40:
+  40:../utils/crc16.c **** 			{				
+ARM GAS  /tmp/ccoHmOhj.s 			page 13
+
+
+ 463              		.loc 1 40 6 view .LVU187
+ 464 007e D207     		lsls	r2, r2, #31
+ 465 0080 19D4     		bmi	.L44
+  46:../utils/crc16.c **** 			}
+ 466              		.loc 1 46 5 is_stmt 1 view .LVU188
+ 467              	.LVL41:
+  48:../utils/crc16.c **** 		}		
+ 468              		.loc 1 48 4 view .LVU189
+  38:../utils/crc16.c ****     {
+ 469              		.loc 1 38 27 view .LVU190
+  38:../utils/crc16.c ****     {
+ 470              		.loc 1 38 22 view .LVU191
+ 471              	.LBE22:
+  50:../utils/crc16.c ****    }
+ 472              		.loc 1 50 3 view .LVU192
+ 473 0082 0131     		adds	r1, r1, #1
+ 474              	.LBB23:
+  46:../utils/crc16.c **** 			}
+ 475              		.loc 1 46 10 is_stmt 0 view .LVU193
+ 476 0084 5B08     		lsrs	r3, r3, #1
+ 477              	.LVL42:
+  46:../utils/crc16.c **** 			}
+ 478              		.loc 1 46 10 view .LVU194
+ 479              	.LBE23:
+  34:../utils/crc16.c ****   {
+ 480              		.loc 1 34 3 view .LVU195
+ 481 0086 B1F5807F 		cmp	r1, #256
+  50:../utils/crc16.c ****    }
+ 482              		.loc 1 50 14 view .LVU196
+ 483 008a 24F8023F 		strh	r3, [r4, #2]!	@ movhi
+  34:../utils/crc16.c ****   {
+ 484              		.loc 1 34 28 is_stmt 1 view .LVU197
+  34:../utils/crc16.c ****   {
+ 485              		.loc 1 34 21 view .LVU198
+  34:../utils/crc16.c ****   {
+ 486              		.loc 1 34 3 is_stmt 0 view .LVU199
+ 487 008e BFD1     		bne	.L47
+ 488              	.L46:
+ 489              	.LVL43:
+  34:../utils/crc16.c ****   {
+ 490              		.loc 1 34 3 view .LVU200
+ 491              	.LBE28:
+ 492              	.LBE31:
+ 493              	.LBE34:
+ 494              	.LBB35:
+  59:../utils/crc16.c **** 	
+  60:../utils/crc16.c ****   for (uint16_t i=0; i<len; ++i)
+ 495              		.loc 1 60 22 is_stmt 1 view .LVU201
+ 496              		.loc 1 60 3 is_stmt 0 view .LVU202
+ 497 0090 46B3     		cbz	r6, .L51
+ 498              	.LBE35:
+  56:../utils/crc16.c **** 	
+ 499              		.loc 1 56 11 view .LVU203
+ 500 0092 0020     		movs	r0, #0
+ 501 0094 721E     		subs	r2, r6, #1
+ 502 0096 92B2     		uxth	r2, r2
+ 503 0098 1549     		ldr	r1, .L64+4
+ARM GAS  /tmp/ccoHmOhj.s 			page 14
+
+
+ 504 009a 2A44     		add	r2, r2, r5
+ 505 009c 013D     		subs	r5, r5, #1
+ 506              	.LVL44:
+ 507              	.L49:
+ 508              	.LBB38:
+ 509              	.LBB36:
+  61:../utils/crc16.c **** 	{
+  62:../utils/crc16.c **** 		uint8_t index = (crc ^ buf[i]);
+ 510              		.loc 1 62 3 is_stmt 1 discriminator 3 view .LVU204
+  63:../utils/crc16.c **** 		crc = (uint16_t) ((crc >> 8) ^ crctable[index]);
+ 511              		.loc 1 63 3 discriminator 3 view .LVU205
+  62:../utils/crc16.c **** 		crc = (uint16_t) ((crc >> 8) ^ crctable[index]);
+ 512              		.loc 1 62 11 is_stmt 0 discriminator 3 view .LVU206
+ 513 009e 15F8013F 		ldrb	r3, [r5, #1]!	@ zero_extendqisi2
+ 514              	.LVL45:
+  62:../utils/crc16.c **** 		crc = (uint16_t) ((crc >> 8) ^ crctable[index]);
+ 515              		.loc 1 62 11 discriminator 3 view .LVU207
+ 516 00a2 4340     		eors	r3, r3, r0
+ 517              		.loc 1 63 42 discriminator 3 view .LVU208
+ 518 00a4 DBB2     		uxtb	r3, r3
+ 519 00a6 31F81330 		ldrh	r3, [r1, r3, lsl #1]
+ 520              	.LBE36:
+  60:../utils/crc16.c **** 	{
+ 521              		.loc 1 60 3 discriminator 3 view .LVU209
+ 522 00aa 9542     		cmp	r5, r2
+ 523              	.LBB37:
+ 524              		.loc 1 63 7 discriminator 3 view .LVU210
+ 525 00ac 83EA1020 		eor	r0, r3, r0, lsr #8
+ 526              	.LVL46:
+ 527              		.loc 1 63 7 discriminator 3 view .LVU211
+ 528              	.LBE37:
+  60:../utils/crc16.c **** 	{
+ 529              		.loc 1 60 29 is_stmt 1 discriminator 3 view .LVU212
+  60:../utils/crc16.c **** 	{
+ 530              		.loc 1 60 22 discriminator 3 view .LVU213
+  60:../utils/crc16.c **** 	{
+ 531              		.loc 1 60 3 is_stmt 0 discriminator 3 view .LVU214
+ 532 00b0 F5D1     		bne	.L49
+ 533              	.LBE38:
+  64:../utils/crc16.c **** 	}
+  65:../utils/crc16.c **** 	
+  66:../utils/crc16.c ****   return crc;
+ 534              		.loc 1 66 3 is_stmt 1 view .LVU215
+  67:../utils/crc16.c **** }
+ 535              		.loc 1 67 1 is_stmt 0 view .LVU216
+ 536 00b2 BDE8F081 		pop	{r4, r5, r6, r7, r8, pc}
+ 537              	.LVL47:
+ 538              	.L44:
+ 539              	.LBB39:
+ 540              	.LBB32:
+ 541              	.LBB29:
+ 542              	.LBB24:
+  42:../utils/crc16.c **** 			}
+ 543              		.loc 1 42 5 is_stmt 1 view .LVU217
+  48:../utils/crc16.c **** 		}		
+ 544              		.loc 1 48 4 view .LVU218
+  38:../utils/crc16.c ****     {
+ARM GAS  /tmp/ccoHmOhj.s 			page 15
+
+
+ 545              		.loc 1 38 27 view .LVU219
+  38:../utils/crc16.c ****     {
+ 546              		.loc 1 38 22 view .LVU220
+ 547              	.LBE24:
+  50:../utils/crc16.c ****    }
+ 548              		.loc 1 50 3 view .LVU221
+ 549 00b6 0131     		adds	r1, r1, #1
+ 550              	.LBB25:
+  42:../utils/crc16.c **** 			}
+ 551              		.loc 1 42 10 is_stmt 0 view .LVU222
+ 552 00b8 80EA5303 		eor	r3, r0, r3, lsr #1
+ 553              	.LVL48:
+  42:../utils/crc16.c **** 			}
+ 554              		.loc 1 42 10 view .LVU223
+ 555              	.LBE25:
+  34:../utils/crc16.c ****   {
+ 556              		.loc 1 34 3 view .LVU224
+ 557 00bc B1F5807F 		cmp	r1, #256
+  50:../utils/crc16.c ****    }
+ 558              		.loc 1 50 14 view .LVU225
+ 559 00c0 24F8023F 		strh	r3, [r4, #2]!	@ movhi
+  34:../utils/crc16.c ****   {
+ 560              		.loc 1 34 28 is_stmt 1 view .LVU226
+  34:../utils/crc16.c ****   {
+ 561              		.loc 1 34 21 view .LVU227
+  34:../utils/crc16.c ****   {
+ 562              		.loc 1 34 3 is_stmt 0 view .LVU228
+ 563 00c4 E4D0     		beq	.L46
+ 564              	.LBB26:
+  40:../utils/crc16.c **** 			{				
+ 565              		.loc 1 40 6 view .LVU229
+ 566 00c6 11F00107 		ands	r7, r1, #1
+ 567 00ca 8AB2     		uxth	r2, r1
+ 568              	.LVL49:
+  38:../utils/crc16.c ****     {
+ 569              		.loc 1 38 22 is_stmt 1 view .LVU230
+  40:../utils/crc16.c **** 			{				
+ 570              		.loc 1 40 4 view .LVU231
+  40:../utils/crc16.c **** 			{				
+ 571              		.loc 1 40 6 is_stmt 0 view .LVU232
+ 572 00cc A4D0     		beq	.L63
+ 573              	.L50:
+  40:../utils/crc16.c **** 			{				
+ 574              		.loc 1 40 6 view .LVU233
+ 575 00ce 4FF42053 		mov	r3, #10240
+ 576 00d2 4FF4F04E 		mov	lr, #30720
+ 577 00d6 4FF20108 		movw	r8, #61441
+ 578 00da 4FF4A04C 		mov	ip, #20480
+  42:../utils/crc16.c **** 			}
+ 579              		.loc 1 42 10 view .LVU234
+ 580 00de 4AF20107 		movw	r7, #40961
+ 581 00e2 9FE7     		b	.L33
+ 582              	.LVL50:
+ 583              	.L51:
+  42:../utils/crc16.c **** 			}
+ 584              		.loc 1 42 10 view .LVU235
+ 585              	.LBE26:
+ARM GAS  /tmp/ccoHmOhj.s 			page 16
+
+
+ 586              	.LBE29:
+ 587              	.LBE32:
+ 588              	.LBE39:
+  56:../utils/crc16.c **** 	
+ 589              		.loc 1 56 11 view .LVU236
+ 590 00e4 3046     		mov	r0, r6
+  66:../utils/crc16.c **** }
+ 591              		.loc 1 66 3 is_stmt 1 view .LVU237
+ 592              		.loc 1 67 1 is_stmt 0 view .LVU238
+ 593 00e6 BDE8F081 		pop	{r4, r5, r6, r7, r8, pc}
+ 594              	.LVL51:
+ 595              	.L65:
+ 596              		.loc 1 67 1 view .LVU239
+ 597 00ea 00BF     		.align	2
+ 598              	.L64:
+ 599 00ec FEFFFFFF 		.word	crctable-2
+ 600 00f0 00000000 		.word	crctable
+ 601              		.cfi_endproc
+ 602              	.LFE30:
+ 604              		.comm	crctable,512,4
+ 605              		.text
+ 606              	.Letext0:
+ 607              		.file 2 "/usr/lib/gcc/arm-none-eabi/9.2.1/include/stdint.h"
+ 608              		.file 3 "../Drivers/CMSIS/CM3/CoreSupport/core_cm3.h"
+ 609              		.file 4 "../Drivers/CMSIS/CM3/DeviceSupport/ST/STM32F10x/system_stm32f10x.h"
+ARM GAS  /tmp/ccoHmOhj.s 			page 17
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 crc16.c
+     /tmp/ccoHmOhj.s:16     .text.MakeCrc16Table:0000000000000000 $t
+     /tmp/ccoHmOhj.s:25     .text.MakeCrc16Table:0000000000000000 MakeCrc16Table
+     /tmp/ccoHmOhj.s:269    .text.MakeCrc16Table:00000000000000bc $d
+                            *COM*:0000000000000200 crctable
+     /tmp/ccoHmOhj.s:276    .text.Crc16:0000000000000000 $t
+     /tmp/ccoHmOhj.s:284    .text.Crc16:0000000000000000 Crc16
+     /tmp/ccoHmOhj.s:599    .text.Crc16:00000000000000ec $d
+
+NO UNDEFINED SYMBOLS

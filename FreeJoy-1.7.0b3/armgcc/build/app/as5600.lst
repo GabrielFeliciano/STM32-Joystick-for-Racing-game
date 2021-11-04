@@ -1,0 +1,425 @@
+ARM GAS  /tmp/cce9Tu5I.s 			page 1
+
+
+   1              		.cpu cortex-m3
+   2              		.eabi_attribute 20, 1
+   3              		.eabi_attribute 21, 1
+   4              		.eabi_attribute 23, 3
+   5              		.eabi_attribute 24, 1
+   6              		.eabi_attribute 25, 1
+   7              		.eabi_attribute 26, 1
+   8              		.eabi_attribute 30, 2
+   9              		.eabi_attribute 34, 1
+  10              		.eabi_attribute 18, 4
+  11              		.file	"as5600.c"
+  12              		.text
+  13              	.Ltext0:
+  14              		.cfi_sections	.debug_frame
+  15              		.section	.text.AS5600_Init,"ax",%progbits
+  16              		.align	1
+  17              		.p2align 2,,3
+  18              		.global	AS5600_Init
+  19              		.arch armv7-m
+  20              		.syntax unified
+  21              		.thumb
+  22              		.thumb_func
+  23              		.fpu softvfp
+  25              	AS5600_Init:
+  26              	.LVL0:
+  27              	.LFB29:
+  28              		.file 1 "../application/Src/as5600.c"
+   1:../application/Src/as5600.c **** /**
+   2:../application/Src/as5600.c ****   ******************************************************************************
+   3:../application/Src/as5600.c ****   * @file           : as5600.c
+   4:../application/Src/as5600.c ****   * @brief          : AS5600 magnetic encoder driver implementation
+   5:../application/Src/as5600.c **** 			
+   6:../application/Src/as5600.c **** 		FreeJoy software for game device controllers
+   7:../application/Src/as5600.c ****     Copyright (C) 2020  Yury Vostrenkov (yuvostrenkov@gmail.com)
+   8:../application/Src/as5600.c **** 
+   9:../application/Src/as5600.c ****     This program is free software: you can redistribute it and/or modify
+  10:../application/Src/as5600.c ****     it under the terms of the GNU General Public License as published by
+  11:../application/Src/as5600.c ****     the Free Software Foundation, either version 3 of the License, or
+  12:../application/Src/as5600.c ****     (at your option) any later version.
+  13:../application/Src/as5600.c **** 
+  14:../application/Src/as5600.c ****     This program is distributed in the hope that it will be useful,
+  15:../application/Src/as5600.c ****     but WITHOUT ANY WARRANTY; without even the implied warranty of
+  16:../application/Src/as5600.c ****     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  17:../application/Src/as5600.c ****     GNU General Public License for more details.
+  18:../application/Src/as5600.c **** 
+  19:../application/Src/as5600.c ****     You should have received a copy of the GNU General Public License
+  20:../application/Src/as5600.c ****     along with this program.  If not, see <https://www.gnu.org/licenses/>.
+  21:../application/Src/as5600.c **** 		
+  22:../application/Src/as5600.c ****   ******************************************************************************
+  23:../application/Src/as5600.c ****   */
+  24:../application/Src/as5600.c **** 
+  25:../application/Src/as5600.c **** #include "as5600.h"
+  26:../application/Src/as5600.c **** 
+  27:../application/Src/as5600.c **** /**
+  28:../application/Src/as5600.c ****   * @brief AS5600 init fuction
+  29:../application/Src/as5600.c ****   * @param sensor: Sensor struct
+  30:../application/Src/as5600.c **** 	* @param min: minimum calibrated value
+ARM GAS  /tmp/cce9Tu5I.s 			page 2
+
+
+  31:../application/Src/as5600.c **** 	* @param max: maximum calibrated value
+  32:../application/Src/as5600.c ****   * @retval None
+  33:../application/Src/as5600.c ****   */
+  34:../application/Src/as5600.c **** void AS5600_Init(sensor_t * sensor, uint16_t min, uint16_t max)
+  35:../application/Src/as5600.c **** {
+  29              		.loc 1 35 1 view -0
+  30              		.cfi_startproc
+  31              		@ args = 0, pretend = 0, frame = 0
+  32              		@ frame_needed = 0, uses_anonymous_args = 0
+  33              		@ link register save eliminated.
+  36:../application/Src/as5600.c **** //	int status;
+  37:../application/Src/as5600.c **** //	uint8_t tmp_buf[2];
+  38:../application/Src/as5600.c **** 
+  39:../application/Src/as5600.c **** //	tmp_buf[0] = min >> 8;
+  40:../application/Src/as5600.c **** //	tmp_buf[1] = min & 0x0F;
+  41:../application/Src/as5600.c **** //	status = I2C_WriteBlocking(sensor->address, 0x01, tmp_buf, 2);
+  42:../application/Src/as5600.c **** //	
+  43:../application/Src/as5600.c **** //	Delay_ms(2);
+  44:../application/Src/as5600.c **** //	
+  45:../application/Src/as5600.c **** //	tmp_buf[0] = max >> 8;
+  46:../application/Src/as5600.c **** //	tmp_buf[1] = max & 0x0F;
+  47:../application/Src/as5600.c **** //	status = I2C_WriteBlocking(sensor->address, 0x03, tmp_buf, 2);
+  48:../application/Src/as5600.c **** //	
+  49:../application/Src/as5600.c **** //	Delay_ms(2);
+  50:../application/Src/as5600.c **** }
+  34              		.loc 1 50 1 view .LVU1
+  35 0000 7047     		bx	lr
+  36              		.cfi_endproc
+  37              	.LFE29:
+  39 0002 00BF     		.section	.text.AS5600_GetRawData,"ax",%progbits
+  40              		.align	1
+  41              		.p2align 2,,3
+  42              		.global	AS5600_GetRawData
+  43              		.syntax unified
+  44              		.thumb
+  45              		.thumb_func
+  46              		.fpu softvfp
+  48              	AS5600_GetRawData:
+  49              	.LVL1:
+  50              	.LFB30:
+  51:../application/Src/as5600.c **** 
+  52:../application/Src/as5600.c **** 
+  53:../application/Src/as5600.c **** /**
+  54:../application/Src/as5600.c ****   * @brief AS5600 get raw measured data
+  55:../application/Src/as5600.c ****   * @param sensor: Sensor struct
+  56:../application/Src/as5600.c ****   * @retval data
+  57:../application/Src/as5600.c ****   */
+  58:../application/Src/as5600.c **** int16_t AS5600_GetRawData(sensor_t * sensor)
+  59:../application/Src/as5600.c **** {
+  51              		.loc 1 59 1 view -0
+  52              		.cfi_startproc
+  53              		@ args = 0, pretend = 0, frame = 0
+  54              		@ frame_needed = 0, uses_anonymous_args = 0
+  55              		@ link register save eliminated.
+  60:../application/Src/as5600.c **** 	return sensor->data[0]<<8|sensor->data[1];
+  56              		.loc 1 60 2 view .LVU3
+  57              		.loc 1 60 21 is_stmt 0 view .LVU4
+ARM GAS  /tmp/cce9Tu5I.s 			page 3
+
+
+  58 0000 837B     		ldrb	r3, [r0, #14]	@ zero_extendqisi2
+  59              		.loc 1 60 40 view .LVU5
+  60 0002 C07B     		ldrb	r0, [r0, #15]	@ zero_extendqisi2
+  61              	.LVL2:
+  62              		.loc 1 60 27 view .LVU6
+  63 0004 40EA0320 		orr	r0, r0, r3, lsl #8
+  61:../application/Src/as5600.c **** }
+  64              		.loc 1 61 1 view .LVU7
+  65 0008 00B2     		sxth	r0, r0
+  66 000a 7047     		bx	lr
+  67              		.cfi_endproc
+  68              	.LFE30:
+  70              		.section	.text.AS5600_GetScaledData,"ax",%progbits
+  71              		.align	1
+  72              		.p2align 2,,3
+  73              		.global	AS5600_GetScaledData
+  74              		.syntax unified
+  75              		.thumb
+  76              		.thumb_func
+  77              		.fpu softvfp
+  79              	AS5600_GetScaledData:
+  80              	.LVL3:
+  81              	.LFB31:
+  62:../application/Src/as5600.c **** 
+  63:../application/Src/as5600.c **** /**
+  64:../application/Src/as5600.c ****   * @brief AS5600 get scaled measured data
+  65:../application/Src/as5600.c ****   * @param sensor: Sensor struct
+  66:../application/Src/as5600.c ****   * @retval data
+  67:../application/Src/as5600.c ****   */
+  68:../application/Src/as5600.c **** int16_t AS5600_GetScaledData(sensor_t * sensor)
+  69:../application/Src/as5600.c **** {
+  82              		.loc 1 69 1 is_stmt 1 view -0
+  83              		.cfi_startproc
+  84              		@ args = 0, pretend = 0, frame = 0
+  85              		@ frame_needed = 0, uses_anonymous_args = 0
+  86              		@ link register save eliminated.
+  70:../application/Src/as5600.c **** 	return sensor->data[2]<<8|sensor->data[3];
+  87              		.loc 1 70 2 view .LVU9
+  88              		.loc 1 70 21 is_stmt 0 view .LVU10
+  89 0000 037C     		ldrb	r3, [r0, #16]	@ zero_extendqisi2
+  90              		.loc 1 70 40 view .LVU11
+  91 0002 407C     		ldrb	r0, [r0, #17]	@ zero_extendqisi2
+  92              	.LVL4:
+  93              		.loc 1 70 27 view .LVU12
+  94 0004 40EA0320 		orr	r0, r0, r3, lsl #8
+  71:../application/Src/as5600.c **** }
+  95              		.loc 1 71 1 view .LVU13
+  96 0008 00B2     		sxth	r0, r0
+  97 000a 7047     		bx	lr
+  98              		.cfi_endproc
+  99              	.LFE31:
+ 101              		.section	.text.AS5600_ReadBlocking,"ax",%progbits
+ 102              		.align	1
+ 103              		.p2align 2,,3
+ 104              		.global	AS5600_ReadBlocking
+ 105              		.syntax unified
+ 106              		.thumb
+ARM GAS  /tmp/cce9Tu5I.s 			page 4
+
+
+ 107              		.thumb_func
+ 108              		.fpu softvfp
+ 110              	AS5600_ReadBlocking:
+ 111              	.LVL5:
+ 112              	.LFB32:
+  72:../application/Src/as5600.c **** 
+  73:../application/Src/as5600.c **** /**
+  74:../application/Src/as5600.c ****   * @brief AS5600 start processing data in blocking mode
+  75:../application/Src/as5600.c ****   * @param sensor: Sensor struct
+  76:../application/Src/as5600.c ****   * @retval status
+  77:../application/Src/as5600.c ****   */
+  78:../application/Src/as5600.c **** int AS5600_ReadBlocking(sensor_t * sensor)
+  79:../application/Src/as5600.c **** {
+ 113              		.loc 1 79 1 is_stmt 1 view -0
+ 114              		.cfi_startproc
+ 115              		@ args = 0, pretend = 0, frame = 8
+ 116              		@ frame_needed = 0, uses_anonymous_args = 0
+  80:../application/Src/as5600.c **** 	int ret;	
+ 117              		.loc 1 80 2 view .LVU15
+  81:../application/Src/as5600.c **** 	uint8_t tmp_buf[4];
+ 118              		.loc 1 81 2 view .LVU16
+  82:../application/Src/as5600.c **** 	
+  83:../application/Src/as5600.c **** 	ret = I2C_ReadBlocking(sensor->address, 0x0C, tmp_buf, 4, 1);
+ 119              		.loc 1 83 2 view .LVU17
+ 120              		.loc 1 83 8 is_stmt 0 view .LVU18
+ 121 0000 0123     		movs	r3, #1
+  79:../application/Src/as5600.c **** 	int ret;	
+ 122              		.loc 1 79 1 view .LVU19
+ 123 0002 10B5     		push	{r4, lr}
+ 124              	.LCFI0:
+ 125              		.cfi_def_cfa_offset 8
+ 126              		.cfi_offset 4, -8
+ 127              		.cfi_offset 14, -4
+ 128 0004 84B0     		sub	sp, sp, #16
+ 129              	.LCFI1:
+ 130              		.cfi_def_cfa_offset 24
+ 131              		.loc 1 83 8 view .LVU20
+ 132 0006 0093     		str	r3, [sp]
+  79:../application/Src/as5600.c **** 	int ret;	
+ 133              		.loc 1 79 1 view .LVU21
+ 134 0008 0446     		mov	r4, r0
+ 135              		.loc 1 83 8 view .LVU22
+ 136 000a 0423     		movs	r3, #4
+ 137 000c 0C21     		movs	r1, #12
+ 138 000e 407B     		ldrb	r0, [r0, #13]	@ zero_extendqisi2
+ 139              	.LVL6:
+ 140              		.loc 1 83 8 view .LVU23
+ 141 0010 03AA     		add	r2, sp, #12
+ 142 0012 FFF7FEFF 		bl	I2C_ReadBlocking
+ 143              	.LVL7:
+  84:../application/Src/as5600.c **** 	
+  85:../application/Src/as5600.c **** 	if (ret == 0 ) 
+ 144              		.loc 1 85 2 is_stmt 1 view .LVU24
+ 145              		.loc 1 85 5 is_stmt 0 view .LVU25
+ 146 0016 38B9     		cbnz	r0, .L6
+  86:../application/Src/as5600.c **** 	{
+  87:../application/Src/as5600.c **** 		memcpy(&sensor->data[0], tmp_buf, 4);
+ARM GAS  /tmp/cce9Tu5I.s 			page 5
+
+
+ 147              		.loc 1 87 3 is_stmt 1 view .LVU26
+  88:../application/Src/as5600.c **** 		sensor->ok_cnt++;
+ 148              		.loc 1 88 17 is_stmt 0 view .LVU27
+ 149 0018 2368     		ldr	r3, [r4]
+  87:../application/Src/as5600.c **** 		sensor->ok_cnt++;
+ 150              		.loc 1 87 3 view .LVU28
+ 151 001a 039A     		ldr	r2, [sp, #12]
+ 152              		.loc 1 88 17 view .LVU29
+ 153 001c 0133     		adds	r3, r3, #1
+ 154 001e 2360     		str	r3, [r4]
+  87:../application/Src/as5600.c **** 		sensor->ok_cnt++;
+ 155              		.loc 1 87 3 view .LVU30
+ 156 0020 C4F80E20 		str	r2, [r4, #14]	@ unaligned
+ 157              		.loc 1 88 3 is_stmt 1 view .LVU31
+  89:../application/Src/as5600.c **** 	}
+  90:../application/Src/as5600.c **** 	else sensor->err_cnt++;
+  91:../application/Src/as5600.c **** 	
+  92:../application/Src/as5600.c **** 	return ret;
+  93:../application/Src/as5600.c **** }
+ 158              		.loc 1 93 1 is_stmt 0 view .LVU32
+ 159 0024 04B0     		add	sp, sp, #16
+ 160              	.LCFI2:
+ 161              		.cfi_remember_state
+ 162              		.cfi_def_cfa_offset 8
+ 163              		@ sp needed
+ 164 0026 10BD     		pop	{r4, pc}
+ 165              	.LVL8:
+ 166              	.L6:
+ 167              	.LCFI3:
+ 168              		.cfi_restore_state
+  90:../application/Src/as5600.c **** 	
+ 169              		.loc 1 90 7 is_stmt 1 view .LVU33
+  90:../application/Src/as5600.c **** 	
+ 170              		.loc 1 90 22 is_stmt 0 view .LVU34
+ 171 0028 6368     		ldr	r3, [r4, #4]
+ 172 002a 0133     		adds	r3, r3, #1
+ 173 002c 6360     		str	r3, [r4, #4]
+  92:../application/Src/as5600.c **** }
+ 174              		.loc 1 92 2 is_stmt 1 view .LVU35
+ 175              		.loc 1 93 1 is_stmt 0 view .LVU36
+ 176 002e 04B0     		add	sp, sp, #16
+ 177              	.LCFI4:
+ 178              		.cfi_def_cfa_offset 8
+ 179              		@ sp needed
+ 180 0030 10BD     		pop	{r4, pc}
+ 181              		.loc 1 93 1 view .LVU37
+ 182              		.cfi_endproc
+ 183              	.LFE32:
+ 185 0032 00BF     		.section	.text.AS5600_StartDMA,"ax",%progbits
+ 186              		.align	1
+ 187              		.p2align 2,,3
+ 188              		.global	AS5600_StartDMA
+ 189              		.syntax unified
+ 190              		.thumb
+ 191              		.thumb_func
+ 192              		.fpu softvfp
+ 194              	AS5600_StartDMA:
+ARM GAS  /tmp/cce9Tu5I.s 			page 6
+
+
+ 195              	.LVL9:
+ 196              	.LFB33:
+  94:../application/Src/as5600.c **** 
+  95:../application/Src/as5600.c **** /**
+  96:../application/Src/as5600.c ****   * @brief AS5600 start processing data in DMA mode
+  97:../application/Src/as5600.c ****   * @param sensor: Sensor struct
+  98:../application/Src/as5600.c ****   * @retval status
+  99:../application/Src/as5600.c ****   */
+ 100:../application/Src/as5600.c **** int AS5600_StartDMA(sensor_t * sensor)
+ 101:../application/Src/as5600.c **** {
+ 197              		.loc 1 101 1 is_stmt 1 view -0
+ 198              		.cfi_startproc
+ 199              		@ args = 0, pretend = 0, frame = 0
+ 200              		@ frame_needed = 0, uses_anonymous_args = 0
+ 102:../application/Src/as5600.c **** 	int ret;	
+ 201              		.loc 1 102 2 view .LVU39
+ 103:../application/Src/as5600.c **** 	
+ 104:../application/Src/as5600.c **** 	sensor->rx_complete = 0;	
+ 202              		.loc 1 104 2 view .LVU40
+ 101:../application/Src/as5600.c **** 	int ret;	
+ 203              		.loc 1 101 1 is_stmt 0 view .LVU41
+ 204 0000 30B5     		push	{r4, r5, lr}
+ 205              	.LCFI5:
+ 206              		.cfi_def_cfa_offset 12
+ 207              		.cfi_offset 4, -12
+ 208              		.cfi_offset 5, -8
+ 209              		.cfi_offset 14, -4
+ 210              		.loc 1 104 22 view .LVU42
+ 211 0002 0023     		movs	r3, #0
+ 105:../application/Src/as5600.c **** 	ret = I2C_ReadNonBlocking(sensor->address, 0x0C, &sensor->data[0], 4, 1);
+ 212              		.loc 1 105 8 view .LVU43
+ 213 0004 0125     		movs	r5, #1
+ 101:../application/Src/as5600.c **** 	int ret;	
+ 214              		.loc 1 101 1 view .LVU44
+ 215 0006 83B0     		sub	sp, sp, #12
+ 216              	.LCFI6:
+ 217              		.cfi_def_cfa_offset 24
+ 104:../application/Src/as5600.c **** 	ret = I2C_ReadNonBlocking(sensor->address, 0x0C, &sensor->data[0], 4, 1);
+ 218              		.loc 1 104 22 view .LVU45
+ 219 0008 0372     		strb	r3, [r0, #8]
+ 220              		.loc 1 105 2 is_stmt 1 view .LVU46
+ 101:../application/Src/as5600.c **** 	int ret;	
+ 221              		.loc 1 101 1 is_stmt 0 view .LVU47
+ 222 000a 0446     		mov	r4, r0
+ 223              		.loc 1 105 8 view .LVU48
+ 224 000c 00F10E02 		add	r2, r0, #14
+ 225 0010 0423     		movs	r3, #4
+ 226 0012 407B     		ldrb	r0, [r0, #13]	@ zero_extendqisi2
+ 227              	.LVL10:
+ 228              		.loc 1 105 8 view .LVU49
+ 229 0014 0C21     		movs	r1, #12
+ 230 0016 0095     		str	r5, [sp]
+ 231 0018 FFF7FEFF 		bl	I2C_ReadNonBlocking
+ 232              	.LVL11:
+ 106:../application/Src/as5600.c **** 	
+ 107:../application/Src/as5600.c **** 	if (ret != 0 )
+ 233              		.loc 1 107 2 is_stmt 1 view .LVU50
+ARM GAS  /tmp/cce9Tu5I.s 			page 7
+
+
+ 234              		.loc 1 107 5 is_stmt 0 view .LVU51
+ 235 001c 18B1     		cbz	r0, .L9
+ 108:../application/Src/as5600.c **** 	{
+ 109:../application/Src/as5600.c **** 		sensor->err_cnt++;
+ 236              		.loc 1 109 3 is_stmt 1 view .LVU52
+ 237              		.loc 1 109 18 is_stmt 0 view .LVU53
+ 238 001e 6368     		ldr	r3, [r4, #4]
+ 110:../application/Src/as5600.c **** 		sensor->rx_complete = 1;
+ 239              		.loc 1 110 23 view .LVU54
+ 240 0020 2572     		strb	r5, [r4, #8]
+ 109:../application/Src/as5600.c **** 		sensor->rx_complete = 1;
+ 241              		.loc 1 109 18 view .LVU55
+ 242 0022 2B44     		add	r3, r3, r5
+ 243 0024 6360     		str	r3, [r4, #4]
+ 244              		.loc 1 110 3 is_stmt 1 view .LVU56
+ 111:../application/Src/as5600.c **** 	}
+ 112:../application/Src/as5600.c **** 	
+ 113:../application/Src/as5600.c **** 	return ret;
+ 245              		.loc 1 113 2 view .LVU57
+ 246              	.L9:
+ 114:../application/Src/as5600.c **** }
+ 247              		.loc 1 114 1 is_stmt 0 view .LVU58
+ 248 0026 03B0     		add	sp, sp, #12
+ 249              	.LCFI7:
+ 250              		.cfi_def_cfa_offset 12
+ 251              		@ sp needed
+ 252 0028 30BD     		pop	{r4, r5, pc}
+ 253              		.loc 1 114 1 view .LVU59
+ 254              		.cfi_endproc
+ 255              	.LFE33:
+ 257 002a 00BF     		.text
+ 258              	.Letext0:
+ 259              		.file 2 "/usr/lib/gcc/arm-none-eabi/9.2.1/include/stdint.h"
+ 260              		.file 3 "../application/Inc/common_types.h"
+ 261              		.file 4 "../Drivers/CMSIS/CM3/CoreSupport/core_cm3.h"
+ 262              		.file 5 "../Drivers/CMSIS/CM3/DeviceSupport/ST/STM32F10x/system_stm32f10x.h"
+ 263              		.file 6 "../Drivers/CMSIS/CM3/DeviceSupport/ST/STM32F10x/stm32f10x.h"
+ 264              		.file 7 "/usr/lib/gcc/arm-none-eabi/9.2.1/include/stddef.h"
+ 265              		.file 8 "/usr/include/newlib/sys/_types.h"
+ 266              		.file 9 "/usr/include/newlib/sys/reent.h"
+ 267              		.file 10 "/usr/include/newlib/sys/lock.h"
+ 268              		.file 11 "../application/Inc/periphery.h"
+ 269              		.file 12 "../application/Inc/i2c.h"
+ARM GAS  /tmp/cce9Tu5I.s 			page 8
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 as5600.c
+     /tmp/cce9Tu5I.s:16     .text.AS5600_Init:0000000000000000 $t
+     /tmp/cce9Tu5I.s:25     .text.AS5600_Init:0000000000000000 AS5600_Init
+     /tmp/cce9Tu5I.s:40     .text.AS5600_GetRawData:0000000000000000 $t
+     /tmp/cce9Tu5I.s:48     .text.AS5600_GetRawData:0000000000000000 AS5600_GetRawData
+     /tmp/cce9Tu5I.s:71     .text.AS5600_GetScaledData:0000000000000000 $t
+     /tmp/cce9Tu5I.s:79     .text.AS5600_GetScaledData:0000000000000000 AS5600_GetScaledData
+     /tmp/cce9Tu5I.s:102    .text.AS5600_ReadBlocking:0000000000000000 $t
+     /tmp/cce9Tu5I.s:110    .text.AS5600_ReadBlocking:0000000000000000 AS5600_ReadBlocking
+     /tmp/cce9Tu5I.s:186    .text.AS5600_StartDMA:0000000000000000 $t
+     /tmp/cce9Tu5I.s:194    .text.AS5600_StartDMA:0000000000000000 AS5600_StartDMA
+
+UNDEFINED SYMBOLS
+I2C_ReadBlocking
+I2C_ReadNonBlocking

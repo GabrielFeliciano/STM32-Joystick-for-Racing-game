@@ -1,0 +1,1558 @@
+ARM GAS  /tmp/ccAtXbbj.s 			page 1
+
+
+   1              		.cpu cortex-m3
+   2              		.eabi_attribute 20, 1
+   3              		.eabi_attribute 21, 1
+   4              		.eabi_attribute 23, 3
+   5              		.eabi_attribute 24, 1
+   6              		.eabi_attribute 25, 1
+   7              		.eabi_attribute 26, 1
+   8              		.eabi_attribute 30, 4
+   9              		.eabi_attribute 34, 1
+  10              		.eabi_attribute 18, 4
+  11              		.file	"core_cm3.c"
+  12              		.text
+  13              	.Ltext0:
+  14              		.cfi_sections	.debug_frame
+  15              		.section	.text.__get_PSP,"ax",%progbits
+  16              		.align	1
+  17              		.global	__get_PSP
+  18              		.arch armv7-m
+  19              		.syntax unified
+  20              		.thumb
+  21              		.thumb_func
+  22              		.fpu softvfp
+  24              	__get_PSP:
+  25              	.LFB0:
+  26              		.file 1 "../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c"
+   1:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** /**************************************************************************//**
+   2:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * @file     core_cm3.c
+   3:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * @brief    CMSIS Cortex-M3 Core Peripheral Access Layer Source File
+   4:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * @version  V1.30
+   5:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * @date     30. October 2009
+   6:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  *
+   7:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * @note
+   8:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * Copyright (C) 2009 ARM Limited. All rights reserved.
+   9:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  *
+  10:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * @par
+  11:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * ARM Limited (ARM) is supplying this software for use with Cortex-M 
+  12:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * processor based microcontrollers.  This file can be freely distributed 
+  13:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * within development tools that are supporting such ARM based processors. 
+  14:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  *
+  15:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * @par
+  16:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * THIS SOFTWARE IS PROVIDED "AS IS".  NO WARRANTIES, WHETHER EXPRESS, IMPLIED
+  17:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * OR STATUTORY, INCLUDING, BUT NOT LIMITED TO, IMPLIED WARRANTIES OF
+  18:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE APPLY TO THIS SOFTWARE.
+  19:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * ARM SHALL NOT, IN ANY CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR
+  20:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * CONSEQUENTIAL DAMAGES, FOR ANY REASON WHATSOEVER.
+  21:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  *
+  22:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  ******************************************************************************/
+  23:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** 
+  24:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** #include <stdint.h>
+  25:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** 
+  26:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** /* define compiler specific symbols */
+  27:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** #if defined ( __CC_ARM   )
+  28:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****   #define __ASM            __asm                                      /*!< asm keyword for ARM Comp
+  29:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****   #define __INLINE         __inline                                   /*!< inline keyword for ARM C
+  30:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** 
+  31:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** #elif defined ( __ICCARM__ )
+  32:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****   #define __ASM           __asm                                       /*!< asm keyword for IAR Comp
+ARM GAS  /tmp/ccAtXbbj.s 			page 2
+
+
+  33:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****   #define __INLINE        inline                                      /*!< inline keyword for IAR C
+  34:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** 
+  35:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** #elif defined   (  __GNUC__  )
+  36:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****   #define __ASM            __asm                                      /*!< asm keyword for GNU Comp
+  37:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****   #define __INLINE         inline                                     /*!< inline keyword for GNU C
+  38:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** 
+  39:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** #elif defined   (  __TASKING__  )
+  40:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****   #define __ASM            __asm                                      /*!< asm keyword for TASKING 
+  41:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****   #define __INLINE         inline                                     /*!< inline keyword for TASKI
+  42:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** 
+  43:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** #endif
+  44:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** 
+  45:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** 
+  46:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** /* ###################  Compiler specific Intrinsics  ########################### */
+  47:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** 
+  48:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** #if defined ( __CC_ARM   ) /*------------------RealView Compiler -----------------*/
+  49:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** /* ARM armcc specific functions */
+  50:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** 
+  51:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** /**
+  52:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * @brief  Return the Process Stack Pointer
+  53:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  *
+  54:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * @return ProcessStackPointer
+  55:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  *
+  56:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * Return the actual process stack pointer
+  57:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  */
+  58:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** __ASM uint32_t __get_PSP(void)
+  59:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** {
+  60:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****   mrs r0, psp
+  61:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****   bx lr
+  62:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** }
+  63:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** 
+  64:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** /**
+  65:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * @brief  Set the Process Stack Pointer
+  66:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  *
+  67:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * @param  topOfProcStack  Process Stack Pointer
+  68:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  *
+  69:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * Assign the value ProcessStackPointer to the MSP 
+  70:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * (process stack pointer) Cortex processor register
+  71:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  */
+  72:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** __ASM void __set_PSP(uint32_t topOfProcStack)
+  73:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** {
+  74:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****   msr psp, r0
+  75:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****   bx lr
+  76:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** }
+  77:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** 
+  78:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** /**
+  79:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * @brief  Return the Main Stack Pointer
+  80:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  *
+  81:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * @return Main Stack Pointer
+  82:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  *
+  83:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * Return the current value of the MSP (main stack pointer)
+  84:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * Cortex processor register
+  85:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  */
+  86:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** __ASM uint32_t __get_MSP(void)
+  87:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** {
+  88:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****   mrs r0, msp
+  89:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****   bx lr
+ARM GAS  /tmp/ccAtXbbj.s 			page 3
+
+
+  90:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** }
+  91:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** 
+  92:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** /**
+  93:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * @brief  Set the Main Stack Pointer
+  94:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  *
+  95:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * @param  topOfMainStack  Main Stack Pointer
+  96:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  *
+  97:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * Assign the value mainStackPointer to the MSP 
+  98:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * (main stack pointer) Cortex processor register
+  99:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  */
+ 100:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** __ASM void __set_MSP(uint32_t mainStackPointer)
+ 101:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** {
+ 102:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****   msr msp, r0
+ 103:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****   bx lr
+ 104:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** }
+ 105:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** 
+ 106:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** /**
+ 107:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * @brief  Reverse byte order in unsigned short value
+ 108:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  *
+ 109:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * @param   value  value to reverse
+ 110:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * @return         reversed value
+ 111:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  *
+ 112:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * Reverse byte order in unsigned short value
+ 113:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  */
+ 114:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** __ASM uint32_t __REV16(uint16_t value)
+ 115:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** {
+ 116:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****   rev16 r0, r0
+ 117:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****   bx lr
+ 118:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** }
+ 119:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** 
+ 120:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** /**
+ 121:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * @brief  Reverse byte order in signed short value with sign extension to integer
+ 122:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  *
+ 123:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * @param   value  value to reverse
+ 124:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * @return         reversed value
+ 125:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  *
+ 126:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * Reverse byte order in signed short value with sign extension to integer
+ 127:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  */
+ 128:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** __ASM int32_t __REVSH(int16_t value)
+ 129:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** {
+ 130:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****   revsh r0, r0
+ 131:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****   bx lr
+ 132:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** }
+ 133:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** 
+ 134:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** 
+ 135:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** #if (__ARMCC_VERSION < 400000)
+ 136:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** 
+ 137:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** /**
+ 138:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * @brief  Remove the exclusive lock created by ldrex
+ 139:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  *
+ 140:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * Removes the exclusive lock which is created by ldrex.
+ 141:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  */
+ 142:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** __ASM void __CLREX(void)
+ 143:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** {
+ 144:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****   clrex
+ 145:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** }
+ 146:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** 
+ARM GAS  /tmp/ccAtXbbj.s 			page 4
+
+
+ 147:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** /**
+ 148:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * @brief  Return the Base Priority value
+ 149:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  *
+ 150:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * @return BasePriority
+ 151:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  *
+ 152:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * Return the content of the base priority register
+ 153:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  */
+ 154:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** __ASM uint32_t  __get_BASEPRI(void)
+ 155:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** {
+ 156:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****   mrs r0, basepri
+ 157:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****   bx lr
+ 158:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** }
+ 159:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** 
+ 160:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** /**
+ 161:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * @brief  Set the Base Priority value
+ 162:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  *
+ 163:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * @param  basePri  BasePriority
+ 164:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  *
+ 165:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * Set the base priority register
+ 166:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  */
+ 167:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** __ASM void __set_BASEPRI(uint32_t basePri)
+ 168:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** {
+ 169:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****   msr basepri, r0
+ 170:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****   bx lr
+ 171:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** }
+ 172:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** 
+ 173:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** /**
+ 174:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * @brief  Return the Priority Mask value
+ 175:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  *
+ 176:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * @return PriMask
+ 177:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  *
+ 178:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * Return state of the priority mask bit from the priority mask register
+ 179:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  */
+ 180:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** __ASM uint32_t __get_PRIMASK(void)
+ 181:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** {
+ 182:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****   mrs r0, primask
+ 183:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****   bx lr
+ 184:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** }
+ 185:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** 
+ 186:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** /**
+ 187:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * @brief  Set the Priority Mask value
+ 188:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  *
+ 189:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * @param  priMask  PriMask
+ 190:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  *
+ 191:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * Set the priority mask bit in the priority mask register
+ 192:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  */
+ 193:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** __ASM void __set_PRIMASK(uint32_t priMask)
+ 194:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** {
+ 195:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****   msr primask, r0
+ 196:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****   bx lr
+ 197:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** }
+ 198:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** 
+ 199:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** /**
+ 200:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * @brief  Return the Fault Mask value
+ 201:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  *
+ 202:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * @return FaultMask
+ 203:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  *
+ARM GAS  /tmp/ccAtXbbj.s 			page 5
+
+
+ 204:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * Return the content of the fault mask register
+ 205:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  */
+ 206:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** __ASM uint32_t  __get_FAULTMASK(void)
+ 207:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** {
+ 208:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****   mrs r0, faultmask
+ 209:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****   bx lr
+ 210:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** }
+ 211:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** 
+ 212:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** /**
+ 213:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * @brief  Set the Fault Mask value
+ 214:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  *
+ 215:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * @param  faultMask  faultMask value
+ 216:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  *
+ 217:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * Set the fault mask register
+ 218:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  */
+ 219:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** __ASM void __set_FAULTMASK(uint32_t faultMask)
+ 220:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** {
+ 221:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****   msr faultmask, r0
+ 222:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****   bx lr
+ 223:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** }
+ 224:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** 
+ 225:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** /**
+ 226:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * @brief  Return the Control Register value
+ 227:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * 
+ 228:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * @return Control value
+ 229:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  *
+ 230:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * Return the content of the control register
+ 231:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  */
+ 232:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** __ASM uint32_t __get_CONTROL(void)
+ 233:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** {
+ 234:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****   mrs r0, control
+ 235:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****   bx lr
+ 236:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** }
+ 237:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** 
+ 238:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** /**
+ 239:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * @brief  Set the Control Register value
+ 240:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  *
+ 241:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * @param  control  Control value
+ 242:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  *
+ 243:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * Set the control register
+ 244:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  */
+ 245:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** __ASM void __set_CONTROL(uint32_t control)
+ 246:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** {
+ 247:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****   msr control, r0
+ 248:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****   bx lr
+ 249:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** }
+ 250:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** 
+ 251:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** #endif /* __ARMCC_VERSION  */ 
+ 252:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** 
+ 253:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** 
+ 254:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** 
+ 255:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** #elif (defined (__ICCARM__)) /*------------------ ICC Compiler -------------------*/
+ 256:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** /* IAR iccarm specific functions */
+ 257:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** #pragma diag_suppress=Pe940
+ 258:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** 
+ 259:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** /**
+ 260:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * @brief  Return the Process Stack Pointer
+ARM GAS  /tmp/ccAtXbbj.s 			page 6
+
+
+ 261:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  *
+ 262:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * @return ProcessStackPointer
+ 263:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  *
+ 264:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * Return the actual process stack pointer
+ 265:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  */
+ 266:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** uint32_t __get_PSP(void)
+ 267:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** {
+ 268:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****   __ASM("mrs r0, psp");
+ 269:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****   __ASM("bx lr");
+ 270:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** }
+ 271:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** 
+ 272:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** /**
+ 273:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * @brief  Set the Process Stack Pointer
+ 274:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  *
+ 275:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * @param  topOfProcStack  Process Stack Pointer
+ 276:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  *
+ 277:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * Assign the value ProcessStackPointer to the MSP 
+ 278:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * (process stack pointer) Cortex processor register
+ 279:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  */
+ 280:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** void __set_PSP(uint32_t topOfProcStack)
+ 281:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** {
+ 282:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****   __ASM("msr psp, r0");
+ 283:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****   __ASM("bx lr");
+ 284:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** }
+ 285:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** 
+ 286:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** /**
+ 287:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * @brief  Return the Main Stack Pointer
+ 288:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  *
+ 289:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * @return Main Stack Pointer
+ 290:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  *
+ 291:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * Return the current value of the MSP (main stack pointer)
+ 292:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * Cortex processor register
+ 293:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  */
+ 294:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** uint32_t __get_MSP(void)
+ 295:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** {
+ 296:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****   __ASM("mrs r0, msp");
+ 297:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****   __ASM("bx lr");
+ 298:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** }
+ 299:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** 
+ 300:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** /**
+ 301:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * @brief  Set the Main Stack Pointer
+ 302:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  *
+ 303:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * @param  topOfMainStack  Main Stack Pointer
+ 304:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  *
+ 305:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * Assign the value mainStackPointer to the MSP 
+ 306:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * (main stack pointer) Cortex processor register
+ 307:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  */
+ 308:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** void __set_MSP(uint32_t topOfMainStack)
+ 309:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** {
+ 310:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****   __ASM("msr msp, r0");
+ 311:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****   __ASM("bx lr");
+ 312:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** }
+ 313:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** 
+ 314:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** /**
+ 315:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * @brief  Reverse byte order in unsigned short value
+ 316:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  *
+ 317:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * @param  value  value to reverse
+ARM GAS  /tmp/ccAtXbbj.s 			page 7
+
+
+ 318:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * @return        reversed value
+ 319:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  *
+ 320:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * Reverse byte order in unsigned short value
+ 321:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  */
+ 322:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** uint32_t __REV16(uint16_t value)
+ 323:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** {
+ 324:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****   __ASM("rev16 r0, r0");
+ 325:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****   __ASM("bx lr");
+ 326:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** }
+ 327:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** 
+ 328:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** /**
+ 329:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * @brief  Reverse bit order of value
+ 330:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  *
+ 331:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * @param  value  value to reverse
+ 332:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * @return        reversed value
+ 333:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  *
+ 334:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * Reverse bit order of value
+ 335:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  */
+ 336:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** uint32_t __RBIT(uint32_t value)
+ 337:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** {
+ 338:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****   __ASM("rbit r0, r0");
+ 339:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****   __ASM("bx lr");
+ 340:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** }
+ 341:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** 
+ 342:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** /**
+ 343:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * @brief  LDR Exclusive (8 bit)
+ 344:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  *
+ 345:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * @param  *addr  address pointer
+ 346:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * @return        value of (*address)
+ 347:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  *
+ 348:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * Exclusive LDR command for 8 bit values)
+ 349:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  */
+ 350:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** uint8_t __LDREXB(uint8_t *addr)
+ 351:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** {
+ 352:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****   __ASM("ldrexb r0, [r0]");
+ 353:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****   __ASM("bx lr"); 
+ 354:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** }
+ 355:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** 
+ 356:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** /**
+ 357:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * @brief  LDR Exclusive (16 bit)
+ 358:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  *
+ 359:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * @param  *addr  address pointer
+ 360:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * @return        value of (*address)
+ 361:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  *
+ 362:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * Exclusive LDR command for 16 bit values
+ 363:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  */
+ 364:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** uint16_t __LDREXH(uint16_t *addr)
+ 365:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** {
+ 366:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****   __ASM("ldrexh r0, [r0]");
+ 367:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****   __ASM("bx lr");
+ 368:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** }
+ 369:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** 
+ 370:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** /**
+ 371:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * @brief  LDR Exclusive (32 bit)
+ 372:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  *
+ 373:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * @param  *addr  address pointer
+ 374:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * @return        value of (*address)
+ARM GAS  /tmp/ccAtXbbj.s 			page 8
+
+
+ 375:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  *
+ 376:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * Exclusive LDR command for 32 bit values
+ 377:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  */
+ 378:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** uint32_t __LDREXW(uint32_t *addr)
+ 379:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** {
+ 380:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****   __ASM("ldrex r0, [r0]");
+ 381:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****   __ASM("bx lr");
+ 382:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** }
+ 383:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** 
+ 384:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** /**
+ 385:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * @brief  STR Exclusive (8 bit)
+ 386:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  *
+ 387:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * @param  value  value to store
+ 388:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * @param  *addr  address pointer
+ 389:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * @return        successful / failed
+ 390:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  *
+ 391:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * Exclusive STR command for 8 bit values
+ 392:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  */
+ 393:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** uint32_t __STREXB(uint8_t value, uint8_t *addr)
+ 394:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** {
+ 395:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****   __ASM("strexb r0, r0, [r1]");
+ 396:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****   __ASM("bx lr");
+ 397:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** }
+ 398:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** 
+ 399:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** /**
+ 400:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * @brief  STR Exclusive (16 bit)
+ 401:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  *
+ 402:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * @param  value  value to store
+ 403:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * @param  *addr  address pointer
+ 404:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * @return        successful / failed
+ 405:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  *
+ 406:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * Exclusive STR command for 16 bit values
+ 407:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  */
+ 408:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** uint32_t __STREXH(uint16_t value, uint16_t *addr)
+ 409:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** {
+ 410:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****   __ASM("strexh r0, r0, [r1]");
+ 411:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****   __ASM("bx lr");
+ 412:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** }
+ 413:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** 
+ 414:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** /**
+ 415:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * @brief  STR Exclusive (32 bit)
+ 416:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  *
+ 417:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * @param  value  value to store
+ 418:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * @param  *addr  address pointer
+ 419:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * @return        successful / failed
+ 420:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  *
+ 421:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * Exclusive STR command for 32 bit values
+ 422:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  */
+ 423:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** uint32_t __STREXW(uint32_t value, uint32_t *addr)
+ 424:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** {
+ 425:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****   __ASM("strex r0, r0, [r1]");
+ 426:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****   __ASM("bx lr");
+ 427:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** }
+ 428:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** 
+ 429:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** #pragma diag_default=Pe940
+ 430:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** 
+ 431:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** 
+ARM GAS  /tmp/ccAtXbbj.s 			page 9
+
+
+ 432:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** #elif (defined (__GNUC__)) /*------------------ GNU Compiler ---------------------*/
+ 433:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** /* GNU gcc specific functions */
+ 434:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** 
+ 435:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** /**
+ 436:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * @brief  Return the Process Stack Pointer
+ 437:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  *
+ 438:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * @return ProcessStackPointer
+ 439:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  *
+ 440:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * Return the actual process stack pointer
+ 441:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  */
+ 442:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** uint32_t __get_PSP(void) __attribute__( ( naked ) );
+ 443:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** uint32_t __get_PSP(void)
+ 444:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** {
+  27              		.loc 1 444 1 view -0
+  28              		.cfi_startproc
+  29              		@ Naked Function: prologue and epilogue provided by programmer.
+  30              		@ args = 0, pretend = 0, frame = 0
+  31              		@ frame_needed = 0, uses_anonymous_args = 0
+ 445:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****   uint32_t result=0;
+  32              		.loc 1 445 3 view .LVU1
+  33              	.LVL0:
+ 446:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** 
+ 447:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****   __ASM volatile ("MRS %0, psp\n\t" 
+  34              		.loc 1 447 3 view .LVU2
+  35              		.syntax unified
+  36              	@ 447 "../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c" 1
+  37 0000 EFF30980 		MRS r0, psp
+  38 0004 0046     		MOV r0, r0 
+  39 0006 7047     		BX  lr     
+  40              		
+  41              	@ 0 "" 2
+  42              	.LVL1:
+ 448:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****                   "MOV r0, %0 \n\t"
+ 449:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****                   "BX  lr     \n\t"  : "=r" (result) );
+ 450:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****   return(result);
+  43              		.loc 1 450 3 view .LVU3
+ 451:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** }
+  44              		.loc 1 451 1 is_stmt 0 view .LVU4
+  45              		.thumb
+  46              		.syntax unified
+  47              		.cfi_endproc
+  48              	.LFE0:
+  50              		.section	.text.__set_PSP,"ax",%progbits
+  51              		.align	1
+  52              		.global	__set_PSP
+  53              		.syntax unified
+  54              		.thumb
+  55              		.thumb_func
+  56              		.fpu softvfp
+  58              	__set_PSP:
+  59              	.LVL2:
+  60              	.LFB1:
+ 452:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** 
+ 453:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** /**
+ 454:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * @brief  Set the Process Stack Pointer
+ 455:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  *
+ 456:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * @param  topOfProcStack  Process Stack Pointer
+ARM GAS  /tmp/ccAtXbbj.s 			page 10
+
+
+ 457:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  *
+ 458:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * Assign the value ProcessStackPointer to the MSP 
+ 459:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * (process stack pointer) Cortex processor register
+ 460:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  */
+ 461:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** void __set_PSP(uint32_t topOfProcStack) __attribute__( ( naked ) );
+ 462:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** void __set_PSP(uint32_t topOfProcStack)
+ 463:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** {
+  61              		.loc 1 463 1 is_stmt 1 view -0
+  62              		.cfi_startproc
+  63              		@ Naked Function: prologue and epilogue provided by programmer.
+  64              		@ args = 0, pretend = 0, frame = 0
+  65              		@ frame_needed = 0, uses_anonymous_args = 0
+ 464:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****   __ASM volatile ("MSR psp, %0\n\t"
+  66              		.loc 1 464 3 view .LVU6
+  67              		.syntax unified
+  68              	@ 464 "../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c" 1
+  69 0000 80F30988 		MSR psp, r0
+  70 0004 7047     		BX  lr     
+  71              		
+  72              	@ 0 "" 2
+ 465:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****                   "BX  lr     \n\t" : : "r" (topOfProcStack) );
+ 466:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** }
+  73              		.loc 1 466 1 is_stmt 0 view .LVU7
+  74              		.thumb
+  75              		.syntax unified
+  76              		.cfi_endproc
+  77              	.LFE1:
+  79              		.section	.text.__get_MSP,"ax",%progbits
+  80              		.align	1
+  81              		.global	__get_MSP
+  82              		.syntax unified
+  83              		.thumb
+  84              		.thumb_func
+  85              		.fpu softvfp
+  87              	__get_MSP:
+  88              	.LFB2:
+ 467:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** 
+ 468:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** /**
+ 469:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * @brief  Return the Main Stack Pointer
+ 470:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  *
+ 471:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * @return Main Stack Pointer
+ 472:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  *
+ 473:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * Return the current value of the MSP (main stack pointer)
+ 474:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * Cortex processor register
+ 475:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  */
+ 476:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** uint32_t __get_MSP(void) __attribute__( ( naked ) );
+ 477:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** uint32_t __get_MSP(void)
+ 478:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** {
+  89              		.loc 1 478 1 is_stmt 1 view -0
+  90              		.cfi_startproc
+  91              		@ Naked Function: prologue and epilogue provided by programmer.
+  92              		@ args = 0, pretend = 0, frame = 0
+  93              		@ frame_needed = 0, uses_anonymous_args = 0
+ 479:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****   uint32_t result=0;
+  94              		.loc 1 479 3 view .LVU9
+  95              	.LVL3:
+ 480:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** 
+ARM GAS  /tmp/ccAtXbbj.s 			page 11
+
+
+ 481:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****   __ASM volatile ("MRS %0, msp\n\t" 
+  96              		.loc 1 481 3 view .LVU10
+  97              		.syntax unified
+  98              	@ 481 "../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c" 1
+  99 0000 EFF30880 		MRS r0, msp
+ 100 0004 0046     		MOV r0, r0 
+ 101 0006 7047     		BX  lr     
+ 102              		
+ 103              	@ 0 "" 2
+ 104              	.LVL4:
+ 482:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****                   "MOV r0, %0 \n\t"
+ 483:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****                   "BX  lr     \n\t"  : "=r" (result) );
+ 484:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****   return(result);
+ 105              		.loc 1 484 3 view .LVU11
+ 485:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** }
+ 106              		.loc 1 485 1 is_stmt 0 view .LVU12
+ 107              		.thumb
+ 108              		.syntax unified
+ 109              		.cfi_endproc
+ 110              	.LFE2:
+ 112              		.section	.text.__set_MSP,"ax",%progbits
+ 113              		.align	1
+ 114              		.global	__set_MSP
+ 115              		.syntax unified
+ 116              		.thumb
+ 117              		.thumb_func
+ 118              		.fpu softvfp
+ 120              	__set_MSP:
+ 121              	.LVL5:
+ 122              	.LFB3:
+ 486:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** 
+ 487:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** /**
+ 488:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * @brief  Set the Main Stack Pointer
+ 489:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  *
+ 490:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * @param  topOfMainStack  Main Stack Pointer
+ 491:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  *
+ 492:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * Assign the value mainStackPointer to the MSP 
+ 493:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * (main stack pointer) Cortex processor register
+ 494:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  */
+ 495:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** void __set_MSP(uint32_t topOfMainStack) __attribute__( ( naked ) );
+ 496:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** void __set_MSP(uint32_t topOfMainStack)
+ 497:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** {
+ 123              		.loc 1 497 1 is_stmt 1 view -0
+ 124              		.cfi_startproc
+ 125              		@ Naked Function: prologue and epilogue provided by programmer.
+ 126              		@ args = 0, pretend = 0, frame = 0
+ 127              		@ frame_needed = 0, uses_anonymous_args = 0
+ 498:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****   __ASM volatile ("MSR msp, %0\n\t"
+ 128              		.loc 1 498 3 view .LVU14
+ 129              		.syntax unified
+ 130              	@ 498 "../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c" 1
+ 131 0000 80F30888 		MSR msp, r0
+ 132 0004 7047     		BX  lr     
+ 133              		
+ 134              	@ 0 "" 2
+ 499:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****                   "BX  lr     \n\t" : : "r" (topOfMainStack) );
+ 500:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** }
+ARM GAS  /tmp/ccAtXbbj.s 			page 12
+
+
+ 135              		.loc 1 500 1 is_stmt 0 view .LVU15
+ 136              		.thumb
+ 137              		.syntax unified
+ 138              		.cfi_endproc
+ 139              	.LFE3:
+ 141              		.section	.text.__get_BASEPRI,"ax",%progbits
+ 142              		.align	1
+ 143              		.global	__get_BASEPRI
+ 144              		.syntax unified
+ 145              		.thumb
+ 146              		.thumb_func
+ 147              		.fpu softvfp
+ 149              	__get_BASEPRI:
+ 150              	.LFB4:
+ 501:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** 
+ 502:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** /**
+ 503:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * @brief  Return the Base Priority value
+ 504:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  *
+ 505:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * @return BasePriority
+ 506:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  *
+ 507:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * Return the content of the base priority register
+ 508:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  */
+ 509:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** uint32_t __get_BASEPRI(void)
+ 510:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** {
+ 151              		.loc 1 510 1 is_stmt 1 view -0
+ 152              		.cfi_startproc
+ 153              		@ args = 0, pretend = 0, frame = 0
+ 154              		@ frame_needed = 0, uses_anonymous_args = 0
+ 155              		@ link register save eliminated.
+ 511:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****   uint32_t result=0;
+ 156              		.loc 1 511 3 view .LVU17
+ 157              	.LVL6:
+ 512:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****   
+ 513:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****   __ASM volatile ("MRS %0, basepri_max" : "=r" (result) );
+ 158              		.loc 1 513 3 view .LVU18
+ 159              		.syntax unified
+ 160              	@ 513 "../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c" 1
+ 161 0000 EFF31280 		MRS r0, basepri_max
+ 162              	@ 0 "" 2
+ 163              	.LVL7:
+ 514:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****   return(result);
+ 164              		.loc 1 514 3 view .LVU19
+ 515:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** }
+ 165              		.loc 1 515 1 is_stmt 0 view .LVU20
+ 166              		.thumb
+ 167              		.syntax unified
+ 168 0004 7047     		bx	lr
+ 169              		.cfi_endproc
+ 170              	.LFE4:
+ 172              		.section	.text.__set_BASEPRI,"ax",%progbits
+ 173              		.align	1
+ 174              		.global	__set_BASEPRI
+ 175              		.syntax unified
+ 176              		.thumb
+ 177              		.thumb_func
+ 178              		.fpu softvfp
+ 180              	__set_BASEPRI:
+ARM GAS  /tmp/ccAtXbbj.s 			page 13
+
+
+ 181              	.LVL8:
+ 182              	.LFB5:
+ 516:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** 
+ 517:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** /**
+ 518:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * @brief  Set the Base Priority value
+ 519:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  *
+ 520:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * @param  basePri  BasePriority
+ 521:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  *
+ 522:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * Set the base priority register
+ 523:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  */
+ 524:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** void __set_BASEPRI(uint32_t value)
+ 525:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** {
+ 183              		.loc 1 525 1 is_stmt 1 view -0
+ 184              		.cfi_startproc
+ 185              		@ args = 0, pretend = 0, frame = 0
+ 186              		@ frame_needed = 0, uses_anonymous_args = 0
+ 187              		@ link register save eliminated.
+ 526:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****   __ASM volatile ("MSR basepri, %0" : : "r" (value) );
+ 188              		.loc 1 526 3 view .LVU22
+ 189              		.syntax unified
+ 190              	@ 526 "../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c" 1
+ 191 0000 80F31188 		MSR basepri, r0
+ 192              	@ 0 "" 2
+ 527:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** }
+ 193              		.loc 1 527 1 is_stmt 0 view .LVU23
+ 194              		.thumb
+ 195              		.syntax unified
+ 196 0004 7047     		bx	lr
+ 197              		.cfi_endproc
+ 198              	.LFE5:
+ 200              		.section	.text.__get_PRIMASK,"ax",%progbits
+ 201              		.align	1
+ 202              		.global	__get_PRIMASK
+ 203              		.syntax unified
+ 204              		.thumb
+ 205              		.thumb_func
+ 206              		.fpu softvfp
+ 208              	__get_PRIMASK:
+ 209              	.LFB6:
+ 528:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** 
+ 529:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** /**
+ 530:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * @brief  Return the Priority Mask value
+ 531:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  *
+ 532:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * @return PriMask
+ 533:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  *
+ 534:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * Return state of the priority mask bit from the priority mask register
+ 535:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  */
+ 536:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** uint32_t __get_PRIMASK(void)
+ 537:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** {
+ 210              		.loc 1 537 1 is_stmt 1 view -0
+ 211              		.cfi_startproc
+ 212              		@ args = 0, pretend = 0, frame = 0
+ 213              		@ frame_needed = 0, uses_anonymous_args = 0
+ 214              		@ link register save eliminated.
+ 538:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****   uint32_t result=0;
+ 215              		.loc 1 538 3 view .LVU25
+ 216              	.LVL9:
+ARM GAS  /tmp/ccAtXbbj.s 			page 14
+
+
+ 539:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** 
+ 540:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****   __ASM volatile ("MRS %0, primask" : "=r" (result) );
+ 217              		.loc 1 540 3 view .LVU26
+ 218              		.syntax unified
+ 219              	@ 540 "../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c" 1
+ 220 0000 EFF31080 		MRS r0, primask
+ 221              	@ 0 "" 2
+ 222              	.LVL10:
+ 541:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****   return(result);
+ 223              		.loc 1 541 3 view .LVU27
+ 542:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** }
+ 224              		.loc 1 542 1 is_stmt 0 view .LVU28
+ 225              		.thumb
+ 226              		.syntax unified
+ 227 0004 7047     		bx	lr
+ 228              		.cfi_endproc
+ 229              	.LFE6:
+ 231              		.section	.text.__set_PRIMASK,"ax",%progbits
+ 232              		.align	1
+ 233              		.global	__set_PRIMASK
+ 234              		.syntax unified
+ 235              		.thumb
+ 236              		.thumb_func
+ 237              		.fpu softvfp
+ 239              	__set_PRIMASK:
+ 240              	.LVL11:
+ 241              	.LFB7:
+ 543:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** 
+ 544:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** /**
+ 545:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * @brief  Set the Priority Mask value
+ 546:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  *
+ 547:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * @param  priMask  PriMask
+ 548:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  *
+ 549:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * Set the priority mask bit in the priority mask register
+ 550:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  */
+ 551:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** void __set_PRIMASK(uint32_t priMask)
+ 552:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** {
+ 242              		.loc 1 552 1 is_stmt 1 view -0
+ 243              		.cfi_startproc
+ 244              		@ args = 0, pretend = 0, frame = 0
+ 245              		@ frame_needed = 0, uses_anonymous_args = 0
+ 246              		@ link register save eliminated.
+ 553:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****   __ASM volatile ("MSR primask, %0" : : "r" (priMask) );
+ 247              		.loc 1 553 3 view .LVU30
+ 248              		.syntax unified
+ 249              	@ 553 "../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c" 1
+ 250 0000 80F31088 		MSR primask, r0
+ 251              	@ 0 "" 2
+ 554:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** }
+ 252              		.loc 1 554 1 is_stmt 0 view .LVU31
+ 253              		.thumb
+ 254              		.syntax unified
+ 255 0004 7047     		bx	lr
+ 256              		.cfi_endproc
+ 257              	.LFE7:
+ 259              		.section	.text.__get_FAULTMASK,"ax",%progbits
+ 260              		.align	1
+ARM GAS  /tmp/ccAtXbbj.s 			page 15
+
+
+ 261              		.global	__get_FAULTMASK
+ 262              		.syntax unified
+ 263              		.thumb
+ 264              		.thumb_func
+ 265              		.fpu softvfp
+ 267              	__get_FAULTMASK:
+ 268              	.LFB8:
+ 555:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** 
+ 556:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** /**
+ 557:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * @brief  Return the Fault Mask value
+ 558:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  *
+ 559:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * @return FaultMask
+ 560:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  *
+ 561:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * Return the content of the fault mask register
+ 562:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  */
+ 563:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** uint32_t __get_FAULTMASK(void)
+ 564:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** {
+ 269              		.loc 1 564 1 is_stmt 1 view -0
+ 270              		.cfi_startproc
+ 271              		@ args = 0, pretend = 0, frame = 0
+ 272              		@ frame_needed = 0, uses_anonymous_args = 0
+ 273              		@ link register save eliminated.
+ 565:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****   uint32_t result=0;
+ 274              		.loc 1 565 3 view .LVU33
+ 275              	.LVL12:
+ 566:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****   
+ 567:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****   __ASM volatile ("MRS %0, faultmask" : "=r" (result) );
+ 276              		.loc 1 567 3 view .LVU34
+ 277              		.syntax unified
+ 278              	@ 567 "../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c" 1
+ 279 0000 EFF31380 		MRS r0, faultmask
+ 280              	@ 0 "" 2
+ 281              	.LVL13:
+ 568:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****   return(result);
+ 282              		.loc 1 568 3 view .LVU35
+ 569:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** }
+ 283              		.loc 1 569 1 is_stmt 0 view .LVU36
+ 284              		.thumb
+ 285              		.syntax unified
+ 286 0004 7047     		bx	lr
+ 287              		.cfi_endproc
+ 288              	.LFE8:
+ 290              		.section	.text.__set_FAULTMASK,"ax",%progbits
+ 291              		.align	1
+ 292              		.global	__set_FAULTMASK
+ 293              		.syntax unified
+ 294              		.thumb
+ 295              		.thumb_func
+ 296              		.fpu softvfp
+ 298              	__set_FAULTMASK:
+ 299              	.LVL14:
+ 300              	.LFB9:
+ 570:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** 
+ 571:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** /**
+ 572:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * @brief  Set the Fault Mask value
+ 573:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  *
+ 574:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * @param  faultMask  faultMask value
+ARM GAS  /tmp/ccAtXbbj.s 			page 16
+
+
+ 575:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  *
+ 576:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * Set the fault mask register
+ 577:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  */
+ 578:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** void __set_FAULTMASK(uint32_t faultMask)
+ 579:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** {
+ 301              		.loc 1 579 1 is_stmt 1 view -0
+ 302              		.cfi_startproc
+ 303              		@ args = 0, pretend = 0, frame = 0
+ 304              		@ frame_needed = 0, uses_anonymous_args = 0
+ 305              		@ link register save eliminated.
+ 580:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****   __ASM volatile ("MSR faultmask, %0" : : "r" (faultMask) );
+ 306              		.loc 1 580 3 view .LVU38
+ 307              		.syntax unified
+ 308              	@ 580 "../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c" 1
+ 309 0000 80F31388 		MSR faultmask, r0
+ 310              	@ 0 "" 2
+ 581:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** }
+ 311              		.loc 1 581 1 is_stmt 0 view .LVU39
+ 312              		.thumb
+ 313              		.syntax unified
+ 314 0004 7047     		bx	lr
+ 315              		.cfi_endproc
+ 316              	.LFE9:
+ 318              		.section	.text.__get_CONTROL,"ax",%progbits
+ 319              		.align	1
+ 320              		.global	__get_CONTROL
+ 321              		.syntax unified
+ 322              		.thumb
+ 323              		.thumb_func
+ 324              		.fpu softvfp
+ 326              	__get_CONTROL:
+ 327              	.LFB10:
+ 582:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** 
+ 583:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** /**
+ 584:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * @brief  Return the Control Register value
+ 585:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** * 
+ 586:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** *  @return Control value
+ 587:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  *
+ 588:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * Return the content of the control register
+ 589:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  */
+ 590:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** uint32_t __get_CONTROL(void)
+ 591:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** {
+ 328              		.loc 1 591 1 is_stmt 1 view -0
+ 329              		.cfi_startproc
+ 330              		@ args = 0, pretend = 0, frame = 0
+ 331              		@ frame_needed = 0, uses_anonymous_args = 0
+ 332              		@ link register save eliminated.
+ 592:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****   uint32_t result=0;
+ 333              		.loc 1 592 3 view .LVU41
+ 334              	.LVL15:
+ 593:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** 
+ 594:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****   __ASM volatile ("MRS %0, control" : "=r" (result) );
+ 335              		.loc 1 594 3 view .LVU42
+ 336              		.syntax unified
+ 337              	@ 594 "../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c" 1
+ 338 0000 EFF31480 		MRS r0, control
+ 339              	@ 0 "" 2
+ARM GAS  /tmp/ccAtXbbj.s 			page 17
+
+
+ 340              	.LVL16:
+ 595:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****   return(result);
+ 341              		.loc 1 595 3 view .LVU43
+ 596:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** }
+ 342              		.loc 1 596 1 is_stmt 0 view .LVU44
+ 343              		.thumb
+ 344              		.syntax unified
+ 345 0004 7047     		bx	lr
+ 346              		.cfi_endproc
+ 347              	.LFE10:
+ 349              		.section	.text.__set_CONTROL,"ax",%progbits
+ 350              		.align	1
+ 351              		.global	__set_CONTROL
+ 352              		.syntax unified
+ 353              		.thumb
+ 354              		.thumb_func
+ 355              		.fpu softvfp
+ 357              	__set_CONTROL:
+ 358              	.LVL17:
+ 359              	.LFB11:
+ 597:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** 
+ 598:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** /**
+ 599:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * @brief  Set the Control Register value
+ 600:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  *
+ 601:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * @param  control  Control value
+ 602:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  *
+ 603:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * Set the control register
+ 604:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  */
+ 605:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** void __set_CONTROL(uint32_t control)
+ 606:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** {
+ 360              		.loc 1 606 1 is_stmt 1 view -0
+ 361              		.cfi_startproc
+ 362              		@ args = 0, pretend = 0, frame = 0
+ 363              		@ frame_needed = 0, uses_anonymous_args = 0
+ 364              		@ link register save eliminated.
+ 607:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****   __ASM volatile ("MSR control, %0" : : "r" (control) );
+ 365              		.loc 1 607 3 view .LVU46
+ 366              		.syntax unified
+ 367              	@ 607 "../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c" 1
+ 368 0000 80F31488 		MSR control, r0
+ 369              	@ 0 "" 2
+ 608:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** }
+ 370              		.loc 1 608 1 is_stmt 0 view .LVU47
+ 371              		.thumb
+ 372              		.syntax unified
+ 373 0004 7047     		bx	lr
+ 374              		.cfi_endproc
+ 375              	.LFE11:
+ 377              		.section	.text.__REV,"ax",%progbits
+ 378              		.align	1
+ 379              		.global	__REV
+ 380              		.syntax unified
+ 381              		.thumb
+ 382              		.thumb_func
+ 383              		.fpu softvfp
+ 385              	__REV:
+ 386              	.LVL18:
+ARM GAS  /tmp/ccAtXbbj.s 			page 18
+
+
+ 387              	.LFB12:
+ 609:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** 
+ 610:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** 
+ 611:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** /**
+ 612:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * @brief  Reverse byte order in integer value
+ 613:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  *
+ 614:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * @param  value  value to reverse
+ 615:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * @return        reversed value
+ 616:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  *
+ 617:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * Reverse byte order in integer value
+ 618:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  */
+ 619:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** uint32_t __REV(uint32_t value)
+ 620:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** {
+ 388              		.loc 1 620 1 is_stmt 1 view -0
+ 389              		.cfi_startproc
+ 390              		@ args = 0, pretend = 0, frame = 0
+ 391              		@ frame_needed = 0, uses_anonymous_args = 0
+ 392              		@ link register save eliminated.
+ 621:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****   uint32_t result=0;
+ 393              		.loc 1 621 3 view .LVU49
+ 622:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****   
+ 623:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****   __ASM volatile ("rev %0, %1" : "=r" (result) : "r" (value) );
+ 394              		.loc 1 623 3 view .LVU50
+ 395              		.syntax unified
+ 396              	@ 623 "../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c" 1
+ 397 0000 00BA     		rev r0, r0
+ 398              	@ 0 "" 2
+ 399              	.LVL19:
+ 624:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****   return(result);
+ 400              		.loc 1 624 3 view .LVU51
+ 625:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** }
+ 401              		.loc 1 625 1 is_stmt 0 view .LVU52
+ 402              		.thumb
+ 403              		.syntax unified
+ 404 0002 7047     		bx	lr
+ 405              		.cfi_endproc
+ 406              	.LFE12:
+ 408              		.section	.text.__REV16,"ax",%progbits
+ 409              		.align	1
+ 410              		.global	__REV16
+ 411              		.syntax unified
+ 412              		.thumb
+ 413              		.thumb_func
+ 414              		.fpu softvfp
+ 416              	__REV16:
+ 417              	.LVL20:
+ 418              	.LFB13:
+ 626:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** 
+ 627:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** /**
+ 628:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * @brief  Reverse byte order in unsigned short value
+ 629:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  *
+ 630:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * @param  value  value to reverse
+ 631:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * @return        reversed value
+ 632:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  *
+ 633:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * Reverse byte order in unsigned short value
+ 634:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  */
+ 635:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** uint32_t __REV16(uint16_t value)
+ARM GAS  /tmp/ccAtXbbj.s 			page 19
+
+
+ 636:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** {
+ 419              		.loc 1 636 1 is_stmt 1 view -0
+ 420              		.cfi_startproc
+ 421              		@ args = 0, pretend = 0, frame = 0
+ 422              		@ frame_needed = 0, uses_anonymous_args = 0
+ 423              		@ link register save eliminated.
+ 637:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****   uint32_t result=0;
+ 424              		.loc 1 637 3 view .LVU54
+ 638:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****   
+ 639:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****   __ASM volatile ("rev16 %0, %1" : "=r" (result) : "r" (value) );
+ 425              		.loc 1 639 3 view .LVU55
+ 426              		.syntax unified
+ 427              	@ 639 "../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c" 1
+ 428 0000 40BA     		rev16 r0, r0
+ 429              	@ 0 "" 2
+ 430              	.LVL21:
+ 640:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****   return(result);
+ 431              		.loc 1 640 3 view .LVU56
+ 641:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** }
+ 432              		.loc 1 641 1 is_stmt 0 view .LVU57
+ 433              		.thumb
+ 434              		.syntax unified
+ 435 0002 7047     		bx	lr
+ 436              		.cfi_endproc
+ 437              	.LFE13:
+ 439              		.section	.text.__REVSH,"ax",%progbits
+ 440              		.align	1
+ 441              		.global	__REVSH
+ 442              		.syntax unified
+ 443              		.thumb
+ 444              		.thumb_func
+ 445              		.fpu softvfp
+ 447              	__REVSH:
+ 448              	.LVL22:
+ 449              	.LFB14:
+ 642:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** 
+ 643:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** /**
+ 644:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * @brief  Reverse byte order in signed short value with sign extension to integer
+ 645:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  *
+ 646:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * @param  value  value to reverse
+ 647:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * @return        reversed value
+ 648:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  *
+ 649:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * Reverse byte order in signed short value with sign extension to integer
+ 650:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  */
+ 651:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** int32_t __REVSH(int16_t value)
+ 652:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** {
+ 450              		.loc 1 652 1 is_stmt 1 view -0
+ 451              		.cfi_startproc
+ 452              		@ args = 0, pretend = 0, frame = 0
+ 453              		@ frame_needed = 0, uses_anonymous_args = 0
+ 454              		@ link register save eliminated.
+ 653:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****   uint32_t result=0;
+ 455              		.loc 1 653 3 view .LVU59
+ 654:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****   
+ 655:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****   __ASM volatile ("revsh %0, %1" : "=r" (result) : "r" (value) );
+ 456              		.loc 1 655 3 view .LVU60
+ 457              		.syntax unified
+ARM GAS  /tmp/ccAtXbbj.s 			page 20
+
+
+ 458              	@ 655 "../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c" 1
+ 459 0000 C0BA     		revsh r0, r0
+ 460              	@ 0 "" 2
+ 461              	.LVL23:
+ 656:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****   return(result);
+ 462              		.loc 1 656 3 view .LVU61
+ 657:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** }
+ 463              		.loc 1 657 1 is_stmt 0 view .LVU62
+ 464              		.thumb
+ 465              		.syntax unified
+ 466 0002 7047     		bx	lr
+ 467              		.cfi_endproc
+ 468              	.LFE14:
+ 470              		.section	.text.__RBIT,"ax",%progbits
+ 471              		.align	1
+ 472              		.global	__RBIT
+ 473              		.syntax unified
+ 474              		.thumb
+ 475              		.thumb_func
+ 476              		.fpu softvfp
+ 478              	__RBIT:
+ 479              	.LVL24:
+ 480              	.LFB15:
+ 658:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** 
+ 659:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** /**
+ 660:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * @brief  Reverse bit order of value
+ 661:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  *
+ 662:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * @param  value  value to reverse
+ 663:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * @return        reversed value
+ 664:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  *
+ 665:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * Reverse bit order of value
+ 666:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  */
+ 667:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** uint32_t __RBIT(uint32_t value)
+ 668:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** {
+ 481              		.loc 1 668 1 is_stmt 1 view -0
+ 482              		.cfi_startproc
+ 483              		@ args = 0, pretend = 0, frame = 0
+ 484              		@ frame_needed = 0, uses_anonymous_args = 0
+ 485              		@ link register save eliminated.
+ 669:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****   uint32_t result=0;
+ 486              		.loc 1 669 3 view .LVU64
+ 670:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****   
+ 671:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****    __ASM volatile ("rbit %0, %1" : "=r" (result) : "r" (value) );
+ 487              		.loc 1 671 4 view .LVU65
+ 488              		.syntax unified
+ 489              	@ 671 "../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c" 1
+ 490 0000 90FAA0F0 		rbit r0, r0
+ 491              	@ 0 "" 2
+ 492              	.LVL25:
+ 672:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****    return(result);
+ 493              		.loc 1 672 4 view .LVU66
+ 673:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** }
+ 494              		.loc 1 673 1 is_stmt 0 view .LVU67
+ 495              		.thumb
+ 496              		.syntax unified
+ 497 0004 7047     		bx	lr
+ 498              		.cfi_endproc
+ARM GAS  /tmp/ccAtXbbj.s 			page 21
+
+
+ 499              	.LFE15:
+ 501              		.section	.text.__LDREXB,"ax",%progbits
+ 502              		.align	1
+ 503              		.global	__LDREXB
+ 504              		.syntax unified
+ 505              		.thumb
+ 506              		.thumb_func
+ 507              		.fpu softvfp
+ 509              	__LDREXB:
+ 510              	.LVL26:
+ 511              	.LFB16:
+ 674:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** 
+ 675:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** /**
+ 676:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * @brief  LDR Exclusive (8 bit)
+ 677:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  *
+ 678:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * @param  *addr  address pointer
+ 679:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * @return        value of (*address)
+ 680:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  *
+ 681:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * Exclusive LDR command for 8 bit value
+ 682:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  */
+ 683:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** uint8_t __LDREXB(uint8_t *addr)
+ 684:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** {
+ 512              		.loc 1 684 1 is_stmt 1 view -0
+ 513              		.cfi_startproc
+ 514              		@ args = 0, pretend = 0, frame = 0
+ 515              		@ frame_needed = 0, uses_anonymous_args = 0
+ 516              		@ link register save eliminated.
+ 685:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****     uint8_t result=0;
+ 517              		.loc 1 685 5 view .LVU69
+ 686:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****   
+ 687:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****    __ASM volatile ("ldrexb %0, [%1]" : "=r" (result) : "r" (addr) );
+ 518              		.loc 1 687 4 view .LVU70
+ 519              		.syntax unified
+ 520              	@ 687 "../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c" 1
+ 521 0000 D0E84F0F 		ldrexb r0, [r0]
+ 522              	@ 0 "" 2
+ 523              	.LVL27:
+ 688:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****    return(result);
+ 524              		.loc 1 688 4 view .LVU71
+ 689:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** }
+ 525              		.loc 1 689 1 is_stmt 0 view .LVU72
+ 526              		.thumb
+ 527              		.syntax unified
+ 528 0004 C0B2     		uxtb	r0, r0
+ 529              		.loc 1 689 1 view .LVU73
+ 530 0006 7047     		bx	lr
+ 531              		.cfi_endproc
+ 532              	.LFE16:
+ 534              		.section	.text.__LDREXH,"ax",%progbits
+ 535              		.align	1
+ 536              		.global	__LDREXH
+ 537              		.syntax unified
+ 538              		.thumb
+ 539              		.thumb_func
+ 540              		.fpu softvfp
+ 542              	__LDREXH:
+ 543              	.LVL28:
+ARM GAS  /tmp/ccAtXbbj.s 			page 22
+
+
+ 544              	.LFB17:
+ 690:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** 
+ 691:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** /**
+ 692:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * @brief  LDR Exclusive (16 bit)
+ 693:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  *
+ 694:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * @param  *addr  address pointer
+ 695:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * @return        value of (*address)
+ 696:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  *
+ 697:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * Exclusive LDR command for 16 bit values
+ 698:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  */
+ 699:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** uint16_t __LDREXH(uint16_t *addr)
+ 700:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** {
+ 545              		.loc 1 700 1 is_stmt 1 view -0
+ 546              		.cfi_startproc
+ 547              		@ args = 0, pretend = 0, frame = 0
+ 548              		@ frame_needed = 0, uses_anonymous_args = 0
+ 549              		@ link register save eliminated.
+ 701:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****     uint16_t result=0;
+ 550              		.loc 1 701 5 view .LVU75
+ 702:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****   
+ 703:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****    __ASM volatile ("ldrexh %0, [%1]" : "=r" (result) : "r" (addr) );
+ 551              		.loc 1 703 4 view .LVU76
+ 552              		.syntax unified
+ 553              	@ 703 "../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c" 1
+ 554 0000 D0E85F0F 		ldrexh r0, [r0]
+ 555              	@ 0 "" 2
+ 556              	.LVL29:
+ 704:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****    return(result);
+ 557              		.loc 1 704 4 view .LVU77
+ 705:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** }
+ 558              		.loc 1 705 1 is_stmt 0 view .LVU78
+ 559              		.thumb
+ 560              		.syntax unified
+ 561 0004 80B2     		uxth	r0, r0
+ 562              		.loc 1 705 1 view .LVU79
+ 563 0006 7047     		bx	lr
+ 564              		.cfi_endproc
+ 565              	.LFE17:
+ 567              		.section	.text.__LDREXW,"ax",%progbits
+ 568              		.align	1
+ 569              		.global	__LDREXW
+ 570              		.syntax unified
+ 571              		.thumb
+ 572              		.thumb_func
+ 573              		.fpu softvfp
+ 575              	__LDREXW:
+ 576              	.LVL30:
+ 577              	.LFB18:
+ 706:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** 
+ 707:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** /**
+ 708:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * @brief  LDR Exclusive (32 bit)
+ 709:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  *
+ 710:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * @param  *addr  address pointer
+ 711:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * @return        value of (*address)
+ 712:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  *
+ 713:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * Exclusive LDR command for 32 bit values
+ 714:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  */
+ARM GAS  /tmp/ccAtXbbj.s 			page 23
+
+
+ 715:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** uint32_t __LDREXW(uint32_t *addr)
+ 716:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** {
+ 578              		.loc 1 716 1 is_stmt 1 view -0
+ 579              		.cfi_startproc
+ 580              		@ args = 0, pretend = 0, frame = 0
+ 581              		@ frame_needed = 0, uses_anonymous_args = 0
+ 582              		@ link register save eliminated.
+ 717:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****     uint32_t result=0;
+ 583              		.loc 1 717 5 view .LVU81
+ 718:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****   
+ 719:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****    __ASM volatile ("ldrex %0, [%1]" : "=r" (result) : "r" (addr) );
+ 584              		.loc 1 719 4 view .LVU82
+ 585              		.syntax unified
+ 586              	@ 719 "../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c" 1
+ 587 0000 50E8000F 		ldrex r0, [r0]
+ 588              	@ 0 "" 2
+ 589              	.LVL31:
+ 720:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****    return(result);
+ 590              		.loc 1 720 4 view .LVU83
+ 721:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** }
+ 591              		.loc 1 721 1 is_stmt 0 view .LVU84
+ 592              		.thumb
+ 593              		.syntax unified
+ 594 0004 7047     		bx	lr
+ 595              		.cfi_endproc
+ 596              	.LFE18:
+ 598              		.section	.text.__STREXB,"ax",%progbits
+ 599              		.align	1
+ 600              		.global	__STREXB
+ 601              		.syntax unified
+ 602              		.thumb
+ 603              		.thumb_func
+ 604              		.fpu softvfp
+ 606              	__STREXB:
+ 607              	.LVL32:
+ 608              	.LFB19:
+ 722:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** 
+ 723:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** /**
+ 724:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * @brief  STR Exclusive (8 bit)
+ 725:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  *
+ 726:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * @param  value  value to store
+ 727:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * @param  *addr  address pointer
+ 728:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * @return        successful / failed
+ 729:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  *
+ 730:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * Exclusive STR command for 8 bit values
+ 731:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  */
+ 732:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** uint32_t __STREXB(uint8_t value, uint8_t *addr)
+ 733:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** {
+ 609              		.loc 1 733 1 is_stmt 1 view -0
+ 610              		.cfi_startproc
+ 611              		@ args = 0, pretend = 0, frame = 0
+ 612              		@ frame_needed = 0, uses_anonymous_args = 0
+ 613              		@ link register save eliminated.
+ 734:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****    uint32_t result=0;
+ 614              		.loc 1 734 4 view .LVU86
+ 735:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****   
+ 736:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****    //__ASM volatile ("strexb %0, %2, [%1]" : "=r" (result) : "r" (addr), "r" (value) );
+ARM GAS  /tmp/ccAtXbbj.s 			page 24
+
+
+ 737:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** 	 __ASM volatile ("strexb %0, %2, [%1]" : "=&r" (result) : "r" (addr), "r" (value));
+ 615              		.loc 1 737 3 view .LVU87
+ 616              		.syntax unified
+ 617              	@ 737 "../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c" 1
+ 618 0000 C1E8430F 		strexb r3, r0, [r1]
+ 619              	@ 0 "" 2
+ 620              	.LVL33:
+ 738:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****    return(result);
+ 621              		.loc 1 738 4 view .LVU88
+ 739:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** }
+ 622              		.loc 1 739 1 is_stmt 0 view .LVU89
+ 623              		.thumb
+ 624              		.syntax unified
+ 625 0004 1846     		mov	r0, r3
+ 626              	.LVL34:
+ 627              		.loc 1 739 1 view .LVU90
+ 628 0006 7047     		bx	lr
+ 629              		.cfi_endproc
+ 630              	.LFE19:
+ 632              		.section	.text.__STREXH,"ax",%progbits
+ 633              		.align	1
+ 634              		.global	__STREXH
+ 635              		.syntax unified
+ 636              		.thumb
+ 637              		.thumb_func
+ 638              		.fpu softvfp
+ 640              	__STREXH:
+ 641              	.LVL35:
+ 642              	.LFB20:
+ 740:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** 
+ 741:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** /**
+ 742:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * @brief  STR Exclusive (16 bit)
+ 743:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  *
+ 744:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * @param  value  value to store
+ 745:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * @param  *addr  address pointer
+ 746:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * @return        successful / failed
+ 747:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  *
+ 748:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * Exclusive STR command for 16 bit values
+ 749:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  */
+ 750:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** uint32_t __STREXH(uint16_t value, uint16_t *addr)
+ 751:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** {
+ 643              		.loc 1 751 1 is_stmt 1 view -0
+ 644              		.cfi_startproc
+ 645              		@ args = 0, pretend = 0, frame = 0
+ 646              		@ frame_needed = 0, uses_anonymous_args = 0
+ 647              		@ link register save eliminated.
+ 752:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****    uint32_t result=0;
+ 648              		.loc 1 752 4 view .LVU92
+ 753:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****   
+ 754:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****    //__ASM volatile ("strexh %0, %2, [%1]" : "=r" (result) : "r" (addr), "r" (value) );
+ 755:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** 	 __ASM volatile ("strexh %0, %2, [%1]" : "=&r" (result) : "r" (addr), "r" (value));
+ 649              		.loc 1 755 3 view .LVU93
+ 650              		.syntax unified
+ 651              	@ 755 "../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c" 1
+ 652 0000 C1E8530F 		strexh r3, r0, [r1]
+ 653              	@ 0 "" 2
+ 654              	.LVL36:
+ARM GAS  /tmp/ccAtXbbj.s 			page 25
+
+
+ 756:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****    return(result);
+ 655              		.loc 1 756 4 view .LVU94
+ 757:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** }
+ 656              		.loc 1 757 1 is_stmt 0 view .LVU95
+ 657              		.thumb
+ 658              		.syntax unified
+ 659 0004 1846     		mov	r0, r3
+ 660              	.LVL37:
+ 661              		.loc 1 757 1 view .LVU96
+ 662 0006 7047     		bx	lr
+ 663              		.cfi_endproc
+ 664              	.LFE20:
+ 666              		.section	.text.__STREXW,"ax",%progbits
+ 667              		.align	1
+ 668              		.global	__STREXW
+ 669              		.syntax unified
+ 670              		.thumb
+ 671              		.thumb_func
+ 672              		.fpu softvfp
+ 674              	__STREXW:
+ 675              	.LVL38:
+ 676              	.LFB21:
+ 758:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** 
+ 759:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** /**
+ 760:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * @brief  STR Exclusive (32 bit)
+ 761:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  *
+ 762:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * @param  value  value to store
+ 763:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * @param  *addr  address pointer
+ 764:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * @return        successful / failed
+ 765:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  *
+ 766:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  * Exclusive STR command for 32 bit values
+ 767:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****  */
+ 768:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** uint32_t __STREXW(uint32_t value, uint32_t *addr)
+ 769:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** {
+ 677              		.loc 1 769 1 is_stmt 1 view -0
+ 678              		.cfi_startproc
+ 679              		@ args = 0, pretend = 0, frame = 0
+ 680              		@ frame_needed = 0, uses_anonymous_args = 0
+ 681              		@ link register save eliminated.
+ 770:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****    uint32_t result=0;
+ 682              		.loc 1 770 4 view .LVU98
+ 771:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****   
+ 772:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****    __ASM volatile ("strex %0, %2, [%1]" : "=r" (result) : "r" (addr), "r" (value) );
+ 683              		.loc 1 772 4 view .LVU99
+ 684              		.syntax unified
+ 685              	@ 772 "../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c" 1
+ 686 0000 41E80000 		strex r0, r0, [r1]
+ 687              	@ 0 "" 2
+ 688              	.LVL39:
+ 773:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c ****    return(result);
+ 689              		.loc 1 773 4 view .LVU100
+ 774:../Drivers/CMSIS/CM3/CoreSupport/core_cm3.c **** }
+ 690              		.loc 1 774 1 is_stmt 0 view .LVU101
+ 691              		.thumb
+ 692              		.syntax unified
+ 693 0004 7047     		bx	lr
+ 694              		.cfi_endproc
+ARM GAS  /tmp/ccAtXbbj.s 			page 26
+
+
+ 695              	.LFE21:
+ 697              		.text
+ 698              	.Letext0:
+ 699              		.file 2 "/usr/lib/gcc/arm-none-eabi/9.2.1/include/stdint.h"
+ARM GAS  /tmp/ccAtXbbj.s 			page 27
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 core_cm3.c
+     /tmp/ccAtXbbj.s:16     .text.__get_PSP:0000000000000000 $t
+     /tmp/ccAtXbbj.s:24     .text.__get_PSP:0000000000000000 __get_PSP
+     /tmp/ccAtXbbj.s:51     .text.__set_PSP:0000000000000000 $t
+     /tmp/ccAtXbbj.s:58     .text.__set_PSP:0000000000000000 __set_PSP
+     /tmp/ccAtXbbj.s:80     .text.__get_MSP:0000000000000000 $t
+     /tmp/ccAtXbbj.s:87     .text.__get_MSP:0000000000000000 __get_MSP
+     /tmp/ccAtXbbj.s:113    .text.__set_MSP:0000000000000000 $t
+     /tmp/ccAtXbbj.s:120    .text.__set_MSP:0000000000000000 __set_MSP
+     /tmp/ccAtXbbj.s:142    .text.__get_BASEPRI:0000000000000000 $t
+     /tmp/ccAtXbbj.s:149    .text.__get_BASEPRI:0000000000000000 __get_BASEPRI
+     /tmp/ccAtXbbj.s:173    .text.__set_BASEPRI:0000000000000000 $t
+     /tmp/ccAtXbbj.s:180    .text.__set_BASEPRI:0000000000000000 __set_BASEPRI
+     /tmp/ccAtXbbj.s:201    .text.__get_PRIMASK:0000000000000000 $t
+     /tmp/ccAtXbbj.s:208    .text.__get_PRIMASK:0000000000000000 __get_PRIMASK
+     /tmp/ccAtXbbj.s:232    .text.__set_PRIMASK:0000000000000000 $t
+     /tmp/ccAtXbbj.s:239    .text.__set_PRIMASK:0000000000000000 __set_PRIMASK
+     /tmp/ccAtXbbj.s:260    .text.__get_FAULTMASK:0000000000000000 $t
+     /tmp/ccAtXbbj.s:267    .text.__get_FAULTMASK:0000000000000000 __get_FAULTMASK
+     /tmp/ccAtXbbj.s:291    .text.__set_FAULTMASK:0000000000000000 $t
+     /tmp/ccAtXbbj.s:298    .text.__set_FAULTMASK:0000000000000000 __set_FAULTMASK
+     /tmp/ccAtXbbj.s:319    .text.__get_CONTROL:0000000000000000 $t
+     /tmp/ccAtXbbj.s:326    .text.__get_CONTROL:0000000000000000 __get_CONTROL
+     /tmp/ccAtXbbj.s:350    .text.__set_CONTROL:0000000000000000 $t
+     /tmp/ccAtXbbj.s:357    .text.__set_CONTROL:0000000000000000 __set_CONTROL
+     /tmp/ccAtXbbj.s:378    .text.__REV:0000000000000000 $t
+     /tmp/ccAtXbbj.s:385    .text.__REV:0000000000000000 __REV
+     /tmp/ccAtXbbj.s:409    .text.__REV16:0000000000000000 $t
+     /tmp/ccAtXbbj.s:416    .text.__REV16:0000000000000000 __REV16
+     /tmp/ccAtXbbj.s:440    .text.__REVSH:0000000000000000 $t
+     /tmp/ccAtXbbj.s:447    .text.__REVSH:0000000000000000 __REVSH
+     /tmp/ccAtXbbj.s:471    .text.__RBIT:0000000000000000 $t
+     /tmp/ccAtXbbj.s:478    .text.__RBIT:0000000000000000 __RBIT
+     /tmp/ccAtXbbj.s:502    .text.__LDREXB:0000000000000000 $t
+     /tmp/ccAtXbbj.s:509    .text.__LDREXB:0000000000000000 __LDREXB
+     /tmp/ccAtXbbj.s:535    .text.__LDREXH:0000000000000000 $t
+     /tmp/ccAtXbbj.s:542    .text.__LDREXH:0000000000000000 __LDREXH
+     /tmp/ccAtXbbj.s:568    .text.__LDREXW:0000000000000000 $t
+     /tmp/ccAtXbbj.s:575    .text.__LDREXW:0000000000000000 __LDREXW
+     /tmp/ccAtXbbj.s:599    .text.__STREXB:0000000000000000 $t
+     /tmp/ccAtXbbj.s:606    .text.__STREXB:0000000000000000 __STREXB
+     /tmp/ccAtXbbj.s:633    .text.__STREXH:0000000000000000 $t
+     /tmp/ccAtXbbj.s:640    .text.__STREXH:0000000000000000 __STREXH
+     /tmp/ccAtXbbj.s:667    .text.__STREXW:0000000000000000 $t
+     /tmp/ccAtXbbj.s:674    .text.__STREXW:0000000000000000 __STREXW
+
+NO UNDEFINED SYMBOLS

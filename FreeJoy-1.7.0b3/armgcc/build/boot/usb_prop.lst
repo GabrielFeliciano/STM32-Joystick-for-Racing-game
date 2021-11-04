@@ -1,0 +1,1646 @@
+ARM GAS  /tmp/ccmLuIyr.s 			page 1
+
+
+   1              		.cpu cortex-m3
+   2              		.eabi_attribute 20, 1
+   3              		.eabi_attribute 21, 1
+   4              		.eabi_attribute 23, 3
+   5              		.eabi_attribute 24, 1
+   6              		.eabi_attribute 25, 1
+   7              		.eabi_attribute 26, 1
+   8              		.eabi_attribute 30, 4
+   9              		.eabi_attribute 34, 1
+  10              		.eabi_attribute 18, 4
+  11              		.file	"usb_prop.c"
+  12              		.text
+  13              	.Ltext0:
+  14              		.cfi_sections	.debug_frame
+  15              		.section	.text.CustomHID_SetConfiguration,"ax",%progbits
+  16              		.align	1
+  17              		.global	CustomHID_SetConfiguration
+  18              		.arch armv7-m
+  19              		.syntax unified
+  20              		.thumb
+  21              		.thumb_func
+  22              		.fpu softvfp
+  24              	CustomHID_SetConfiguration:
+  25              	.LFB31:
+  26              		.file 1 "../bootloader/Src/usb_prop.c"
+   1:../bootloader/Src/usb_prop.c **** /**
+   2:../bootloader/Src/usb_prop.c ****   ******************************************************************************
+   3:../bootloader/Src/usb_prop.c ****   * @file    usb_prop.c
+   4:../bootloader/Src/usb_prop.c ****   * @author  MCD Application Team
+   5:../bootloader/Src/usb_prop.c ****   * @version V4.1.0
+   6:../bootloader/Src/usb_prop.c ****   * @date    26-May-2017
+   7:../bootloader/Src/usb_prop.c ****   * @brief   All processing related to Custom HID Demo
+   8:../bootloader/Src/usb_prop.c ****   ******************************************************************************
+   9:../bootloader/Src/usb_prop.c ****   * @attention
+  10:../bootloader/Src/usb_prop.c ****   *
+  11:../bootloader/Src/usb_prop.c ****   * <h2><center>&copy; COPYRIGHT(c) 2017 STMicroelectronics</center></h2>
+  12:../bootloader/Src/usb_prop.c ****   *
+  13:../bootloader/Src/usb_prop.c ****   * Redistribution and use in source and binary forms, with or without modification,
+  14:../bootloader/Src/usb_prop.c ****   * are permitted provided that the following conditions are met:
+  15:../bootloader/Src/usb_prop.c ****   *   1. Redistributions of source code must retain the above copyright notice,
+  16:../bootloader/Src/usb_prop.c ****   *      this list of conditions and the following disclaimer.
+  17:../bootloader/Src/usb_prop.c ****   *   2. Redistributions in binary form must reproduce the above copyright notice,
+  18:../bootloader/Src/usb_prop.c ****   *      this list of conditions and the following disclaimer in the documentation
+  19:../bootloader/Src/usb_prop.c ****   *      and/or other materials provided with the distribution.
+  20:../bootloader/Src/usb_prop.c ****   *   3. Neither the name of STMicroelectronics nor the names of its contributors
+  21:../bootloader/Src/usb_prop.c ****   *      may be used to endorse or promote products derived from this software
+  22:../bootloader/Src/usb_prop.c ****   *      without specific prior written permission.
+  23:../bootloader/Src/usb_prop.c ****   *
+  24:../bootloader/Src/usb_prop.c ****   * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+  25:../bootloader/Src/usb_prop.c ****   * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+  26:../bootloader/Src/usb_prop.c ****   * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+  27:../bootloader/Src/usb_prop.c ****   * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+  28:../bootloader/Src/usb_prop.c ****   * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+  29:../bootloader/Src/usb_prop.c ****   * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+  30:../bootloader/Src/usb_prop.c ****   * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+  31:../bootloader/Src/usb_prop.c ****   * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+  32:../bootloader/Src/usb_prop.c ****   * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ARM GAS  /tmp/ccmLuIyr.s 			page 2
+
+
+  33:../bootloader/Src/usb_prop.c ****   * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  34:../bootloader/Src/usb_prop.c ****   *
+  35:../bootloader/Src/usb_prop.c ****   ******************************************************************************
+  36:../bootloader/Src/usb_prop.c ****   */
+  37:../bootloader/Src/usb_prop.c **** 
+  38:../bootloader/Src/usb_prop.c **** 
+  39:../bootloader/Src/usb_prop.c **** /* Includes ------------------------------------------------------------------*/
+  40:../bootloader/Src/usb_prop.c **** 
+  41:../bootloader/Src/usb_prop.c **** #include "usb_hw.h" 
+  42:../bootloader/Src/usb_prop.c **** #include "usb_lib.h"
+  43:../bootloader/Src/usb_prop.c **** #include "usb_conf.h"
+  44:../bootloader/Src/usb_prop.c **** #include "usb_prop.h"
+  45:../bootloader/Src/usb_prop.c **** #include "usb_desc.h"
+  46:../bootloader/Src/usb_prop.c **** #include "usb_pwr.h"
+  47:../bootloader/Src/usb_prop.c **** 
+  48:../bootloader/Src/usb_prop.c **** 
+  49:../bootloader/Src/usb_prop.c **** /* Private typedef -----------------------------------------------------------*/ 
+  50:../bootloader/Src/usb_prop.c **** /* Private define ------------------------------------------------------------*/
+  51:../bootloader/Src/usb_prop.c **** /* Private macro -------------------------------------------------------------*/
+  52:../bootloader/Src/usb_prop.c **** /* Private variables ---------------------------------------------------------*/
+  53:../bootloader/Src/usb_prop.c **** uint32_t ProtocolValue;
+  54:../bootloader/Src/usb_prop.c **** __IO uint8_t EXTI_Enable;
+  55:../bootloader/Src/usb_prop.c **** __IO uint8_t Request = 0;
+  56:../bootloader/Src/usb_prop.c **** uint8_t Report_Buf[2];   
+  57:../bootloader/Src/usb_prop.c **** /* -------------------------------------------------------------------------- */
+  58:../bootloader/Src/usb_prop.c **** /*  Structures initializations */
+  59:../bootloader/Src/usb_prop.c **** /* -------------------------------------------------------------------------- */
+  60:../bootloader/Src/usb_prop.c **** 
+  61:../bootloader/Src/usb_prop.c **** DEVICE Device_Table =
+  62:../bootloader/Src/usb_prop.c ****   {
+  63:../bootloader/Src/usb_prop.c ****     EP_NUM,
+  64:../bootloader/Src/usb_prop.c ****     1
+  65:../bootloader/Src/usb_prop.c ****   };
+  66:../bootloader/Src/usb_prop.c **** 
+  67:../bootloader/Src/usb_prop.c **** DEVICE_PROP Device_Property =
+  68:../bootloader/Src/usb_prop.c ****   {
+  69:../bootloader/Src/usb_prop.c ****     CustomHID_init,
+  70:../bootloader/Src/usb_prop.c ****     CustomHID_Reset,
+  71:../bootloader/Src/usb_prop.c ****     CustomHID_Status_In,
+  72:../bootloader/Src/usb_prop.c ****     CustomHID_Status_Out,
+  73:../bootloader/Src/usb_prop.c ****     CustomHID_Data_Setup,
+  74:../bootloader/Src/usb_prop.c ****     CustomHID_NoData_Setup,
+  75:../bootloader/Src/usb_prop.c ****     CustomHID_Get_Interface_Setting,
+  76:../bootloader/Src/usb_prop.c ****     CustomHID_GetDeviceDescriptor,
+  77:../bootloader/Src/usb_prop.c ****     CustomHID_GetConfigDescriptor,
+  78:../bootloader/Src/usb_prop.c ****     CustomHID_GetStringDescriptor,
+  79:../bootloader/Src/usb_prop.c ****     0,
+  80:../bootloader/Src/usb_prop.c ****     0x40 /*MAX PACKET SIZE*/
+  81:../bootloader/Src/usb_prop.c ****   };
+  82:../bootloader/Src/usb_prop.c **** USER_STANDARD_REQUESTS User_Standard_Requests =
+  83:../bootloader/Src/usb_prop.c ****   {
+  84:../bootloader/Src/usb_prop.c ****     CustomHID_GetConfiguration,
+  85:../bootloader/Src/usb_prop.c ****     CustomHID_SetConfiguration,
+  86:../bootloader/Src/usb_prop.c ****     CustomHID_GetInterface,
+  87:../bootloader/Src/usb_prop.c ****     CustomHID_SetInterface,
+  88:../bootloader/Src/usb_prop.c ****     CustomHID_GetStatus,
+  89:../bootloader/Src/usb_prop.c ****     CustomHID_ClearFeature,
+ARM GAS  /tmp/ccmLuIyr.s 			page 3
+
+
+  90:../bootloader/Src/usb_prop.c ****     CustomHID_SetEndPointFeature,
+  91:../bootloader/Src/usb_prop.c ****     CustomHID_SetDeviceFeature,
+  92:../bootloader/Src/usb_prop.c ****     CustomHID_SetDeviceAddress
+  93:../bootloader/Src/usb_prop.c ****   };
+  94:../bootloader/Src/usb_prop.c **** 
+  95:../bootloader/Src/usb_prop.c **** ONE_DESCRIPTOR Device_Descriptor =
+  96:../bootloader/Src/usb_prop.c ****   {
+  97:../bootloader/Src/usb_prop.c ****     (uint8_t*)CustomHID_DeviceDescriptor,
+  98:../bootloader/Src/usb_prop.c ****     CUSTOMHID_SIZ_DEVICE_DESC
+  99:../bootloader/Src/usb_prop.c ****   };
+ 100:../bootloader/Src/usb_prop.c **** 
+ 101:../bootloader/Src/usb_prop.c **** ONE_DESCRIPTOR Config_Descriptor =
+ 102:../bootloader/Src/usb_prop.c ****   {
+ 103:../bootloader/Src/usb_prop.c ****     (uint8_t*)CustomHID_ConfigDescriptor,
+ 104:../bootloader/Src/usb_prop.c ****     CUSTOMHID_SIZ_CONFIG_DESC
+ 105:../bootloader/Src/usb_prop.c ****   };
+ 106:../bootloader/Src/usb_prop.c **** 
+ 107:../bootloader/Src/usb_prop.c **** ONE_DESCRIPTOR CustomHID_Report_Descriptor =
+ 108:../bootloader/Src/usb_prop.c ****   {
+ 109:../bootloader/Src/usb_prop.c ****     (uint8_t *)CustomHID_ReportDescriptor,
+ 110:../bootloader/Src/usb_prop.c ****     CUSTOMHID_SIZ_REPORT_DESC
+ 111:../bootloader/Src/usb_prop.c ****   };
+ 112:../bootloader/Src/usb_prop.c **** 
+ 113:../bootloader/Src/usb_prop.c **** ONE_DESCRIPTOR CustomHID_Hid_Descriptor =
+ 114:../bootloader/Src/usb_prop.c ****   {
+ 115:../bootloader/Src/usb_prop.c ****     (uint8_t*)CustomHID_ConfigDescriptor + CUSTOMHID_OFF_HID_DESC,
+ 116:../bootloader/Src/usb_prop.c ****     CUSTOMHID_SIZ_HID_DESC
+ 117:../bootloader/Src/usb_prop.c ****   };
+ 118:../bootloader/Src/usb_prop.c **** 
+ 119:../bootloader/Src/usb_prop.c **** ONE_DESCRIPTOR String_Descriptor[4] =
+ 120:../bootloader/Src/usb_prop.c ****   {
+ 121:../bootloader/Src/usb_prop.c ****     {(uint8_t*)CustomHID_StringLangID, CUSTOMHID_SIZ_STRING_LANGID},
+ 122:../bootloader/Src/usb_prop.c ****     {(uint8_t*)CustomHID_StringVendor, CUSTOMHID_SIZ_STRING_VENDOR},
+ 123:../bootloader/Src/usb_prop.c ****     {(uint8_t*)CustomHID_StringProduct, CUSTOMHID_SIZ_STRING_PRODUCT},
+ 124:../bootloader/Src/usb_prop.c ****     {(uint8_t*)CustomHID_StringSerial, CUSTOMHID_SIZ_STRING_SERIAL}
+ 125:../bootloader/Src/usb_prop.c ****   };
+ 126:../bootloader/Src/usb_prop.c **** 
+ 127:../bootloader/Src/usb_prop.c **** /* Extern variables ----------------------------------------------------------*/
+ 128:../bootloader/Src/usb_prop.c **** /* Private function prototypes -----------------------------------------------*/
+ 129:../bootloader/Src/usb_prop.c **** 
+ 130:../bootloader/Src/usb_prop.c **** /*CustomHID_SetReport_Feature function prototypes*/
+ 131:../bootloader/Src/usb_prop.c **** uint8_t *CustomHID_SetReport_Feature(uint16_t Length);
+ 132:../bootloader/Src/usb_prop.c **** 
+ 133:../bootloader/Src/usb_prop.c **** /* Extern function prototypes ------------------------------------------------*/
+ 134:../bootloader/Src/usb_prop.c **** /* Private functions ---------------------------------------------------------*/
+ 135:../bootloader/Src/usb_prop.c **** 
+ 136:../bootloader/Src/usb_prop.c **** /*******************************************************************************
+ 137:../bootloader/Src/usb_prop.c **** * Function Name  : CustomHID_init.
+ 138:../bootloader/Src/usb_prop.c **** * Description    : Custom HID init routine.
+ 139:../bootloader/Src/usb_prop.c **** * Input          : None.
+ 140:../bootloader/Src/usb_prop.c **** * Output         : None.
+ 141:../bootloader/Src/usb_prop.c **** * Return         : None.
+ 142:../bootloader/Src/usb_prop.c **** *******************************************************************************/
+ 143:../bootloader/Src/usb_prop.c **** void CustomHID_init(void)
+ 144:../bootloader/Src/usb_prop.c **** {
+ 145:../bootloader/Src/usb_prop.c ****   /* Update the serial number string descriptor with the data from the unique 
+ 146:../bootloader/Src/usb_prop.c ****   ID*/
+ARM GAS  /tmp/ccmLuIyr.s 			page 4
+
+
+ 147:../bootloader/Src/usb_prop.c ****   Get_SerialNum();
+ 148:../bootloader/Src/usb_prop.c **** 
+ 149:../bootloader/Src/usb_prop.c ****   pInformation->Current_Configuration = 0;
+ 150:../bootloader/Src/usb_prop.c ****   /* Connect the device */
+ 151:../bootloader/Src/usb_prop.c ****   PowerOn();
+ 152:../bootloader/Src/usb_prop.c **** 
+ 153:../bootloader/Src/usb_prop.c ****   /* Perform basic device initialization operations */
+ 154:../bootloader/Src/usb_prop.c ****   USB_SIL_Init();
+ 155:../bootloader/Src/usb_prop.c **** 
+ 156:../bootloader/Src/usb_prop.c ****   bDeviceState = UNCONNECTED;
+ 157:../bootloader/Src/usb_prop.c **** }
+ 158:../bootloader/Src/usb_prop.c **** 
+ 159:../bootloader/Src/usb_prop.c **** /*******************************************************************************
+ 160:../bootloader/Src/usb_prop.c **** * Function Name  : CustomHID_Reset.
+ 161:../bootloader/Src/usb_prop.c **** * Description    : Custom HID reset routine.
+ 162:../bootloader/Src/usb_prop.c **** * Input          : None.
+ 163:../bootloader/Src/usb_prop.c **** * Output         : None.
+ 164:../bootloader/Src/usb_prop.c **** * Return         : None.
+ 165:../bootloader/Src/usb_prop.c **** *******************************************************************************/
+ 166:../bootloader/Src/usb_prop.c **** void CustomHID_Reset(void)
+ 167:../bootloader/Src/usb_prop.c **** {
+ 168:../bootloader/Src/usb_prop.c ****   /* Set CustomHID_DEVICE as not configured */
+ 169:../bootloader/Src/usb_prop.c ****   pInformation->Current_Configuration = 0;
+ 170:../bootloader/Src/usb_prop.c ****   pInformation->Current_Interface = 0;/*the default Interface*/
+ 171:../bootloader/Src/usb_prop.c ****   
+ 172:../bootloader/Src/usb_prop.c ****   /* Current Feature initialization */
+ 173:../bootloader/Src/usb_prop.c ****   pInformation->Current_Feature = CustomHID_ConfigDescriptor[7];
+ 174:../bootloader/Src/usb_prop.c ****  
+ 175:../bootloader/Src/usb_prop.c ****   SetBTABLE(BTABLE_ADDRESS);
+ 176:../bootloader/Src/usb_prop.c **** 
+ 177:../bootloader/Src/usb_prop.c ****   /* Initialize Endpoint 0 */
+ 178:../bootloader/Src/usb_prop.c ****   SetEPType(ENDP0, EP_CONTROL);
+ 179:../bootloader/Src/usb_prop.c ****   SetEPTxStatus(ENDP0, EP_TX_STALL);
+ 180:../bootloader/Src/usb_prop.c ****   SetEPRxAddr(ENDP0, ENDP0_RXADDR);
+ 181:../bootloader/Src/usb_prop.c ****   SetEPTxAddr(ENDP0, ENDP0_TXADDR);
+ 182:../bootloader/Src/usb_prop.c ****   Clear_Status_Out(ENDP0);
+ 183:../bootloader/Src/usb_prop.c ****   SetEPRxCount(ENDP0, Device_Property.MaxPacketSize);
+ 184:../bootloader/Src/usb_prop.c ****   SetEPRxValid(ENDP0);
+ 185:../bootloader/Src/usb_prop.c **** 
+ 186:../bootloader/Src/usb_prop.c ****   /* Initialize Endpoint 1 */
+ 187:../bootloader/Src/usb_prop.c ****   SetEPType(ENDP1, EP_INTERRUPT);
+ 188:../bootloader/Src/usb_prop.c ****   SetEPTxAddr(ENDP1, ENDP1_TXADDR);
+ 189:../bootloader/Src/usb_prop.c ****   SetEPRxAddr(ENDP1, ENDP1_RXADDR);
+ 190:../bootloader/Src/usb_prop.c ****   SetEPTxCount(ENDP1, 0);
+ 191:../bootloader/Src/usb_prop.c ****   SetEPRxCount(ENDP1, 64);
+ 192:../bootloader/Src/usb_prop.c ****   SetEPRxStatus(ENDP1, EP_RX_VALID);
+ 193:../bootloader/Src/usb_prop.c ****   SetEPTxStatus(ENDP1, EP_TX_NAK);
+ 194:../bootloader/Src/usb_prop.c **** 	
+ 195:../bootloader/Src/usb_prop.c **** //	/* Initialize Endpoint 2 */
+ 196:../bootloader/Src/usb_prop.c **** //  SetEPType(ENDP2, EP_INTERRUPT);
+ 197:../bootloader/Src/usb_prop.c **** //  SetEPTxAddr(ENDP2, ENDP2_TXADDR);
+ 198:../bootloader/Src/usb_prop.c **** //  SetEPRxAddr(ENDP2, ENDP2_RXADDR);
+ 199:../bootloader/Src/usb_prop.c **** //  SetEPTxCount(ENDP2, 0);
+ 200:../bootloader/Src/usb_prop.c **** //  SetEPRxCount(ENDP2, 64);
+ 201:../bootloader/Src/usb_prop.c **** //  SetEPRxStatus(ENDP2, EP_RX_VALID);
+ 202:../bootloader/Src/usb_prop.c **** //  SetEPTxStatus(ENDP2, EP_TX_NAK);
+ 203:../bootloader/Src/usb_prop.c **** 
+ARM GAS  /tmp/ccmLuIyr.s 			page 5
+
+
+ 204:../bootloader/Src/usb_prop.c ****   /* Set this device to response on default address */
+ 205:../bootloader/Src/usb_prop.c ****   SetDeviceAddress(0);
+ 206:../bootloader/Src/usb_prop.c ****   bDeviceState = ATTACHED;
+ 207:../bootloader/Src/usb_prop.c **** 	
+ 208:../bootloader/Src/usb_prop.c **** 	EP1_PrevXferComplete = 1;
+ 209:../bootloader/Src/usb_prop.c **** }
+ 210:../bootloader/Src/usb_prop.c **** /*******************************************************************************
+ 211:../bootloader/Src/usb_prop.c **** * Function Name  : CustomHID_SetConfiguration.
+ 212:../bootloader/Src/usb_prop.c **** * Description    : Update the device state to configured and command the ADC 
+ 213:../bootloader/Src/usb_prop.c **** *                  conversion.
+ 214:../bootloader/Src/usb_prop.c **** * Input          : None.
+ 215:../bootloader/Src/usb_prop.c **** * Output         : None.
+ 216:../bootloader/Src/usb_prop.c **** * Return         : None.
+ 217:../bootloader/Src/usb_prop.c **** *******************************************************************************/
+ 218:../bootloader/Src/usb_prop.c **** void CustomHID_SetConfiguration(void)
+ 219:../bootloader/Src/usb_prop.c **** {
+  27              		.loc 1 219 1 view -0
+  28              		.cfi_startproc
+  29              		@ args = 0, pretend = 0, frame = 0
+  30              		@ frame_needed = 0, uses_anonymous_args = 0
+  31              		@ link register save eliminated.
+ 220:../bootloader/Src/usb_prop.c ****   if (pInformation->Current_Configuration != 0)
+  32              		.loc 1 220 3 view .LVU1
+  33              		.loc 1 220 19 is_stmt 0 view .LVU2
+  34 0000 034B     		ldr	r3, .L6
+  35 0002 1B68     		ldr	r3, [r3]
+  36              		.loc 1 220 6 view .LVU3
+  37 0004 9B7A     		ldrb	r3, [r3, #10]	@ zero_extendqisi2
+  38 0006 13B1     		cbz	r3, .L1
+ 221:../bootloader/Src/usb_prop.c ****   {
+ 222:../bootloader/Src/usb_prop.c ****     /* Device configured */
+ 223:../bootloader/Src/usb_prop.c ****     bDeviceState = CONFIGURED;
+  39              		.loc 1 223 5 is_stmt 1 view .LVU4
+  40              		.loc 1 223 18 is_stmt 0 view .LVU5
+  41 0008 0522     		movs	r2, #5
+  42 000a 024B     		ldr	r3, .L6+4
+  43 000c 1A60     		str	r2, [r3]
+  44              	.L1:
+ 224:../bootloader/Src/usb_prop.c ****     
+ 225:../bootloader/Src/usb_prop.c ****   }
+ 226:../bootloader/Src/usb_prop.c **** }
+  45              		.loc 1 226 1 view .LVU6
+  46 000e 7047     		bx	lr
+  47              	.L7:
+  48              		.align	2
+  49              	.L6:
+  50 0010 00000000 		.word	pInformation
+  51 0014 00000000 		.word	bDeviceState
+  52              		.cfi_endproc
+  53              	.LFE31:
+  55              		.section	.text.CustomHID_SetDeviceAddress,"ax",%progbits
+  56              		.align	1
+  57              		.global	CustomHID_SetDeviceAddress
+  58              		.syntax unified
+  59              		.thumb
+  60              		.thumb_func
+  61              		.fpu softvfp
+ARM GAS  /tmp/ccmLuIyr.s 			page 6
+
+
+  63              	CustomHID_SetDeviceAddress:
+  64              	.LFB32:
+ 227:../bootloader/Src/usb_prop.c **** /*******************************************************************************
+ 228:../bootloader/Src/usb_prop.c **** * Function Name  : CustomHID_SetConfiguration.
+ 229:../bootloader/Src/usb_prop.c **** * Description    : Update the device state to addressed.
+ 230:../bootloader/Src/usb_prop.c **** * Input          : None.
+ 231:../bootloader/Src/usb_prop.c **** * Output         : None.
+ 232:../bootloader/Src/usb_prop.c **** * Return         : None.
+ 233:../bootloader/Src/usb_prop.c **** *******************************************************************************/
+ 234:../bootloader/Src/usb_prop.c **** void CustomHID_SetDeviceAddress (void)
+ 235:../bootloader/Src/usb_prop.c **** {
+  65              		.loc 1 235 1 is_stmt 1 view -0
+  66              		.cfi_startproc
+  67              		@ args = 0, pretend = 0, frame = 0
+  68              		@ frame_needed = 0, uses_anonymous_args = 0
+  69              		@ link register save eliminated.
+ 236:../bootloader/Src/usb_prop.c ****   bDeviceState = ADDRESSED;
+  70              		.loc 1 236 3 view .LVU8
+  71              		.loc 1 236 16 is_stmt 0 view .LVU9
+  72 0000 0422     		movs	r2, #4
+  73 0002 014B     		ldr	r3, .L9
+  74 0004 1A60     		str	r2, [r3]
+ 237:../bootloader/Src/usb_prop.c **** }
+  75              		.loc 1 237 1 view .LVU10
+  76 0006 7047     		bx	lr
+  77              	.L10:
+  78              		.align	2
+  79              	.L9:
+  80 0008 00000000 		.word	bDeviceState
+  81              		.cfi_endproc
+  82              	.LFE32:
+  84              		.section	.text.CustomHID_Status_In,"ax",%progbits
+  85              		.align	1
+  86              		.global	CustomHID_Status_In
+  87              		.syntax unified
+  88              		.thumb
+  89              		.thumb_func
+  90              		.fpu softvfp
+  92              	CustomHID_Status_In:
+  93              	.LFB33:
+ 238:../bootloader/Src/usb_prop.c **** /*******************************************************************************
+ 239:../bootloader/Src/usb_prop.c **** * Function Name  : CustomHID_Status_In.
+ 240:../bootloader/Src/usb_prop.c **** * Description    : Joystick status IN routine.
+ 241:../bootloader/Src/usb_prop.c **** * Input          : None.
+ 242:../bootloader/Src/usb_prop.c **** * Output         : None.
+ 243:../bootloader/Src/usb_prop.c **** * Return         : None.
+ 244:../bootloader/Src/usb_prop.c **** *******************************************************************************/
+ 245:../bootloader/Src/usb_prop.c **** void CustomHID_Status_In(void)
+ 246:../bootloader/Src/usb_prop.c **** {  
+  94              		.loc 1 246 1 is_stmt 1 view -0
+  95              		.cfi_startproc
+  96              		@ args = 0, pretend = 0, frame = 0
+  97              		@ frame_needed = 0, uses_anonymous_args = 0
+  98              		@ link register save eliminated.
+ 247:../bootloader/Src/usb_prop.c **** 
+ 248:../bootloader/Src/usb_prop.c **** }
+  99              		.loc 1 248 1 view .LVU12
+ARM GAS  /tmp/ccmLuIyr.s 			page 7
+
+
+ 100 0000 7047     		bx	lr
+ 101              		.cfi_endproc
+ 102              	.LFE33:
+ 104              		.section	.text.CustomHID_Data_Setup,"ax",%progbits
+ 105              		.align	1
+ 106              		.global	CustomHID_Data_Setup
+ 107              		.syntax unified
+ 108              		.thumb
+ 109              		.thumb_func
+ 110              		.fpu softvfp
+ 112              	CustomHID_Data_Setup:
+ 113              	.LVL0:
+ 114              	.LFB35:
+ 249:../bootloader/Src/usb_prop.c **** 
+ 250:../bootloader/Src/usb_prop.c **** /*******************************************************************************
+ 251:../bootloader/Src/usb_prop.c **** * Function Name  : CustomHID_Status_Out
+ 252:../bootloader/Src/usb_prop.c **** * Description    : Joystick status OUT routine.
+ 253:../bootloader/Src/usb_prop.c **** * Input          : None.
+ 254:../bootloader/Src/usb_prop.c **** * Output         : None.
+ 255:../bootloader/Src/usb_prop.c **** * Return         : None.
+ 256:../bootloader/Src/usb_prop.c **** *******************************************************************************/
+ 257:../bootloader/Src/usb_prop.c **** void CustomHID_Status_Out (void)
+ 258:../bootloader/Src/usb_prop.c **** {
+ 259:../bootloader/Src/usb_prop.c **** }
+ 260:../bootloader/Src/usb_prop.c **** 
+ 261:../bootloader/Src/usb_prop.c **** /*******************************************************************************
+ 262:../bootloader/Src/usb_prop.c **** * Function Name  : CustomHID_Data_Setup
+ 263:../bootloader/Src/usb_prop.c **** * Description    : Handle the data class specific requests.
+ 264:../bootloader/Src/usb_prop.c **** * Input          : Request Nb.
+ 265:../bootloader/Src/usb_prop.c **** * Output         : None.
+ 266:../bootloader/Src/usb_prop.c **** * Return         : USB_UNSUPPORT or USB_SUCCESS.
+ 267:../bootloader/Src/usb_prop.c **** *******************************************************************************/
+ 268:../bootloader/Src/usb_prop.c **** RESULT CustomHID_Data_Setup(uint8_t RequestNo)
+ 269:../bootloader/Src/usb_prop.c **** {
+ 115              		.loc 1 269 1 view -0
+ 116              		.cfi_startproc
+ 117              		@ args = 0, pretend = 0, frame = 0
+ 118              		@ frame_needed = 0, uses_anonymous_args = 0
+ 270:../bootloader/Src/usb_prop.c ****   uint8_t *(*CopyRoutine)(uint16_t);
+ 119              		.loc 1 270 3 view .LVU14
+ 271:../bootloader/Src/usb_prop.c ****   
+ 272:../bootloader/Src/usb_prop.c ****   if (pInformation->USBwIndex != 0) 
+ 120              		.loc 1 272 3 view .LVU15
+ 121              		.loc 1 272 19 is_stmt 0 view .LVU16
+ 122 0000 144B     		ldr	r3, .L23
+ 269:../bootloader/Src/usb_prop.c ****   uint8_t *(*CopyRoutine)(uint16_t);
+ 123              		.loc 1 269 1 view .LVU17
+ 124 0002 10B5     		push	{r4, lr}
+ 125              	.LCFI0:
+ 126              		.cfi_def_cfa_offset 8
+ 127              		.cfi_offset 4, -8
+ 128              		.cfi_offset 14, -4
+ 129              		.loc 1 272 19 view .LVU18
+ 130 0004 1A68     		ldr	r2, [r3]
+ 131              		.loc 1 272 6 view .LVU19
+ 132 0006 9388     		ldrh	r3, [r2, #4]
+ 133 0008 5BB9     		cbnz	r3, .L22
+ARM GAS  /tmp/ccmLuIyr.s 			page 8
+
+
+ 273:../bootloader/Src/usb_prop.c ****     return USB_UNSUPPORT;    
+ 274:../bootloader/Src/usb_prop.c ****   
+ 275:../bootloader/Src/usb_prop.c ****   CopyRoutine = NULL;
+ 134              		.loc 1 275 3 is_stmt 1 view .LVU20
+ 135              	.LVL1:
+ 276:../bootloader/Src/usb_prop.c ****   
+ 277:../bootloader/Src/usb_prop.c ****   if ((RequestNo == GET_DESCRIPTOR)
+ 136              		.loc 1 277 3 view .LVU21
+ 137 000a 1378     		ldrb	r3, [r2]	@ zero_extendqisi2
+ 138              		.loc 1 277 6 is_stmt 0 view .LVU22
+ 139 000c 0628     		cmp	r0, #6
+ 140 000e 03F07F03 		and	r3, r3, #127
+ 141 0012 08D1     		bne	.L14
+ 278:../bootloader/Src/usb_prop.c ****       && (Type_Recipient == (STANDARD_REQUEST | INTERFACE_RECIPIENT))
+ 142              		.loc 1 278 7 view .LVU23
+ 143 0014 012B     		cmp	r3, #1
+ 144 0016 04D1     		bne	.L22
+ 279:../bootloader/Src/usb_prop.c ****         )
+ 280:../bootloader/Src/usb_prop.c ****   {
+ 281:../bootloader/Src/usb_prop.c ****     
+ 282:../bootloader/Src/usb_prop.c ****     if (pInformation->USBwValue1 == REPORT_DESCRIPTOR)
+ 145              		.loc 1 282 5 is_stmt 1 view .LVU24
+ 146              		.loc 1 282 23 is_stmt 0 view .LVU25
+ 147 0018 9378     		ldrb	r3, [r2, #2]	@ zero_extendqisi2
+ 148              		.loc 1 282 8 view .LVU26
+ 149 001a 222B     		cmp	r3, #34
+ 150 001c 13D0     		beq	.L18
+ 283:../bootloader/Src/usb_prop.c ****     {
+ 284:../bootloader/Src/usb_prop.c ****       CopyRoutine = CustomHID_GetReportDescriptor;
+ 285:../bootloader/Src/usb_prop.c ****     }
+ 286:../bootloader/Src/usb_prop.c ****     else if (pInformation->USBwValue1 == HID_DESCRIPTOR_TYPE)
+ 151              		.loc 1 286 10 is_stmt 1 view .LVU27
+ 152              		.loc 1 286 13 is_stmt 0 view .LVU28
+ 153 001e 212B     		cmp	r3, #33
+ 154 0020 13D0     		beq	.L19
+ 155              	.LVL2:
+ 156              	.L22:
+ 287:../bootloader/Src/usb_prop.c ****     {
+ 288:../bootloader/Src/usb_prop.c ****       CopyRoutine = CustomHID_GetHIDDescriptor;
+ 289:../bootloader/Src/usb_prop.c ****     }
+ 290:../bootloader/Src/usb_prop.c ****     
+ 291:../bootloader/Src/usb_prop.c ****   } /* End of GET_DESCRIPTOR */
+ 292:../bootloader/Src/usb_prop.c ****   
+ 293:../bootloader/Src/usb_prop.c ****   /*** GET_PROTOCOL, GET_REPORT, SET_REPORT ***/
+ 294:../bootloader/Src/usb_prop.c ****   else if ( (Type_Recipient == (CLASS_REQUEST | INTERFACE_RECIPIENT)) )
+ 295:../bootloader/Src/usb_prop.c ****   {         
+ 296:../bootloader/Src/usb_prop.c ****     switch( RequestNo )
+ 157              		.loc 1 296 5 view .LVU29
+ 158 0022 0220     		movs	r0, #2
+ 159              	.LVL3:
+ 160              		.loc 1 296 5 view .LVU30
+ 161 0024 0EE0     		b	.L13
+ 162              	.LVL4:
+ 163              	.L14:
+ 294:../bootloader/Src/usb_prop.c ****   {         
+ 164              		.loc 1 294 8 is_stmt 1 view .LVU31
+ 294:../bootloader/Src/usb_prop.c ****   {         
+ARM GAS  /tmp/ccmLuIyr.s 			page 9
+
+
+ 165              		.loc 1 294 11 is_stmt 0 view .LVU32
+ 166 0026 212B     		cmp	r3, #33
+ 167 0028 FBD1     		bne	.L22
+ 168              		.loc 1 296 5 is_stmt 1 view .LVU33
+ 169 002a 0328     		cmp	r0, #3
+ 170 002c 0FD0     		beq	.L21
+ 171 002e 0928     		cmp	r0, #9
+ 172 0030 F7D1     		bne	.L22
+ 297:../bootloader/Src/usb_prop.c ****     {
+ 298:../bootloader/Src/usb_prop.c ****     case GET_PROTOCOL:
+ 299:../bootloader/Src/usb_prop.c ****       CopyRoutine = CustomHID_GetProtocolValue;
+ 300:../bootloader/Src/usb_prop.c ****       break;
+ 301:../bootloader/Src/usb_prop.c ****     case SET_REPORT:
+ 302:../bootloader/Src/usb_prop.c ****       CopyRoutine = CustomHID_SetReport_Feature;
+ 173              		.loc 1 302 7 view .LVU34
+ 174              	.LVL5:
+ 303:../bootloader/Src/usb_prop.c ****       Request = SET_REPORT;
+ 175              		.loc 1 303 7 view .LVU35
+ 176              		.loc 1 303 15 is_stmt 0 view .LVU36
+ 177 0032 094B     		ldr	r3, .L23+4
+ 178 0034 1870     		strb	r0, [r3]
+ 304:../bootloader/Src/usb_prop.c ****       break;
+ 179              		.loc 1 304 7 is_stmt 1 view .LVU37
+ 302:../bootloader/Src/usb_prop.c ****       Request = SET_REPORT;
+ 180              		.loc 1 302 19 is_stmt 0 view .LVU38
+ 181 0036 094B     		ldr	r3, .L23+8
+ 182              	.L15:
+ 183              	.LVL6:
+ 305:../bootloader/Src/usb_prop.c ****     default:
+ 306:../bootloader/Src/usb_prop.c ****       break;
+ 307:../bootloader/Src/usb_prop.c ****     }
+ 308:../bootloader/Src/usb_prop.c ****   }
+ 309:../bootloader/Src/usb_prop.c ****   
+ 310:../bootloader/Src/usb_prop.c ****   if (CopyRoutine == NULL)
+ 184              		.loc 1 310 3 is_stmt 1 view .LVU39
+ 311:../bootloader/Src/usb_prop.c ****   {
+ 312:../bootloader/Src/usb_prop.c ****     return USB_UNSUPPORT;
+ 313:../bootloader/Src/usb_prop.c ****   }
+ 314:../bootloader/Src/usb_prop.c ****   
+ 315:../bootloader/Src/usb_prop.c ****   pInformation->Ctrl_Info.CopyData = CopyRoutine;
+ 185              		.loc 1 315 3 view .LVU40
+ 316:../bootloader/Src/usb_prop.c ****   pInformation->Ctrl_Info.Usb_wOffset = 0;
+ 186              		.loc 1 316 39 is_stmt 0 view .LVU41
+ 187 0038 0024     		movs	r4, #0
+ 315:../bootloader/Src/usb_prop.c ****   pInformation->Ctrl_Info.Usb_wOffset = 0;
+ 188              		.loc 1 315 36 view .LVU42
+ 189 003a 9361     		str	r3, [r2, #24]
+ 190              		.loc 1 316 3 is_stmt 1 view .LVU43
+ 317:../bootloader/Src/usb_prop.c ****   (*CopyRoutine)(0);
+ 191              		.loc 1 317 4 is_stmt 0 view .LVU44
+ 192 003c 2046     		mov	r0, r4
+ 193              	.LVL7:
+ 316:../bootloader/Src/usb_prop.c ****   pInformation->Ctrl_Info.Usb_wOffset = 0;
+ 194              		.loc 1 316 39 view .LVU45
+ 195 003e 5482     		strh	r4, [r2, #18]	@ movhi
+ 196              		.loc 1 317 3 is_stmt 1 view .LVU46
+ 197              		.loc 1 317 4 is_stmt 0 view .LVU47
+ARM GAS  /tmp/ccmLuIyr.s 			page 10
+
+
+ 198 0040 9847     		blx	r3
+ 199              	.LVL8:
+ 318:../bootloader/Src/usb_prop.c ****   return USB_SUCCESS;
+ 200              		.loc 1 318 3 is_stmt 1 view .LVU48
+ 201              		.loc 1 318 10 is_stmt 0 view .LVU49
+ 202 0042 2046     		mov	r0, r4
+ 203              	.L13:
+ 319:../bootloader/Src/usb_prop.c **** }
+ 204              		.loc 1 319 1 view .LVU50
+ 205 0044 10BD     		pop	{r4, pc}
+ 206              	.LVL9:
+ 207              	.L18:
+ 284:../bootloader/Src/usb_prop.c ****     }
+ 208              		.loc 1 284 19 view .LVU51
+ 209 0046 064B     		ldr	r3, .L23+12
+ 210 0048 F6E7     		b	.L15
+ 211              	.L19:
+ 288:../bootloader/Src/usb_prop.c ****     }
+ 212              		.loc 1 288 19 view .LVU52
+ 213 004a 064B     		ldr	r3, .L23+16
+ 214 004c F4E7     		b	.L15
+ 215              	.L21:
+ 296:../bootloader/Src/usb_prop.c ****     {
+ 216              		.loc 1 296 5 view .LVU53
+ 217 004e 064B     		ldr	r3, .L23+20
+ 218 0050 F2E7     		b	.L15
+ 219              	.L24:
+ 220 0052 00BF     		.align	2
+ 221              	.L23:
+ 222 0054 00000000 		.word	pInformation
+ 223 0058 00000000 		.word	.LANCHOR0
+ 224 005c 00000000 		.word	CustomHID_SetReport_Feature
+ 225 0060 00000000 		.word	CustomHID_GetReportDescriptor
+ 226 0064 00000000 		.word	CustomHID_GetHIDDescriptor
+ 227 0068 00000000 		.word	CustomHID_GetProtocolValue
+ 228              		.cfi_endproc
+ 229              	.LFE35:
+ 231              		.section	.text.CustomHID_SetReport_Feature,"ax",%progbits
+ 232              		.align	1
+ 233              		.global	CustomHID_SetReport_Feature
+ 234              		.syntax unified
+ 235              		.thumb
+ 236              		.thumb_func
+ 237              		.fpu softvfp
+ 239              	CustomHID_SetReport_Feature:
+ 240              	.LVL10:
+ 241              	.LFB36:
+ 320:../bootloader/Src/usb_prop.c **** 
+ 321:../bootloader/Src/usb_prop.c **** /*******************************************************************************
+ 322:../bootloader/Src/usb_prop.c **** * Function Name  : CustomHID_SetReport_Feature
+ 323:../bootloader/Src/usb_prop.c **** * Description    : Set Feature request handling
+ 324:../bootloader/Src/usb_prop.c **** * Input          : Length.
+ 325:../bootloader/Src/usb_prop.c **** * Output         : None.
+ 326:../bootloader/Src/usb_prop.c **** * Return         : Buffer
+ 327:../bootloader/Src/usb_prop.c **** *******************************************************************************/
+ 328:../bootloader/Src/usb_prop.c **** uint8_t *CustomHID_SetReport_Feature(uint16_t Length)
+ 329:../bootloader/Src/usb_prop.c **** {
+ARM GAS  /tmp/ccmLuIyr.s 			page 11
+
+
+ 242              		.loc 1 329 1 is_stmt 1 view -0
+ 243              		.cfi_startproc
+ 244              		@ args = 0, pretend = 0, frame = 0
+ 245              		@ frame_needed = 0, uses_anonymous_args = 0
+ 246              		@ link register save eliminated.
+ 330:../bootloader/Src/usb_prop.c ****   if (Length == 0)
+ 247              		.loc 1 330 3 view .LVU55
+ 248              		.loc 1 330 6 is_stmt 0 view .LVU56
+ 249 0000 20B9     		cbnz	r0, .L27
+ 331:../bootloader/Src/usb_prop.c ****   {
+ 332:../bootloader/Src/usb_prop.c ****     pInformation->Ctrl_Info.Usb_wLength = 2;
+ 250              		.loc 1 332 5 is_stmt 1 view .LVU57
+ 251              		.loc 1 332 41 is_stmt 0 view .LVU58
+ 252 0002 0222     		movs	r2, #2
+ 253 0004 024B     		ldr	r3, .L28
+ 254 0006 1B68     		ldr	r3, [r3]
+ 255 0008 1A82     		strh	r2, [r3, #16]	@ movhi
+ 333:../bootloader/Src/usb_prop.c ****     return NULL;
+ 256              		.loc 1 333 5 is_stmt 1 view .LVU59
+ 257              		.loc 1 333 12 is_stmt 0 view .LVU60
+ 258 000a 7047     		bx	lr
+ 259              	.L27:
+ 334:../bootloader/Src/usb_prop.c ****   }
+ 335:../bootloader/Src/usb_prop.c ****   else
+ 336:../bootloader/Src/usb_prop.c ****   {
+ 337:../bootloader/Src/usb_prop.c ****     return Report_Buf;
+ 260              		.loc 1 337 12 view .LVU61
+ 261 000c 0148     		ldr	r0, .L28+4
+ 262              	.LVL11:
+ 338:../bootloader/Src/usb_prop.c ****   }
+ 339:../bootloader/Src/usb_prop.c **** }
+ 263              		.loc 1 339 1 view .LVU62
+ 264 000e 7047     		bx	lr
+ 265              	.L29:
+ 266              		.align	2
+ 267              	.L28:
+ 268 0010 00000000 		.word	pInformation
+ 269 0014 00000000 		.word	Report_Buf
+ 270              		.cfi_endproc
+ 271              	.LFE36:
+ 273              		.section	.text.CustomHID_Get_Interface_Setting,"ax",%progbits
+ 274              		.align	1
+ 275              		.global	CustomHID_Get_Interface_Setting
+ 276              		.syntax unified
+ 277              		.thumb
+ 278              		.thumb_func
+ 279              		.fpu softvfp
+ 281              	CustomHID_Get_Interface_Setting:
+ 282              	.LVL12:
+ 283              	.LFB43:
+ 340:../bootloader/Src/usb_prop.c **** 
+ 341:../bootloader/Src/usb_prop.c **** /*******************************************************************************
+ 342:../bootloader/Src/usb_prop.c **** * Function Name  : CustomHID_NoData_Setup
+ 343:../bootloader/Src/usb_prop.c **** * Description    : handle the no data class specific requests
+ 344:../bootloader/Src/usb_prop.c **** * Input          : Request Nb.
+ 345:../bootloader/Src/usb_prop.c **** * Output         : None.
+ 346:../bootloader/Src/usb_prop.c **** * Return         : USB_UNSUPPORT or USB_SUCCESS.
+ARM GAS  /tmp/ccmLuIyr.s 			page 12
+
+
+ 347:../bootloader/Src/usb_prop.c **** *******************************************************************************/
+ 348:../bootloader/Src/usb_prop.c **** RESULT CustomHID_NoData_Setup(uint8_t RequestNo)
+ 349:../bootloader/Src/usb_prop.c **** {
+ 350:../bootloader/Src/usb_prop.c ****   if ((Type_Recipient == (CLASS_REQUEST | INTERFACE_RECIPIENT))
+ 351:../bootloader/Src/usb_prop.c ****       && (RequestNo == SET_PROTOCOL))
+ 352:../bootloader/Src/usb_prop.c ****   {
+ 353:../bootloader/Src/usb_prop.c ****     return CustomHID_SetProtocol();
+ 354:../bootloader/Src/usb_prop.c ****   }
+ 355:../bootloader/Src/usb_prop.c **** 
+ 356:../bootloader/Src/usb_prop.c ****   else
+ 357:../bootloader/Src/usb_prop.c ****   {
+ 358:../bootloader/Src/usb_prop.c ****     return USB_UNSUPPORT;
+ 359:../bootloader/Src/usb_prop.c ****   }
+ 360:../bootloader/Src/usb_prop.c **** }
+ 361:../bootloader/Src/usb_prop.c **** 
+ 362:../bootloader/Src/usb_prop.c **** /*******************************************************************************
+ 363:../bootloader/Src/usb_prop.c **** * Function Name  : CustomHID_GetDeviceDescriptor.
+ 364:../bootloader/Src/usb_prop.c **** * Description    : Gets the device descriptor.
+ 365:../bootloader/Src/usb_prop.c **** * Input          : Length
+ 366:../bootloader/Src/usb_prop.c **** * Output         : None.
+ 367:../bootloader/Src/usb_prop.c **** * Return         : The address of the device descriptor.
+ 368:../bootloader/Src/usb_prop.c **** *******************************************************************************/
+ 369:../bootloader/Src/usb_prop.c **** uint8_t *CustomHID_GetDeviceDescriptor(uint16_t Length)
+ 370:../bootloader/Src/usb_prop.c **** {
+ 371:../bootloader/Src/usb_prop.c ****   return Standard_GetDescriptorData(Length, &Device_Descriptor);
+ 372:../bootloader/Src/usb_prop.c **** }
+ 373:../bootloader/Src/usb_prop.c **** 
+ 374:../bootloader/Src/usb_prop.c **** /*******************************************************************************
+ 375:../bootloader/Src/usb_prop.c **** * Function Name  : CustomHID_GetConfigDescriptor.
+ 376:../bootloader/Src/usb_prop.c **** * Description    : Gets the configuration descriptor.
+ 377:../bootloader/Src/usb_prop.c **** * Input          : Length
+ 378:../bootloader/Src/usb_prop.c **** * Output         : None.
+ 379:../bootloader/Src/usb_prop.c **** * Return         : The address of the configuration descriptor.
+ 380:../bootloader/Src/usb_prop.c **** *******************************************************************************/
+ 381:../bootloader/Src/usb_prop.c **** uint8_t *CustomHID_GetConfigDescriptor(uint16_t Length)
+ 382:../bootloader/Src/usb_prop.c **** {
+ 383:../bootloader/Src/usb_prop.c ****   return Standard_GetDescriptorData(Length, &Config_Descriptor);
+ 384:../bootloader/Src/usb_prop.c **** }
+ 385:../bootloader/Src/usb_prop.c **** 
+ 386:../bootloader/Src/usb_prop.c **** /*******************************************************************************
+ 387:../bootloader/Src/usb_prop.c **** * Function Name  : CustomHID_GetStringDescriptor
+ 388:../bootloader/Src/usb_prop.c **** * Description    : Gets the string descriptors according to the needed index
+ 389:../bootloader/Src/usb_prop.c **** * Input          : Length
+ 390:../bootloader/Src/usb_prop.c **** * Output         : None.
+ 391:../bootloader/Src/usb_prop.c **** * Return         : The address of the string descriptors.
+ 392:../bootloader/Src/usb_prop.c **** *******************************************************************************/
+ 393:../bootloader/Src/usb_prop.c **** uint8_t *CustomHID_GetStringDescriptor(uint16_t Length)
+ 394:../bootloader/Src/usb_prop.c **** {
+ 395:../bootloader/Src/usb_prop.c ****   uint8_t wValue0 = pInformation->USBwValue0;
+ 396:../bootloader/Src/usb_prop.c ****   if (wValue0 >= 4)
+ 397:../bootloader/Src/usb_prop.c ****   {
+ 398:../bootloader/Src/usb_prop.c ****     return NULL;
+ 399:../bootloader/Src/usb_prop.c ****   }
+ 400:../bootloader/Src/usb_prop.c ****   else 
+ 401:../bootloader/Src/usb_prop.c ****   {
+ 402:../bootloader/Src/usb_prop.c ****     return Standard_GetDescriptorData(Length, &String_Descriptor[wValue0]);
+ 403:../bootloader/Src/usb_prop.c ****   }
+ARM GAS  /tmp/ccmLuIyr.s 			page 13
+
+
+ 404:../bootloader/Src/usb_prop.c **** }
+ 405:../bootloader/Src/usb_prop.c **** 
+ 406:../bootloader/Src/usb_prop.c **** /*******************************************************************************
+ 407:../bootloader/Src/usb_prop.c **** * Function Name  : CustomHID_GetReportDescriptor.
+ 408:../bootloader/Src/usb_prop.c **** * Description    : Gets the HID report descriptor.
+ 409:../bootloader/Src/usb_prop.c **** * Input          : Length
+ 410:../bootloader/Src/usb_prop.c **** * Output         : None.
+ 411:../bootloader/Src/usb_prop.c **** * Return         : The address of the configuration descriptor.
+ 412:../bootloader/Src/usb_prop.c **** *******************************************************************************/
+ 413:../bootloader/Src/usb_prop.c **** uint8_t *CustomHID_GetReportDescriptor(uint16_t Length)
+ 414:../bootloader/Src/usb_prop.c **** {
+ 415:../bootloader/Src/usb_prop.c ****   return Standard_GetDescriptorData(Length, &CustomHID_Report_Descriptor);
+ 416:../bootloader/Src/usb_prop.c **** }
+ 417:../bootloader/Src/usb_prop.c **** 
+ 418:../bootloader/Src/usb_prop.c **** /*******************************************************************************
+ 419:../bootloader/Src/usb_prop.c **** * Function Name  : CustomHID_GetHIDDescriptor.
+ 420:../bootloader/Src/usb_prop.c **** * Description    : Gets the HID descriptor.
+ 421:../bootloader/Src/usb_prop.c **** * Input          : Length
+ 422:../bootloader/Src/usb_prop.c **** * Output         : None.
+ 423:../bootloader/Src/usb_prop.c **** * Return         : The address of the configuration descriptor.
+ 424:../bootloader/Src/usb_prop.c **** *******************************************************************************/
+ 425:../bootloader/Src/usb_prop.c **** uint8_t *CustomHID_GetHIDDescriptor(uint16_t Length)
+ 426:../bootloader/Src/usb_prop.c **** {
+ 427:../bootloader/Src/usb_prop.c ****   return Standard_GetDescriptorData(Length, &CustomHID_Hid_Descriptor);
+ 428:../bootloader/Src/usb_prop.c **** }
+ 429:../bootloader/Src/usb_prop.c **** 
+ 430:../bootloader/Src/usb_prop.c **** /*******************************************************************************
+ 431:../bootloader/Src/usb_prop.c **** * Function Name  : CustomHID_Get_Interface_Setting.
+ 432:../bootloader/Src/usb_prop.c **** * Description    : tests the interface and the alternate setting according to the
+ 433:../bootloader/Src/usb_prop.c **** *                  supported one.
+ 434:../bootloader/Src/usb_prop.c **** * Input          : - Interface : interface number.
+ 435:../bootloader/Src/usb_prop.c **** *                  - AlternateSetting : Alternate Setting number.
+ 436:../bootloader/Src/usb_prop.c **** * Output         : None.
+ 437:../bootloader/Src/usb_prop.c **** * Return         : USB_SUCCESS or USB_UNSUPPORT.
+ 438:../bootloader/Src/usb_prop.c **** *******************************************************************************/
+ 439:../bootloader/Src/usb_prop.c **** RESULT CustomHID_Get_Interface_Setting(uint8_t Interface, uint8_t AlternateSetting)
+ 440:../bootloader/Src/usb_prop.c **** {
+ 284              		.loc 1 440 1 is_stmt 1 view -0
+ 285              		.cfi_startproc
+ 286              		@ args = 0, pretend = 0, frame = 0
+ 287              		@ frame_needed = 0, uses_anonymous_args = 0
+ 288              		@ link register save eliminated.
+ 441:../bootloader/Src/usb_prop.c ****   if (AlternateSetting > 0)
+ 289              		.loc 1 441 3 view .LVU64
+ 290              		.loc 1 441 6 is_stmt 0 view .LVU65
+ 291 0000 19B9     		cbnz	r1, .L32
+ 442:../bootloader/Src/usb_prop.c ****   {
+ 443:../bootloader/Src/usb_prop.c ****     return USB_UNSUPPORT;
+ 444:../bootloader/Src/usb_prop.c ****   }
+ 445:../bootloader/Src/usb_prop.c ****   else if (Interface > 0)
+ 292              		.loc 1 445 8 is_stmt 1 view .LVU66
+ 293              		.loc 1 445 11 is_stmt 0 view .LVU67
+ 294 0002 0028     		cmp	r0, #0
+ 446:../bootloader/Src/usb_prop.c ****   {
+ 447:../bootloader/Src/usb_prop.c ****     return USB_UNSUPPORT;
+ 295              		.loc 1 447 12 view .LVU68
+ 296 0004 18BF     		it	ne
+ARM GAS  /tmp/ccmLuIyr.s 			page 14
+
+
+ 297 0006 0220     		movne	r0, #2
+ 298              	.LVL13:
+ 299              		.loc 1 447 12 view .LVU69
+ 300 0008 7047     		bx	lr
+ 301              	.LVL14:
+ 302              	.L32:
+ 303              		.loc 1 447 12 view .LVU70
+ 304 000a 0220     		movs	r0, #2
+ 305              	.LVL15:
+ 448:../bootloader/Src/usb_prop.c ****   }
+ 449:../bootloader/Src/usb_prop.c ****   return USB_SUCCESS;
+ 450:../bootloader/Src/usb_prop.c **** }
+ 306              		.loc 1 450 1 view .LVU71
+ 307 000c 7047     		bx	lr
+ 308              		.cfi_endproc
+ 309              	.LFE43:
+ 311              		.section	.text.CustomHID_GetProtocolValue,"ax",%progbits
+ 312              		.align	1
+ 313              		.global	CustomHID_GetProtocolValue
+ 314              		.syntax unified
+ 315              		.thumb
+ 316              		.thumb_func
+ 317              		.fpu softvfp
+ 319              	CustomHID_GetProtocolValue:
+ 320              	.LVL16:
+ 321              	.LFB45:
+ 451:../bootloader/Src/usb_prop.c **** 
+ 452:../bootloader/Src/usb_prop.c **** /*******************************************************************************
+ 453:../bootloader/Src/usb_prop.c **** * Function Name  : CustomHID_SetProtocol
+ 454:../bootloader/Src/usb_prop.c **** * Description    : Joystick Set Protocol request routine.
+ 455:../bootloader/Src/usb_prop.c **** * Input          : None.
+ 456:../bootloader/Src/usb_prop.c **** * Output         : None.
+ 457:../bootloader/Src/usb_prop.c **** * Return         : USB SUCCESS.
+ 458:../bootloader/Src/usb_prop.c **** *******************************************************************************/
+ 459:../bootloader/Src/usb_prop.c **** RESULT CustomHID_SetProtocol(void)
+ 460:../bootloader/Src/usb_prop.c **** {
+ 461:../bootloader/Src/usb_prop.c ****   uint8_t wValue0 = pInformation->USBwValue0;
+ 462:../bootloader/Src/usb_prop.c ****   ProtocolValue = wValue0;
+ 463:../bootloader/Src/usb_prop.c ****   return USB_SUCCESS;
+ 464:../bootloader/Src/usb_prop.c **** }
+ 465:../bootloader/Src/usb_prop.c **** 
+ 466:../bootloader/Src/usb_prop.c **** /*******************************************************************************
+ 467:../bootloader/Src/usb_prop.c **** * Function Name  : CustomHID_GetProtocolValue
+ 468:../bootloader/Src/usb_prop.c **** * Description    : get the protocol value
+ 469:../bootloader/Src/usb_prop.c **** * Input          : Length.
+ 470:../bootloader/Src/usb_prop.c **** * Output         : None.
+ 471:../bootloader/Src/usb_prop.c **** * Return         : address of the protocol value.
+ 472:../bootloader/Src/usb_prop.c **** *******************************************************************************/
+ 473:../bootloader/Src/usb_prop.c **** uint8_t *CustomHID_GetProtocolValue(uint16_t Length)
+ 474:../bootloader/Src/usb_prop.c **** {
+ 322              		.loc 1 474 1 is_stmt 1 view -0
+ 323              		.cfi_startproc
+ 324              		@ args = 0, pretend = 0, frame = 0
+ 325              		@ frame_needed = 0, uses_anonymous_args = 0
+ 326              		@ link register save eliminated.
+ 475:../bootloader/Src/usb_prop.c ****   if (Length == 0)
+ 327              		.loc 1 475 3 view .LVU73
+ARM GAS  /tmp/ccmLuIyr.s 			page 15
+
+
+ 328              		.loc 1 475 6 is_stmt 0 view .LVU74
+ 329 0000 20B9     		cbnz	r0, .L36
+ 476:../bootloader/Src/usb_prop.c ****   {
+ 477:../bootloader/Src/usb_prop.c ****     pInformation->Ctrl_Info.Usb_wLength = 1;
+ 330              		.loc 1 477 5 is_stmt 1 view .LVU75
+ 331              		.loc 1 477 41 is_stmt 0 view .LVU76
+ 332 0002 0122     		movs	r2, #1
+ 333 0004 024B     		ldr	r3, .L37
+ 334 0006 1B68     		ldr	r3, [r3]
+ 335 0008 1A82     		strh	r2, [r3, #16]	@ movhi
+ 478:../bootloader/Src/usb_prop.c ****     return NULL;
+ 336              		.loc 1 478 5 is_stmt 1 view .LVU77
+ 337              		.loc 1 478 12 is_stmt 0 view .LVU78
+ 338 000a 7047     		bx	lr
+ 339              	.L36:
+ 479:../bootloader/Src/usb_prop.c ****   }
+ 480:../bootloader/Src/usb_prop.c ****   else
+ 481:../bootloader/Src/usb_prop.c ****   {
+ 482:../bootloader/Src/usb_prop.c ****     return (uint8_t *)(&ProtocolValue);
+ 340              		.loc 1 482 12 view .LVU79
+ 341 000c 0148     		ldr	r0, .L37+4
+ 342              	.LVL17:
+ 483:../bootloader/Src/usb_prop.c ****   }
+ 484:../bootloader/Src/usb_prop.c **** }
+ 343              		.loc 1 484 1 view .LVU80
+ 344 000e 7047     		bx	lr
+ 345              	.L38:
+ 346              		.align	2
+ 347              	.L37:
+ 348 0010 00000000 		.word	pInformation
+ 349 0014 00000000 		.word	ProtocolValue
+ 350              		.cfi_endproc
+ 351              	.LFE45:
+ 353              		.section	.text.CustomHID_init,"ax",%progbits
+ 354              		.align	1
+ 355              		.global	CustomHID_init
+ 356              		.syntax unified
+ 357              		.thumb
+ 358              		.thumb_func
+ 359              		.fpu softvfp
+ 361              	CustomHID_init:
+ 362              	.LFB29:
+ 144:../bootloader/Src/usb_prop.c ****   /* Update the serial number string descriptor with the data from the unique 
+ 363              		.loc 1 144 1 is_stmt 1 view -0
+ 364              		.cfi_startproc
+ 365              		@ args = 0, pretend = 0, frame = 0
+ 366              		@ frame_needed = 0, uses_anonymous_args = 0
+ 147:../bootloader/Src/usb_prop.c **** 
+ 367              		.loc 1 147 3 view .LVU82
+ 144:../bootloader/Src/usb_prop.c ****   /* Update the serial number string descriptor with the data from the unique 
+ 368              		.loc 1 144 1 is_stmt 0 view .LVU83
+ 369 0000 10B5     		push	{r4, lr}
+ 370              	.LCFI1:
+ 371              		.cfi_def_cfa_offset 8
+ 372              		.cfi_offset 4, -8
+ 373              		.cfi_offset 14, -4
+ 149:../bootloader/Src/usb_prop.c ****   /* Connect the device */
+ARM GAS  /tmp/ccmLuIyr.s 			page 16
+
+
+ 374              		.loc 1 149 39 view .LVU84
+ 375 0002 0024     		movs	r4, #0
+ 147:../bootloader/Src/usb_prop.c **** 
+ 376              		.loc 1 147 3 view .LVU85
+ 377 0004 FFF7FEFF 		bl	Get_SerialNum
+ 378              	.LVL18:
+ 149:../bootloader/Src/usb_prop.c ****   /* Connect the device */
+ 379              		.loc 1 149 3 is_stmt 1 view .LVU86
+ 149:../bootloader/Src/usb_prop.c ****   /* Connect the device */
+ 380              		.loc 1 149 39 is_stmt 0 view .LVU87
+ 381 0008 044B     		ldr	r3, .L40
+ 382 000a 1B68     		ldr	r3, [r3]
+ 383 000c 9C72     		strb	r4, [r3, #10]
+ 151:../bootloader/Src/usb_prop.c **** 
+ 384              		.loc 1 151 3 is_stmt 1 view .LVU88
+ 385 000e FFF7FEFF 		bl	PowerOn
+ 386              	.LVL19:
+ 154:../bootloader/Src/usb_prop.c **** 
+ 387              		.loc 1 154 3 view .LVU89
+ 388 0012 FFF7FEFF 		bl	USB_SIL_Init
+ 389              	.LVL20:
+ 156:../bootloader/Src/usb_prop.c **** }
+ 390              		.loc 1 156 3 view .LVU90
+ 156:../bootloader/Src/usb_prop.c **** }
+ 391              		.loc 1 156 16 is_stmt 0 view .LVU91
+ 392 0016 024B     		ldr	r3, .L40+4
+ 393 0018 1C60     		str	r4, [r3]
+ 157:../bootloader/Src/usb_prop.c **** 
+ 394              		.loc 1 157 1 view .LVU92
+ 395 001a 10BD     		pop	{r4, pc}
+ 396              	.L41:
+ 397              		.align	2
+ 398              	.L40:
+ 399 001c 00000000 		.word	pInformation
+ 400 0020 00000000 		.word	bDeviceState
+ 401              		.cfi_endproc
+ 402              	.LFE29:
+ 404              		.section	.text.CustomHID_Reset,"ax",%progbits
+ 405              		.align	1
+ 406              		.global	CustomHID_Reset
+ 407              		.syntax unified
+ 408              		.thumb
+ 409              		.thumb_func
+ 410              		.fpu softvfp
+ 412              	CustomHID_Reset:
+ 413              	.LFB30:
+ 167:../bootloader/Src/usb_prop.c ****   /* Set CustomHID_DEVICE as not configured */
+ 414              		.loc 1 167 1 is_stmt 1 view -0
+ 415              		.cfi_startproc
+ 416              		@ args = 0, pretend = 0, frame = 0
+ 417              		@ frame_needed = 0, uses_anonymous_args = 0
+ 169:../bootloader/Src/usb_prop.c ****   pInformation->Current_Interface = 0;/*the default Interface*/
+ 418              		.loc 1 169 3 view .LVU94
+ 167:../bootloader/Src/usb_prop.c ****   /* Set CustomHID_DEVICE as not configured */
+ 419              		.loc 1 167 1 is_stmt 0 view .LVU95
+ 420 0000 10B5     		push	{r4, lr}
+ 421              	.LCFI2:
+ARM GAS  /tmp/ccmLuIyr.s 			page 17
+
+
+ 422              		.cfi_def_cfa_offset 8
+ 423              		.cfi_offset 4, -8
+ 424              		.cfi_offset 14, -4
+ 169:../bootloader/Src/usb_prop.c ****   pInformation->Current_Interface = 0;/*the default Interface*/
+ 425              		.loc 1 169 39 view .LVU96
+ 426 0002 0024     		movs	r4, #0
+ 169:../bootloader/Src/usb_prop.c ****   pInformation->Current_Interface = 0;/*the default Interface*/
+ 427              		.loc 1 169 15 view .LVU97
+ 428 0004 274B     		ldr	r3, .L43
+ 173:../bootloader/Src/usb_prop.c ****  
+ 429              		.loc 1 173 61 view .LVU98
+ 430 0006 284A     		ldr	r2, .L43+4
+ 169:../bootloader/Src/usb_prop.c ****   pInformation->Current_Interface = 0;/*the default Interface*/
+ 431              		.loc 1 169 15 view .LVU99
+ 432 0008 1B68     		ldr	r3, [r3]
+ 170:../bootloader/Src/usb_prop.c ****   
+ 433              		.loc 1 170 3 is_stmt 1 view .LVU100
+ 175:../bootloader/Src/usb_prop.c **** 
+ 434              		.loc 1 175 3 is_stmt 0 view .LVU101
+ 435 000a 2046     		mov	r0, r4
+ 169:../bootloader/Src/usb_prop.c ****   pInformation->Current_Interface = 0;/*the default Interface*/
+ 436              		.loc 1 169 39 view .LVU102
+ 437 000c 5C81     		strh	r4, [r3, #10]	@ movhi
+ 173:../bootloader/Src/usb_prop.c ****  
+ 438              		.loc 1 173 3 is_stmt 1 view .LVU103
+ 173:../bootloader/Src/usb_prop.c ****  
+ 439              		.loc 1 173 33 is_stmt 0 view .LVU104
+ 440 000e D279     		ldrb	r2, [r2, #7]	@ zero_extendqisi2
+ 441 0010 5A72     		strb	r2, [r3, #9]
+ 175:../bootloader/Src/usb_prop.c **** 
+ 442              		.loc 1 175 3 is_stmt 1 view .LVU105
+ 443 0012 FFF7FEFF 		bl	SetBTABLE
+ 444              	.LVL21:
+ 178:../bootloader/Src/usb_prop.c ****   SetEPTxStatus(ENDP0, EP_TX_STALL);
+ 445              		.loc 1 178 3 view .LVU106
+ 446 0016 4FF40071 		mov	r1, #512
+ 447 001a 2046     		mov	r0, r4
+ 448 001c FFF7FEFF 		bl	SetEPType
+ 449              	.LVL22:
+ 179:../bootloader/Src/usb_prop.c ****   SetEPRxAddr(ENDP0, ENDP0_RXADDR);
+ 450              		.loc 1 179 3 view .LVU107
+ 451 0020 1021     		movs	r1, #16
+ 452 0022 2046     		mov	r0, r4
+ 453 0024 FFF7FEFF 		bl	SetEPTxStatus
+ 454              	.LVL23:
+ 180:../bootloader/Src/usb_prop.c ****   SetEPTxAddr(ENDP0, ENDP0_TXADDR);
+ 455              		.loc 1 180 3 view .LVU108
+ 456 0028 1821     		movs	r1, #24
+ 457 002a 2046     		mov	r0, r4
+ 458 002c FFF7FEFF 		bl	SetEPRxAddr
+ 459              	.LVL24:
+ 181:../bootloader/Src/usb_prop.c ****   Clear_Status_Out(ENDP0);
+ 460              		.loc 1 181 3 view .LVU109
+ 461 0030 5821     		movs	r1, #88
+ 462 0032 2046     		mov	r0, r4
+ 463 0034 FFF7FEFF 		bl	SetEPTxAddr
+ 464              	.LVL25:
+ARM GAS  /tmp/ccmLuIyr.s 			page 18
+
+
+ 182:../bootloader/Src/usb_prop.c ****   SetEPRxCount(ENDP0, Device_Property.MaxPacketSize);
+ 465              		.loc 1 182 3 view .LVU110
+ 466 0038 2046     		mov	r0, r4
+ 467 003a FFF7FEFF 		bl	Clear_Status_Out
+ 468              	.LVL26:
+ 183:../bootloader/Src/usb_prop.c ****   SetEPRxValid(ENDP0);
+ 469              		.loc 1 183 3 view .LVU111
+ 470 003e 1B4B     		ldr	r3, .L43+8
+ 471 0040 2046     		mov	r0, r4
+ 472 0042 93F82C10 		ldrb	r1, [r3, #44]	@ zero_extendqisi2
+ 473 0046 FFF7FEFF 		bl	SetEPRxCount
+ 474              	.LVL27:
+ 184:../bootloader/Src/usb_prop.c **** 
+ 475              		.loc 1 184 3 view .LVU112
+ 476 004a 2046     		mov	r0, r4
+ 477 004c FFF7FEFF 		bl	SetEPRxValid
+ 478              	.LVL28:
+ 187:../bootloader/Src/usb_prop.c ****   SetEPTxAddr(ENDP1, ENDP1_TXADDR);
+ 479              		.loc 1 187 3 view .LVU113
+ 480 0050 4FF4C061 		mov	r1, #1536
+ 481 0054 0120     		movs	r0, #1
+ 482 0056 FFF7FEFF 		bl	SetEPType
+ 483              	.LVL29:
+ 188:../bootloader/Src/usb_prop.c ****   SetEPRxAddr(ENDP1, ENDP1_RXADDR);
+ 484              		.loc 1 188 3 view .LVU114
+ 485 005a 4FF48071 		mov	r1, #256
+ 486 005e 0120     		movs	r0, #1
+ 487 0060 FFF7FEFF 		bl	SetEPTxAddr
+ 488              	.LVL30:
+ 189:../bootloader/Src/usb_prop.c ****   SetEPTxCount(ENDP1, 0);
+ 489              		.loc 1 189 3 view .LVU115
+ 490 0064 4FF48271 		mov	r1, #260
+ 491 0068 0120     		movs	r0, #1
+ 492 006a FFF7FEFF 		bl	SetEPRxAddr
+ 493              	.LVL31:
+ 190:../bootloader/Src/usb_prop.c ****   SetEPRxCount(ENDP1, 64);
+ 494              		.loc 1 190 3 view .LVU116
+ 495 006e 2146     		mov	r1, r4
+ 496 0070 0120     		movs	r0, #1
+ 497 0072 FFF7FEFF 		bl	SetEPTxCount
+ 498              	.LVL32:
+ 191:../bootloader/Src/usb_prop.c ****   SetEPRxStatus(ENDP1, EP_RX_VALID);
+ 499              		.loc 1 191 3 view .LVU117
+ 500 0076 4021     		movs	r1, #64
+ 501 0078 0120     		movs	r0, #1
+ 502 007a FFF7FEFF 		bl	SetEPRxCount
+ 503              	.LVL33:
+ 192:../bootloader/Src/usb_prop.c ****   SetEPTxStatus(ENDP1, EP_TX_NAK);
+ 504              		.loc 1 192 3 view .LVU118
+ 505 007e 4FF44051 		mov	r1, #12288
+ 506 0082 0120     		movs	r0, #1
+ 507 0084 FFF7FEFF 		bl	SetEPRxStatus
+ 508              	.LVL34:
+ 193:../bootloader/Src/usb_prop.c **** 	
+ 509              		.loc 1 193 3 view .LVU119
+ 510 0088 2021     		movs	r1, #32
+ 511 008a 0120     		movs	r0, #1
+ARM GAS  /tmp/ccmLuIyr.s 			page 19
+
+
+ 512 008c FFF7FEFF 		bl	SetEPTxStatus
+ 513              	.LVL35:
+ 205:../bootloader/Src/usb_prop.c ****   bDeviceState = ATTACHED;
+ 514              		.loc 1 205 3 view .LVU120
+ 515 0090 2046     		mov	r0, r4
+ 516 0092 FFF7FEFF 		bl	SetDeviceAddress
+ 517              	.LVL36:
+ 206:../bootloader/Src/usb_prop.c **** 	
+ 518              		.loc 1 206 3 view .LVU121
+ 206:../bootloader/Src/usb_prop.c **** 	
+ 519              		.loc 1 206 16 is_stmt 0 view .LVU122
+ 520 0096 0123     		movs	r3, #1
+ 521 0098 054A     		ldr	r2, .L43+12
+ 522 009a 1360     		str	r3, [r2]
+ 208:../bootloader/Src/usb_prop.c **** }
+ 523              		.loc 1 208 2 is_stmt 1 view .LVU123
+ 208:../bootloader/Src/usb_prop.c **** }
+ 524              		.loc 1 208 23 is_stmt 0 view .LVU124
+ 525 009c 054A     		ldr	r2, .L43+16
+ 526 009e 1370     		strb	r3, [r2]
+ 209:../bootloader/Src/usb_prop.c **** /*******************************************************************************
+ 527              		.loc 1 209 1 view .LVU125
+ 528 00a0 10BD     		pop	{r4, pc}
+ 529              	.L44:
+ 530 00a2 00BF     		.align	2
+ 531              	.L43:
+ 532 00a4 00000000 		.word	pInformation
+ 533 00a8 00000000 		.word	CustomHID_ConfigDescriptor
+ 534 00ac 00000000 		.word	.LANCHOR1
+ 535 00b0 00000000 		.word	bDeviceState
+ 536 00b4 00000000 		.word	EP1_PrevXferComplete
+ 537              		.cfi_endproc
+ 538              	.LFE30:
+ 540              		.section	.text.CustomHID_GetDeviceDescriptor,"ax",%progbits
+ 541              		.align	1
+ 542              		.global	CustomHID_GetDeviceDescriptor
+ 543              		.syntax unified
+ 544              		.thumb
+ 545              		.thumb_func
+ 546              		.fpu softvfp
+ 548              	CustomHID_GetDeviceDescriptor:
+ 549              	.LVL37:
+ 550              	.LFB38:
+ 370:../bootloader/Src/usb_prop.c ****   return Standard_GetDescriptorData(Length, &Device_Descriptor);
+ 551              		.loc 1 370 1 is_stmt 1 view -0
+ 552              		.cfi_startproc
+ 553              		@ args = 0, pretend = 0, frame = 0
+ 554              		@ frame_needed = 0, uses_anonymous_args = 0
+ 555              		@ link register save eliminated.
+ 371:../bootloader/Src/usb_prop.c **** }
+ 556              		.loc 1 371 3 view .LVU127
+ 371:../bootloader/Src/usb_prop.c **** }
+ 557              		.loc 1 371 10 is_stmt 0 view .LVU128
+ 558 0000 0149     		ldr	r1, .L46
+ 559 0002 FFF7FEBF 		b	Standard_GetDescriptorData
+ 560              	.LVL38:
+ 561              	.L47:
+ARM GAS  /tmp/ccmLuIyr.s 			page 20
+
+
+ 371:../bootloader/Src/usb_prop.c **** }
+ 562              		.loc 1 371 10 view .LVU129
+ 563 0006 00BF     		.align	2
+ 564              	.L46:
+ 565 0008 00000000 		.word	.LANCHOR2
+ 566              		.cfi_endproc
+ 567              	.LFE38:
+ 569              		.section	.text.CustomHID_GetConfigDescriptor,"ax",%progbits
+ 570              		.align	1
+ 571              		.global	CustomHID_GetConfigDescriptor
+ 572              		.syntax unified
+ 573              		.thumb
+ 574              		.thumb_func
+ 575              		.fpu softvfp
+ 577              	CustomHID_GetConfigDescriptor:
+ 578              	.LVL39:
+ 579              	.LFB39:
+ 382:../bootloader/Src/usb_prop.c ****   return Standard_GetDescriptorData(Length, &Config_Descriptor);
+ 580              		.loc 1 382 1 is_stmt 1 view -0
+ 581              		.cfi_startproc
+ 582              		@ args = 0, pretend = 0, frame = 0
+ 583              		@ frame_needed = 0, uses_anonymous_args = 0
+ 584              		@ link register save eliminated.
+ 383:../bootloader/Src/usb_prop.c **** }
+ 585              		.loc 1 383 3 view .LVU131
+ 383:../bootloader/Src/usb_prop.c **** }
+ 586              		.loc 1 383 10 is_stmt 0 view .LVU132
+ 587 0000 0149     		ldr	r1, .L49
+ 588 0002 FFF7FEBF 		b	Standard_GetDescriptorData
+ 589              	.LVL40:
+ 590              	.L50:
+ 383:../bootloader/Src/usb_prop.c **** }
+ 591              		.loc 1 383 10 view .LVU133
+ 592 0006 00BF     		.align	2
+ 593              	.L49:
+ 594 0008 00000000 		.word	.LANCHOR3
+ 595              		.cfi_endproc
+ 596              	.LFE39:
+ 598              		.section	.text.CustomHID_GetStringDescriptor,"ax",%progbits
+ 599              		.align	1
+ 600              		.global	CustomHID_GetStringDescriptor
+ 601              		.syntax unified
+ 602              		.thumb
+ 603              		.thumb_func
+ 604              		.fpu softvfp
+ 606              	CustomHID_GetStringDescriptor:
+ 607              	.LVL41:
+ 608              	.LFB40:
+ 394:../bootloader/Src/usb_prop.c ****   uint8_t wValue0 = pInformation->USBwValue0;
+ 609              		.loc 1 394 1 is_stmt 1 view -0
+ 610              		.cfi_startproc
+ 611              		@ args = 0, pretend = 0, frame = 0
+ 612              		@ frame_needed = 0, uses_anonymous_args = 0
+ 613              		@ link register save eliminated.
+ 395:../bootloader/Src/usb_prop.c ****   if (wValue0 >= 4)
+ 614              		.loc 1 395 3 view .LVU135
+ 395:../bootloader/Src/usb_prop.c ****   if (wValue0 >= 4)
+ARM GAS  /tmp/ccmLuIyr.s 			page 21
+
+
+ 615              		.loc 1 395 11 is_stmt 0 view .LVU136
+ 616 0000 054B     		ldr	r3, .L53
+ 617 0002 1B68     		ldr	r3, [r3]
+ 618 0004 DB78     		ldrb	r3, [r3, #3]	@ zero_extendqisi2
+ 619              	.LVL42:
+ 396:../bootloader/Src/usb_prop.c ****   {
+ 620              		.loc 1 396 3 is_stmt 1 view .LVU137
+ 396:../bootloader/Src/usb_prop.c ****   {
+ 621              		.loc 1 396 6 is_stmt 0 view .LVU138
+ 622 0006 032B     		cmp	r3, #3
+ 623 0008 04D8     		bhi	.L52
+ 402:../bootloader/Src/usb_prop.c ****   }
+ 624              		.loc 1 402 5 is_stmt 1 view .LVU139
+ 402:../bootloader/Src/usb_prop.c ****   }
+ 625              		.loc 1 402 12 is_stmt 0 view .LVU140
+ 626 000a 0449     		ldr	r1, .L53+4
+ 627 000c 01EBC301 		add	r1, r1, r3, lsl #3
+ 628 0010 FFF7FEBF 		b	Standard_GetDescriptorData
+ 629              	.LVL43:
+ 630              	.L52:
+ 404:../bootloader/Src/usb_prop.c **** 
+ 631              		.loc 1 404 1 view .LVU141
+ 632 0014 0020     		movs	r0, #0
+ 633              	.LVL44:
+ 404:../bootloader/Src/usb_prop.c **** 
+ 634              		.loc 1 404 1 view .LVU142
+ 635 0016 7047     		bx	lr
+ 636              	.L54:
+ 637              		.align	2
+ 638              	.L53:
+ 639 0018 00000000 		.word	pInformation
+ 640 001c 00000000 		.word	.LANCHOR4
+ 641              		.cfi_endproc
+ 642              	.LFE40:
+ 644              		.section	.text.CustomHID_GetReportDescriptor,"ax",%progbits
+ 645              		.align	1
+ 646              		.global	CustomHID_GetReportDescriptor
+ 647              		.syntax unified
+ 648              		.thumb
+ 649              		.thumb_func
+ 650              		.fpu softvfp
+ 652              	CustomHID_GetReportDescriptor:
+ 653              	.LVL45:
+ 654              	.LFB41:
+ 414:../bootloader/Src/usb_prop.c ****   return Standard_GetDescriptorData(Length, &CustomHID_Report_Descriptor);
+ 655              		.loc 1 414 1 is_stmt 1 view -0
+ 656              		.cfi_startproc
+ 657              		@ args = 0, pretend = 0, frame = 0
+ 658              		@ frame_needed = 0, uses_anonymous_args = 0
+ 659              		@ link register save eliminated.
+ 415:../bootloader/Src/usb_prop.c **** }
+ 660              		.loc 1 415 3 view .LVU144
+ 415:../bootloader/Src/usb_prop.c **** }
+ 661              		.loc 1 415 10 is_stmt 0 view .LVU145
+ 662 0000 0149     		ldr	r1, .L56
+ 663 0002 FFF7FEBF 		b	Standard_GetDescriptorData
+ 664              	.LVL46:
+ARM GAS  /tmp/ccmLuIyr.s 			page 22
+
+
+ 665              	.L57:
+ 415:../bootloader/Src/usb_prop.c **** }
+ 666              		.loc 1 415 10 view .LVU146
+ 667 0006 00BF     		.align	2
+ 668              	.L56:
+ 669 0008 00000000 		.word	.LANCHOR5
+ 670              		.cfi_endproc
+ 671              	.LFE41:
+ 673              		.section	.text.CustomHID_GetHIDDescriptor,"ax",%progbits
+ 674              		.align	1
+ 675              		.global	CustomHID_GetHIDDescriptor
+ 676              		.syntax unified
+ 677              		.thumb
+ 678              		.thumb_func
+ 679              		.fpu softvfp
+ 681              	CustomHID_GetHIDDescriptor:
+ 682              	.LVL47:
+ 683              	.LFB42:
+ 426:../bootloader/Src/usb_prop.c ****   return Standard_GetDescriptorData(Length, &CustomHID_Hid_Descriptor);
+ 684              		.loc 1 426 1 is_stmt 1 view -0
+ 685              		.cfi_startproc
+ 686              		@ args = 0, pretend = 0, frame = 0
+ 687              		@ frame_needed = 0, uses_anonymous_args = 0
+ 688              		@ link register save eliminated.
+ 427:../bootloader/Src/usb_prop.c **** }
+ 689              		.loc 1 427 3 view .LVU148
+ 427:../bootloader/Src/usb_prop.c **** }
+ 690              		.loc 1 427 10 is_stmt 0 view .LVU149
+ 691 0000 0149     		ldr	r1, .L59
+ 692 0002 FFF7FEBF 		b	Standard_GetDescriptorData
+ 693              	.LVL48:
+ 694              	.L60:
+ 427:../bootloader/Src/usb_prop.c **** }
+ 695              		.loc 1 427 10 view .LVU150
+ 696 0006 00BF     		.align	2
+ 697              	.L59:
+ 698 0008 00000000 		.word	.LANCHOR6
+ 699              		.cfi_endproc
+ 700              	.LFE42:
+ 702              		.section	.text.CustomHID_Status_Out,"ax",%progbits
+ 703              		.align	1
+ 704              		.global	CustomHID_Status_Out
+ 705              		.syntax unified
+ 706              		.thumb
+ 707              		.thumb_func
+ 708              		.fpu softvfp
+ 710              	CustomHID_Status_Out:
+ 711              	.LFB47:
+ 712              		.cfi_startproc
+ 713              		@ args = 0, pretend = 0, frame = 0
+ 714              		@ frame_needed = 0, uses_anonymous_args = 0
+ 715              		@ link register save eliminated.
+ 716 0000 7047     		bx	lr
+ 717              		.cfi_endproc
+ 718              	.LFE47:
+ 720              		.section	.text.CustomHID_SetProtocol,"ax",%progbits
+ 721              		.align	1
+ARM GAS  /tmp/ccmLuIyr.s 			page 23
+
+
+ 722              		.global	CustomHID_SetProtocol
+ 723              		.syntax unified
+ 724              		.thumb
+ 725              		.thumb_func
+ 726              		.fpu softvfp
+ 728              	CustomHID_SetProtocol:
+ 729              	.LFB44:
+ 460:../bootloader/Src/usb_prop.c ****   uint8_t wValue0 = pInformation->USBwValue0;
+ 730              		.loc 1 460 1 is_stmt 1 view -0
+ 731              		.cfi_startproc
+ 732              		@ args = 0, pretend = 0, frame = 0
+ 733              		@ frame_needed = 0, uses_anonymous_args = 0
+ 734              		@ link register save eliminated.
+ 461:../bootloader/Src/usb_prop.c ****   ProtocolValue = wValue0;
+ 735              		.loc 1 461 3 view .LVU152
+ 736              	.LVL49:
+ 462:../bootloader/Src/usb_prop.c ****   return USB_SUCCESS;
+ 737              		.loc 1 462 3 view .LVU153
+ 461:../bootloader/Src/usb_prop.c ****   ProtocolValue = wValue0;
+ 738              		.loc 1 461 11 is_stmt 0 view .LVU154
+ 739 0000 034B     		ldr	r3, .L63
+ 740              	.LVL50:
+ 464:../bootloader/Src/usb_prop.c **** 
+ 741              		.loc 1 464 1 view .LVU155
+ 742 0002 0020     		movs	r0, #0
+ 461:../bootloader/Src/usb_prop.c ****   ProtocolValue = wValue0;
+ 743              		.loc 1 461 11 view .LVU156
+ 744 0004 1B68     		ldr	r3, [r3]
+ 745              	.LVL51:
+ 462:../bootloader/Src/usb_prop.c ****   return USB_SUCCESS;
+ 746              		.loc 1 462 17 view .LVU157
+ 747 0006 DA78     		ldrb	r2, [r3, #3]	@ zero_extendqisi2
+ 748 0008 024B     		ldr	r3, .L63+4
+ 749              	.LVL52:
+ 462:../bootloader/Src/usb_prop.c ****   return USB_SUCCESS;
+ 750              		.loc 1 462 17 view .LVU158
+ 751 000a 1A60     		str	r2, [r3]
+ 463:../bootloader/Src/usb_prop.c **** }
+ 752              		.loc 1 463 3 is_stmt 1 view .LVU159
+ 464:../bootloader/Src/usb_prop.c **** 
+ 753              		.loc 1 464 1 is_stmt 0 view .LVU160
+ 754 000c 7047     		bx	lr
+ 755              	.L64:
+ 756 000e 00BF     		.align	2
+ 757              	.L63:
+ 758 0010 00000000 		.word	pInformation
+ 759 0014 00000000 		.word	ProtocolValue
+ 760              		.cfi_endproc
+ 761              	.LFE44:
+ 763              		.section	.text.CustomHID_NoData_Setup,"ax",%progbits
+ 764              		.align	1
+ 765              		.global	CustomHID_NoData_Setup
+ 766              		.syntax unified
+ 767              		.thumb
+ 768              		.thumb_func
+ 769              		.fpu softvfp
+ 771              	CustomHID_NoData_Setup:
+ARM GAS  /tmp/ccmLuIyr.s 			page 24
+
+
+ 772              	.LVL53:
+ 773              	.LFB37:
+ 349:../bootloader/Src/usb_prop.c ****   if ((Type_Recipient == (CLASS_REQUEST | INTERFACE_RECIPIENT))
+ 774              		.loc 1 349 1 is_stmt 1 view -0
+ 775              		.cfi_startproc
+ 776              		@ args = 0, pretend = 0, frame = 0
+ 777              		@ frame_needed = 0, uses_anonymous_args = 0
+ 778              		@ link register save eliminated.
+ 350:../bootloader/Src/usb_prop.c ****       && (RequestNo == SET_PROTOCOL))
+ 779              		.loc 1 350 3 view .LVU162
+ 350:../bootloader/Src/usb_prop.c ****       && (RequestNo == SET_PROTOCOL))
+ 780              		.loc 1 350 8 is_stmt 0 view .LVU163
+ 781 0000 064B     		ldr	r3, .L69
+ 782 0002 1B68     		ldr	r3, [r3]
+ 350:../bootloader/Src/usb_prop.c ****       && (RequestNo == SET_PROTOCOL))
+ 783              		.loc 1 350 6 view .LVU164
+ 784 0004 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 785 0006 03F07F03 		and	r3, r3, #127
+ 786 000a 212B     		cmp	r3, #33
+ 787 000c 03D1     		bne	.L66
+ 351:../bootloader/Src/usb_prop.c ****   {
+ 788              		.loc 1 351 7 view .LVU165
+ 789 000e 0B28     		cmp	r0, #11
+ 790 0010 01D1     		bne	.L66
+ 353:../bootloader/Src/usb_prop.c ****   }
+ 791              		.loc 1 353 5 is_stmt 1 view .LVU166
+ 353:../bootloader/Src/usb_prop.c ****   }
+ 792              		.loc 1 353 12 is_stmt 0 view .LVU167
+ 793 0012 FFF7FEBF 		b	CustomHID_SetProtocol
+ 794              	.LVL54:
+ 795              	.L66:
+ 360:../bootloader/Src/usb_prop.c **** 
+ 796              		.loc 1 360 1 view .LVU168
+ 797 0016 0220     		movs	r0, #2
+ 798              	.LVL55:
+ 360:../bootloader/Src/usb_prop.c **** 
+ 799              		.loc 1 360 1 view .LVU169
+ 800 0018 7047     		bx	lr
+ 801              	.L70:
+ 802 001a 00BF     		.align	2
+ 803              	.L69:
+ 804 001c 00000000 		.word	pInformation
+ 805              		.cfi_endproc
+ 806              	.LFE37:
+ 808              		.global	String_Descriptor
+ 809              		.global	CustomHID_Hid_Descriptor
+ 810              		.global	CustomHID_Report_Descriptor
+ 811              		.global	Config_Descriptor
+ 812              		.global	Device_Descriptor
+ 813              		.global	User_Standard_Requests
+ 814              		.global	Device_Property
+ 815              		.global	Device_Table
+ 816              		.comm	Report_Buf,2,1
+ 817              		.global	Request
+ 818              		.comm	EXTI_Enable,1,1
+ 819              		.comm	ProtocolValue,4,4
+ 820              		.section	.bss.Request,"aw",%nobits
+ARM GAS  /tmp/ccmLuIyr.s 			page 25
+
+
+ 821              		.set	.LANCHOR0,. + 0
+ 824              	Request:
+ 825 0000 00       		.space	1
+ 826              		.section	.data.Config_Descriptor,"aw"
+ 827              		.align	2
+ 828              		.set	.LANCHOR3,. + 0
+ 831              	Config_Descriptor:
+ 832 0000 00000000 		.word	CustomHID_ConfigDescriptor
+ 833 0004 2900     		.short	41
+ 834 0006 0000     		.space	2
+ 835              		.section	.data.CustomHID_Hid_Descriptor,"aw"
+ 836              		.align	2
+ 837              		.set	.LANCHOR6,. + 0
+ 840              	CustomHID_Hid_Descriptor:
+ 841 0000 12000000 		.word	CustomHID_ConfigDescriptor+18
+ 842 0004 0900     		.short	9
+ 843 0006 0000     		.space	2
+ 844              		.section	.data.CustomHID_Report_Descriptor,"aw"
+ 845              		.align	2
+ 846              		.set	.LANCHOR5,. + 0
+ 849              	CustomHID_Report_Descriptor:
+ 850 0000 00000000 		.word	CustomHID_ReportDescriptor
+ 851 0004 1900     		.short	25
+ 852 0006 0000     		.space	2
+ 853              		.section	.data.Device_Descriptor,"aw"
+ 854              		.align	2
+ 855              		.set	.LANCHOR2,. + 0
+ 858              	Device_Descriptor:
+ 859 0000 00000000 		.word	CustomHID_DeviceDescriptor
+ 860 0004 1200     		.short	18
+ 861 0006 0000     		.space	2
+ 862              		.section	.data.Device_Property,"aw"
+ 863              		.align	2
+ 864              		.set	.LANCHOR1,. + 0
+ 867              	Device_Property:
+ 868 0000 00000000 		.word	CustomHID_init
+ 869 0004 00000000 		.word	CustomHID_Reset
+ 870 0008 00000000 		.word	CustomHID_Status_In
+ 871 000c 00000000 		.word	CustomHID_Status_Out
+ 872 0010 00000000 		.word	CustomHID_Data_Setup
+ 873 0014 00000000 		.word	CustomHID_NoData_Setup
+ 874 0018 00000000 		.word	CustomHID_Get_Interface_Setting
+ 875 001c 00000000 		.word	CustomHID_GetDeviceDescriptor
+ 876 0020 00000000 		.word	CustomHID_GetConfigDescriptor
+ 877 0024 00000000 		.word	CustomHID_GetStringDescriptor
+ 878 0028 00000000 		.word	0
+ 879 002c 40       		.byte	64
+ 880 002d 000000   		.space	3
+ 881              		.section	.data.Device_Table,"aw"
+ 884              	Device_Table:
+ 885 0000 02       		.byte	2
+ 886 0001 01       		.byte	1
+ 887              		.section	.data.String_Descriptor,"aw"
+ 888              		.align	2
+ 889              		.set	.LANCHOR4,. + 0
+ 892              	String_Descriptor:
+ 893 0000 00000000 		.word	CustomHID_StringLangID
+ARM GAS  /tmp/ccmLuIyr.s 			page 26
+
+
+ 894 0004 0400     		.short	4
+ 895 0006 0000     		.space	2
+ 896 0008 00000000 		.word	CustomHID_StringVendor
+ 897 000c 2600     		.short	38
+ 898 000e 0000     		.space	2
+ 899 0010 00000000 		.word	CustomHID_StringProduct
+ 900 0014 2000     		.short	32
+ 901 0016 0000     		.space	2
+ 902 0018 00000000 		.word	CustomHID_StringSerial
+ 903 001c 1A00     		.short	26
+ 904 001e 0000     		.space	2
+ 905              		.section	.data.User_Standard_Requests,"aw"
+ 906              		.align	2
+ 909              	User_Standard_Requests:
+ 910 0000 00000000 		.word	NOP_Process
+ 911 0004 00000000 		.word	CustomHID_SetConfiguration
+ 912 0008 00000000 		.word	NOP_Process
+ 913 000c 00000000 		.word	NOP_Process
+ 914 0010 00000000 		.word	NOP_Process
+ 915 0014 00000000 		.word	NOP_Process
+ 916 0018 00000000 		.word	NOP_Process
+ 917 001c 00000000 		.word	NOP_Process
+ 918 0020 00000000 		.word	CustomHID_SetDeviceAddress
+ 919              		.text
+ 920              	.Letext0:
+ 921              		.file 2 "/usr/lib/gcc/arm-none-eabi/9.2.1/include/stdint.h"
+ 922              		.file 3 "../Drivers/CMSIS/CM3/CoreSupport/core_cm3.h"
+ 923              		.file 4 "../Drivers/CMSIS/CM3/DeviceSupport/ST/STM32F10x/system_stm32f10x.h"
+ 924              		.file 5 "../Drivers/STM32_USB-FS-Device_Driver/inc/usb_type.h"
+ 925              		.file 6 "../bootloader/Inc/usb_hw.h"
+ 926              		.file 7 "../Drivers/STM32_USB-FS-Device_Driver/inc/usb_regs.h"
+ 927              		.file 8 "../Drivers/STM32_USB-FS-Device_Driver/inc/usb_def.h"
+ 928              		.file 9 "../Drivers/STM32_USB-FS-Device_Driver/inc/usb_core.h"
+ 929              		.file 10 "../Drivers/STM32_USB-FS-Device_Driver/inc/usb_init.h"
+ 930              		.file 11 "../Drivers/STM32_USB-FS-Device_Driver/inc/usb_lib.h"
+ 931              		.file 12 "../bootloader/Inc/usb_prop.h"
+ 932              		.file 13 "../bootloader/Inc/usb_desc.h"
+ 933              		.file 14 "../bootloader/Inc/usb_pwr.h"
+ 934              		.file 15 "../Drivers/STM32_USB-FS-Device_Driver/inc/usb_sil.h"
+ARM GAS  /tmp/ccmLuIyr.s 			page 27
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 usb_prop.c
+     /tmp/ccmLuIyr.s:16     .text.CustomHID_SetConfiguration:0000000000000000 $t
+     /tmp/ccmLuIyr.s:24     .text.CustomHID_SetConfiguration:0000000000000000 CustomHID_SetConfiguration
+     /tmp/ccmLuIyr.s:50     .text.CustomHID_SetConfiguration:0000000000000010 $d
+     /tmp/ccmLuIyr.s:56     .text.CustomHID_SetDeviceAddress:0000000000000000 $t
+     /tmp/ccmLuIyr.s:63     .text.CustomHID_SetDeviceAddress:0000000000000000 CustomHID_SetDeviceAddress
+     /tmp/ccmLuIyr.s:80     .text.CustomHID_SetDeviceAddress:0000000000000008 $d
+     /tmp/ccmLuIyr.s:85     .text.CustomHID_Status_In:0000000000000000 $t
+     /tmp/ccmLuIyr.s:92     .text.CustomHID_Status_In:0000000000000000 CustomHID_Status_In
+     /tmp/ccmLuIyr.s:105    .text.CustomHID_Data_Setup:0000000000000000 $t
+     /tmp/ccmLuIyr.s:112    .text.CustomHID_Data_Setup:0000000000000000 CustomHID_Data_Setup
+     /tmp/ccmLuIyr.s:222    .text.CustomHID_Data_Setup:0000000000000054 $d
+     /tmp/ccmLuIyr.s:239    .text.CustomHID_SetReport_Feature:0000000000000000 CustomHID_SetReport_Feature
+     /tmp/ccmLuIyr.s:652    .text.CustomHID_GetReportDescriptor:0000000000000000 CustomHID_GetReportDescriptor
+     /tmp/ccmLuIyr.s:681    .text.CustomHID_GetHIDDescriptor:0000000000000000 CustomHID_GetHIDDescriptor
+     /tmp/ccmLuIyr.s:319    .text.CustomHID_GetProtocolValue:0000000000000000 CustomHID_GetProtocolValue
+     /tmp/ccmLuIyr.s:232    .text.CustomHID_SetReport_Feature:0000000000000000 $t
+     /tmp/ccmLuIyr.s:268    .text.CustomHID_SetReport_Feature:0000000000000010 $d
+                            *COM*:0000000000000002 Report_Buf
+     /tmp/ccmLuIyr.s:274    .text.CustomHID_Get_Interface_Setting:0000000000000000 $t
+     /tmp/ccmLuIyr.s:281    .text.CustomHID_Get_Interface_Setting:0000000000000000 CustomHID_Get_Interface_Setting
+     /tmp/ccmLuIyr.s:312    .text.CustomHID_GetProtocolValue:0000000000000000 $t
+     /tmp/ccmLuIyr.s:348    .text.CustomHID_GetProtocolValue:0000000000000010 $d
+                            *COM*:0000000000000004 ProtocolValue
+     /tmp/ccmLuIyr.s:354    .text.CustomHID_init:0000000000000000 $t
+     /tmp/ccmLuIyr.s:361    .text.CustomHID_init:0000000000000000 CustomHID_init
+     /tmp/ccmLuIyr.s:399    .text.CustomHID_init:000000000000001c $d
+     /tmp/ccmLuIyr.s:405    .text.CustomHID_Reset:0000000000000000 $t
+     /tmp/ccmLuIyr.s:412    .text.CustomHID_Reset:0000000000000000 CustomHID_Reset
+     /tmp/ccmLuIyr.s:532    .text.CustomHID_Reset:00000000000000a4 $d
+     /tmp/ccmLuIyr.s:541    .text.CustomHID_GetDeviceDescriptor:0000000000000000 $t
+     /tmp/ccmLuIyr.s:548    .text.CustomHID_GetDeviceDescriptor:0000000000000000 CustomHID_GetDeviceDescriptor
+     /tmp/ccmLuIyr.s:565    .text.CustomHID_GetDeviceDescriptor:0000000000000008 $d
+     /tmp/ccmLuIyr.s:570    .text.CustomHID_GetConfigDescriptor:0000000000000000 $t
+     /tmp/ccmLuIyr.s:577    .text.CustomHID_GetConfigDescriptor:0000000000000000 CustomHID_GetConfigDescriptor
+     /tmp/ccmLuIyr.s:594    .text.CustomHID_GetConfigDescriptor:0000000000000008 $d
+     /tmp/ccmLuIyr.s:599    .text.CustomHID_GetStringDescriptor:0000000000000000 $t
+     /tmp/ccmLuIyr.s:606    .text.CustomHID_GetStringDescriptor:0000000000000000 CustomHID_GetStringDescriptor
+     /tmp/ccmLuIyr.s:639    .text.CustomHID_GetStringDescriptor:0000000000000018 $d
+     /tmp/ccmLuIyr.s:645    .text.CustomHID_GetReportDescriptor:0000000000000000 $t
+     /tmp/ccmLuIyr.s:669    .text.CustomHID_GetReportDescriptor:0000000000000008 $d
+     /tmp/ccmLuIyr.s:674    .text.CustomHID_GetHIDDescriptor:0000000000000000 $t
+     /tmp/ccmLuIyr.s:698    .text.CustomHID_GetHIDDescriptor:0000000000000008 $d
+     /tmp/ccmLuIyr.s:703    .text.CustomHID_Status_Out:0000000000000000 $t
+     /tmp/ccmLuIyr.s:710    .text.CustomHID_Status_Out:0000000000000000 CustomHID_Status_Out
+     /tmp/ccmLuIyr.s:721    .text.CustomHID_SetProtocol:0000000000000000 $t
+     /tmp/ccmLuIyr.s:728    .text.CustomHID_SetProtocol:0000000000000000 CustomHID_SetProtocol
+     /tmp/ccmLuIyr.s:758    .text.CustomHID_SetProtocol:0000000000000010 $d
+     /tmp/ccmLuIyr.s:764    .text.CustomHID_NoData_Setup:0000000000000000 $t
+     /tmp/ccmLuIyr.s:771    .text.CustomHID_NoData_Setup:0000000000000000 CustomHID_NoData_Setup
+     /tmp/ccmLuIyr.s:804    .text.CustomHID_NoData_Setup:000000000000001c $d
+     /tmp/ccmLuIyr.s:892    .data.String_Descriptor:0000000000000000 String_Descriptor
+     /tmp/ccmLuIyr.s:840    .data.CustomHID_Hid_Descriptor:0000000000000000 CustomHID_Hid_Descriptor
+     /tmp/ccmLuIyr.s:849    .data.CustomHID_Report_Descriptor:0000000000000000 CustomHID_Report_Descriptor
+     /tmp/ccmLuIyr.s:831    .data.Config_Descriptor:0000000000000000 Config_Descriptor
+     /tmp/ccmLuIyr.s:858    .data.Device_Descriptor:0000000000000000 Device_Descriptor
+ARM GAS  /tmp/ccmLuIyr.s 			page 28
+
+
+     /tmp/ccmLuIyr.s:909    .data.User_Standard_Requests:0000000000000000 User_Standard_Requests
+     /tmp/ccmLuIyr.s:867    .data.Device_Property:0000000000000000 Device_Property
+     /tmp/ccmLuIyr.s:884    .data.Device_Table:0000000000000000 Device_Table
+     /tmp/ccmLuIyr.s:824    .bss.Request:0000000000000000 Request
+                            *COM*:0000000000000001 EXTI_Enable
+     /tmp/ccmLuIyr.s:825    .bss.Request:0000000000000000 $d
+     /tmp/ccmLuIyr.s:827    .data.Config_Descriptor:0000000000000000 $d
+     /tmp/ccmLuIyr.s:836    .data.CustomHID_Hid_Descriptor:0000000000000000 $d
+     /tmp/ccmLuIyr.s:845    .data.CustomHID_Report_Descriptor:0000000000000000 $d
+     /tmp/ccmLuIyr.s:854    .data.Device_Descriptor:0000000000000000 $d
+     /tmp/ccmLuIyr.s:863    .data.Device_Property:0000000000000000 $d
+     /tmp/ccmLuIyr.s:888    .data.String_Descriptor:0000000000000000 $d
+     /tmp/ccmLuIyr.s:906    .data.User_Standard_Requests:0000000000000000 $d
+
+UNDEFINED SYMBOLS
+pInformation
+bDeviceState
+Get_SerialNum
+PowerOn
+USB_SIL_Init
+SetBTABLE
+SetEPType
+SetEPTxStatus
+SetEPRxAddr
+SetEPTxAddr
+Clear_Status_Out
+SetEPRxCount
+SetEPRxValid
+SetEPTxCount
+SetEPRxStatus
+SetDeviceAddress
+CustomHID_ConfigDescriptor
+EP1_PrevXferComplete
+Standard_GetDescriptorData
+CustomHID_ReportDescriptor
+CustomHID_DeviceDescriptor
+CustomHID_StringLangID
+CustomHID_StringVendor
+CustomHID_StringProduct
+CustomHID_StringSerial
+NOP_Process

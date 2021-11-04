@@ -1,0 +1,411 @@
+ARM GAS  /tmp/ccf0qTKT.s 			page 1
+
+
+   1              		.cpu cortex-m3
+   2              		.eabi_attribute 20, 1
+   3              		.eabi_attribute 21, 1
+   4              		.eabi_attribute 23, 3
+   5              		.eabi_attribute 24, 1
+   6              		.eabi_attribute 25, 1
+   7              		.eabi_attribute 26, 1
+   8              		.eabi_attribute 30, 4
+   9              		.eabi_attribute 34, 1
+  10              		.eabi_attribute 18, 4
+  11              		.file	"stm32f10x_it.c"
+  12              		.text
+  13              	.Ltext0:
+  14              		.cfi_sections	.debug_frame
+  15              		.section	.text.NMI_Handler,"ax",%progbits
+  16              		.align	1
+  17              		.global	NMI_Handler
+  18              		.arch armv7-m
+  19              		.syntax unified
+  20              		.thumb
+  21              		.thumb_func
+  22              		.fpu softvfp
+  24              	NMI_Handler:
+  25              	.LFB29:
+  26              		.file 1 "../bootloader/Src/stm32f10x_it.c"
+   1:../bootloader/Src/stm32f10x_it.c **** /**
+   2:../bootloader/Src/stm32f10x_it.c ****   ******************************************************************************
+   3:../bootloader/Src/stm32f10x_it.c ****   * @file    Project/STM32F10x_StdPeriph_Template/stm32f10x_it.c 
+   4:../bootloader/Src/stm32f10x_it.c ****   * @author  MCD Application Team
+   5:../bootloader/Src/stm32f10x_it.c ****   * @version V3.5.0
+   6:../bootloader/Src/stm32f10x_it.c ****   * @date    08-April-2011
+   7:../bootloader/Src/stm32f10x_it.c ****   * @brief   Main Interrupt Service Routines.
+   8:../bootloader/Src/stm32f10x_it.c ****   *          This file provides template for all exceptions handler and 
+   9:../bootloader/Src/stm32f10x_it.c ****   *          peripherals interrupt service routine.
+  10:../bootloader/Src/stm32f10x_it.c ****   ******************************************************************************
+  11:../bootloader/Src/stm32f10x_it.c ****   * @attention
+  12:../bootloader/Src/stm32f10x_it.c ****   *
+  13:../bootloader/Src/stm32f10x_it.c ****   * THE PRESENT FIRMWARE WHICH IS FOR GUIDANCE ONLY AIMS AT PROVIDING CUSTOMERS
+  14:../bootloader/Src/stm32f10x_it.c ****   * WITH CODING INFORMATION REGARDING THEIR PRODUCTS IN ORDER FOR THEM TO SAVE
+  15:../bootloader/Src/stm32f10x_it.c ****   * TIME. AS A RESULT, STMICROELECTRONICS SHALL NOT BE HELD LIABLE FOR ANY
+  16:../bootloader/Src/stm32f10x_it.c ****   * DIRECT, INDIRECT OR CONSEQUENTIAL DAMAGES WITH RESPECT TO ANY CLAIMS ARISING
+  17:../bootloader/Src/stm32f10x_it.c ****   * FROM THE CONTENT OF SUCH FIRMWARE AND/OR THE USE MADE BY CUSTOMERS OF THE
+  18:../bootloader/Src/stm32f10x_it.c ****   * CODING INFORMATION CONTAINED HEREIN IN CONNECTION WITH THEIR PRODUCTS.
+  19:../bootloader/Src/stm32f10x_it.c ****   *
+  20:../bootloader/Src/stm32f10x_it.c ****   * <h2><center>&copy; COPYRIGHT 2011 STMicroelectronics</center></h2>
+  21:../bootloader/Src/stm32f10x_it.c ****   ******************************************************************************
+  22:../bootloader/Src/stm32f10x_it.c ****   */
+  23:../bootloader/Src/stm32f10x_it.c **** 
+  24:../bootloader/Src/stm32f10x_it.c **** /* Includes ------------------------------------------------------------------*/
+  25:../bootloader/Src/stm32f10x_it.c **** #include "stm32f10x_it.h"
+  26:../bootloader/Src/stm32f10x_it.c **** #include "usb_istr.h"
+  27:../bootloader/Src/stm32f10x_it.c **** #include "usb_lib.h"
+  28:../bootloader/Src/stm32f10x_it.c **** 
+  29:../bootloader/Src/stm32f10x_it.c **** /** @addtogroup STM32F10x_StdPeriph_Template
+  30:../bootloader/Src/stm32f10x_it.c ****   * @{
+  31:../bootloader/Src/stm32f10x_it.c ****   */
+  32:../bootloader/Src/stm32f10x_it.c **** 
+ARM GAS  /tmp/ccf0qTKT.s 			page 2
+
+
+  33:../bootloader/Src/stm32f10x_it.c **** /* Private typedef -----------------------------------------------------------*/
+  34:../bootloader/Src/stm32f10x_it.c **** /* Private define ------------------------------------------------------------*/
+  35:../bootloader/Src/stm32f10x_it.c **** /* Private macro -------------------------------------------------------------*/
+  36:../bootloader/Src/stm32f10x_it.c **** /* Private variables ---------------------------------------------------------*/
+  37:../bootloader/Src/stm32f10x_it.c **** /* Private function prototypes -----------------------------------------------*/
+  38:../bootloader/Src/stm32f10x_it.c **** /* Private functions ---------------------------------------------------------*/
+  39:../bootloader/Src/stm32f10x_it.c **** 
+  40:../bootloader/Src/stm32f10x_it.c **** /******************************************************************************/
+  41:../bootloader/Src/stm32f10x_it.c **** /*            Cortex-M3 Processor Exceptions Handlers                         */
+  42:../bootloader/Src/stm32f10x_it.c **** /******************************************************************************/
+  43:../bootloader/Src/stm32f10x_it.c **** 
+  44:../bootloader/Src/stm32f10x_it.c **** /**
+  45:../bootloader/Src/stm32f10x_it.c ****   * @brief  This function handles NMI exception.
+  46:../bootloader/Src/stm32f10x_it.c ****   * @param  None
+  47:../bootloader/Src/stm32f10x_it.c ****   * @retval None
+  48:../bootloader/Src/stm32f10x_it.c ****   */
+  49:../bootloader/Src/stm32f10x_it.c **** void NMI_Handler(void)
+  50:../bootloader/Src/stm32f10x_it.c **** {
+  27              		.loc 1 50 1 view -0
+  28              		.cfi_startproc
+  29              		@ args = 0, pretend = 0, frame = 0
+  30              		@ frame_needed = 0, uses_anonymous_args = 0
+  31              		@ link register save eliminated.
+  51:../bootloader/Src/stm32f10x_it.c **** }
+  32              		.loc 1 51 1 view .LVU1
+  33 0000 7047     		bx	lr
+  34              		.cfi_endproc
+  35              	.LFE29:
+  37              		.section	.text.HardFault_Handler,"ax",%progbits
+  38              		.align	1
+  39              		.global	HardFault_Handler
+  40              		.syntax unified
+  41              		.thumb
+  42              		.thumb_func
+  43              		.fpu softvfp
+  45              	HardFault_Handler:
+  46              	.LFB30:
+  52:../bootloader/Src/stm32f10x_it.c **** 
+  53:../bootloader/Src/stm32f10x_it.c **** /**
+  54:../bootloader/Src/stm32f10x_it.c ****   * @brief  This function handles Hard Fault exception.
+  55:../bootloader/Src/stm32f10x_it.c ****   * @param  None
+  56:../bootloader/Src/stm32f10x_it.c ****   * @retval None
+  57:../bootloader/Src/stm32f10x_it.c ****   */
+  58:../bootloader/Src/stm32f10x_it.c **** void HardFault_Handler(void)
+  59:../bootloader/Src/stm32f10x_it.c **** {
+  47              		.loc 1 59 1 view -0
+  48              		.cfi_startproc
+  49              		@ Volatile: function does not return.
+  50              		@ args = 0, pretend = 0, frame = 0
+  51              		@ frame_needed = 0, uses_anonymous_args = 0
+  52              		@ link register save eliminated.
+  53              	.L3:
+  60:../bootloader/Src/stm32f10x_it.c ****   /* Go to infinite loop when Hard Fault exception occurs */
+  61:../bootloader/Src/stm32f10x_it.c ****   while (1)
+  54              		.loc 1 61 3 discriminator 1 view .LVU3
+  62:../bootloader/Src/stm32f10x_it.c ****   {
+  63:../bootloader/Src/stm32f10x_it.c ****   }
+ARM GAS  /tmp/ccf0qTKT.s 			page 3
+
+
+  55              		.loc 1 63 3 discriminator 1 view .LVU4
+  61:../bootloader/Src/stm32f10x_it.c ****   {
+  56              		.loc 1 61 9 discriminator 1 view .LVU5
+  57 0000 FEE7     		b	.L3
+  58              		.cfi_endproc
+  59              	.LFE30:
+  61              		.section	.text.MemManage_Handler,"ax",%progbits
+  62              		.align	1
+  63              		.global	MemManage_Handler
+  64              		.syntax unified
+  65              		.thumb
+  66              		.thumb_func
+  67              		.fpu softvfp
+  69              	MemManage_Handler:
+  70              	.LFB31:
+  64:../bootloader/Src/stm32f10x_it.c **** }
+  65:../bootloader/Src/stm32f10x_it.c **** 
+  66:../bootloader/Src/stm32f10x_it.c **** /**
+  67:../bootloader/Src/stm32f10x_it.c ****   * @brief  This function handles Memory Manage exception.
+  68:../bootloader/Src/stm32f10x_it.c ****   * @param  None
+  69:../bootloader/Src/stm32f10x_it.c ****   * @retval None
+  70:../bootloader/Src/stm32f10x_it.c ****   */
+  71:../bootloader/Src/stm32f10x_it.c **** void MemManage_Handler(void)
+  72:../bootloader/Src/stm32f10x_it.c **** {
+  71              		.loc 1 72 1 view -0
+  72              		.cfi_startproc
+  73              		@ Volatile: function does not return.
+  74              		@ args = 0, pretend = 0, frame = 0
+  75              		@ frame_needed = 0, uses_anonymous_args = 0
+  76              		@ link register save eliminated.
+  77              	.L5:
+  73:../bootloader/Src/stm32f10x_it.c ****   /* Go to infinite loop when Memory Manage exception occurs */
+  74:../bootloader/Src/stm32f10x_it.c ****   while (1)
+  78              		.loc 1 74 3 discriminator 1 view .LVU7
+  75:../bootloader/Src/stm32f10x_it.c ****   {
+  76:../bootloader/Src/stm32f10x_it.c ****   }
+  79              		.loc 1 76 3 discriminator 1 view .LVU8
+  74:../bootloader/Src/stm32f10x_it.c ****   {
+  80              		.loc 1 74 9 discriminator 1 view .LVU9
+  81 0000 FEE7     		b	.L5
+  82              		.cfi_endproc
+  83              	.LFE31:
+  85              		.section	.text.BusFault_Handler,"ax",%progbits
+  86              		.align	1
+  87              		.global	BusFault_Handler
+  88              		.syntax unified
+  89              		.thumb
+  90              		.thumb_func
+  91              		.fpu softvfp
+  93              	BusFault_Handler:
+  94              	.LFB32:
+  77:../bootloader/Src/stm32f10x_it.c **** }
+  78:../bootloader/Src/stm32f10x_it.c **** 
+  79:../bootloader/Src/stm32f10x_it.c **** /**
+  80:../bootloader/Src/stm32f10x_it.c ****   * @brief  This function handles Bus Fault exception.
+  81:../bootloader/Src/stm32f10x_it.c ****   * @param  None
+  82:../bootloader/Src/stm32f10x_it.c ****   * @retval None
+ARM GAS  /tmp/ccf0qTKT.s 			page 4
+
+
+  83:../bootloader/Src/stm32f10x_it.c ****   */
+  84:../bootloader/Src/stm32f10x_it.c **** void BusFault_Handler(void)
+  85:../bootloader/Src/stm32f10x_it.c **** {
+  95              		.loc 1 85 1 view -0
+  96              		.cfi_startproc
+  97              		@ Volatile: function does not return.
+  98              		@ args = 0, pretend = 0, frame = 0
+  99              		@ frame_needed = 0, uses_anonymous_args = 0
+ 100              		@ link register save eliminated.
+ 101              	.L7:
+  86:../bootloader/Src/stm32f10x_it.c ****   /* Go to infinite loop when Bus Fault exception occurs */
+  87:../bootloader/Src/stm32f10x_it.c ****   while (1)
+ 102              		.loc 1 87 3 discriminator 1 view .LVU11
+  88:../bootloader/Src/stm32f10x_it.c ****   {
+  89:../bootloader/Src/stm32f10x_it.c ****   }
+ 103              		.loc 1 89 3 discriminator 1 view .LVU12
+  87:../bootloader/Src/stm32f10x_it.c ****   {
+ 104              		.loc 1 87 9 discriminator 1 view .LVU13
+ 105 0000 FEE7     		b	.L7
+ 106              		.cfi_endproc
+ 107              	.LFE32:
+ 109              		.section	.text.UsageFault_Handler,"ax",%progbits
+ 110              		.align	1
+ 111              		.global	UsageFault_Handler
+ 112              		.syntax unified
+ 113              		.thumb
+ 114              		.thumb_func
+ 115              		.fpu softvfp
+ 117              	UsageFault_Handler:
+ 118              	.LFB33:
+  90:../bootloader/Src/stm32f10x_it.c **** }
+  91:../bootloader/Src/stm32f10x_it.c **** 
+  92:../bootloader/Src/stm32f10x_it.c **** /**
+  93:../bootloader/Src/stm32f10x_it.c ****   * @brief  This function handles Usage Fault exception.
+  94:../bootloader/Src/stm32f10x_it.c ****   * @param  None
+  95:../bootloader/Src/stm32f10x_it.c ****   * @retval None
+  96:../bootloader/Src/stm32f10x_it.c ****   */
+  97:../bootloader/Src/stm32f10x_it.c **** void UsageFault_Handler(void)
+  98:../bootloader/Src/stm32f10x_it.c **** {
+ 119              		.loc 1 98 1 view -0
+ 120              		.cfi_startproc
+ 121              		@ Volatile: function does not return.
+ 122              		@ args = 0, pretend = 0, frame = 0
+ 123              		@ frame_needed = 0, uses_anonymous_args = 0
+ 124              		@ link register save eliminated.
+ 125              	.L9:
+  99:../bootloader/Src/stm32f10x_it.c ****   /* Go to infinite loop when Usage Fault exception occurs */
+ 100:../bootloader/Src/stm32f10x_it.c ****   while (1)
+ 126              		.loc 1 100 3 discriminator 1 view .LVU15
+ 101:../bootloader/Src/stm32f10x_it.c ****   {
+ 102:../bootloader/Src/stm32f10x_it.c ****   }
+ 127              		.loc 1 102 3 discriminator 1 view .LVU16
+ 100:../bootloader/Src/stm32f10x_it.c ****   {
+ 128              		.loc 1 100 9 discriminator 1 view .LVU17
+ 129 0000 FEE7     		b	.L9
+ 130              		.cfi_endproc
+ 131              	.LFE33:
+ARM GAS  /tmp/ccf0qTKT.s 			page 5
+
+
+ 133              		.section	.text.SVC_Handler,"ax",%progbits
+ 134              		.align	1
+ 135              		.global	SVC_Handler
+ 136              		.syntax unified
+ 137              		.thumb
+ 138              		.thumb_func
+ 139              		.fpu softvfp
+ 141              	SVC_Handler:
+ 142              	.LFB39:
+ 143              		.cfi_startproc
+ 144              		@ args = 0, pretend = 0, frame = 0
+ 145              		@ frame_needed = 0, uses_anonymous_args = 0
+ 146              		@ link register save eliminated.
+ 147 0000 7047     		bx	lr
+ 148              		.cfi_endproc
+ 149              	.LFE39:
+ 151              		.section	.text.DebugMon_Handler,"ax",%progbits
+ 152              		.align	1
+ 153              		.global	DebugMon_Handler
+ 154              		.syntax unified
+ 155              		.thumb
+ 156              		.thumb_func
+ 157              		.fpu softvfp
+ 159              	DebugMon_Handler:
+ 160              	.LFB41:
+ 161              		.cfi_startproc
+ 162              		@ args = 0, pretend = 0, frame = 0
+ 163              		@ frame_needed = 0, uses_anonymous_args = 0
+ 164              		@ link register save eliminated.
+ 165 0000 7047     		bx	lr
+ 166              		.cfi_endproc
+ 167              	.LFE41:
+ 169              		.section	.text.PendSV_Handler,"ax",%progbits
+ 170              		.align	1
+ 171              		.global	PendSV_Handler
+ 172              		.syntax unified
+ 173              		.thumb
+ 174              		.thumb_func
+ 175              		.fpu softvfp
+ 177              	PendSV_Handler:
+ 178              	.LFB43:
+ 179              		.cfi_startproc
+ 180              		@ args = 0, pretend = 0, frame = 0
+ 181              		@ frame_needed = 0, uses_anonymous_args = 0
+ 182              		@ link register save eliminated.
+ 183 0000 7047     		bx	lr
+ 184              		.cfi_endproc
+ 185              	.LFE43:
+ 187              		.section	.text.USB_LP_CAN1_RX0_IRQHandler,"ax",%progbits
+ 188              		.align	1
+ 189              		.global	USB_LP_CAN1_RX0_IRQHandler
+ 190              		.syntax unified
+ 191              		.thumb
+ 192              		.thumb_func
+ 193              		.fpu softvfp
+ 195              	USB_LP_CAN1_RX0_IRQHandler:
+ 196              	.LFB37:
+ARM GAS  /tmp/ccf0qTKT.s 			page 6
+
+
+ 103:../bootloader/Src/stm32f10x_it.c **** }
+ 104:../bootloader/Src/stm32f10x_it.c **** 
+ 105:../bootloader/Src/stm32f10x_it.c **** /**
+ 106:../bootloader/Src/stm32f10x_it.c ****   * @brief  This function handles SVCall exception.
+ 107:../bootloader/Src/stm32f10x_it.c ****   * @param  None
+ 108:../bootloader/Src/stm32f10x_it.c ****   * @retval None
+ 109:../bootloader/Src/stm32f10x_it.c ****   */
+ 110:../bootloader/Src/stm32f10x_it.c **** void SVC_Handler(void)
+ 111:../bootloader/Src/stm32f10x_it.c **** {
+ 112:../bootloader/Src/stm32f10x_it.c **** }
+ 113:../bootloader/Src/stm32f10x_it.c **** 
+ 114:../bootloader/Src/stm32f10x_it.c **** /**
+ 115:../bootloader/Src/stm32f10x_it.c ****   * @brief  This function handles Debug Monitor exception.
+ 116:../bootloader/Src/stm32f10x_it.c ****   * @param  None
+ 117:../bootloader/Src/stm32f10x_it.c ****   * @retval None
+ 118:../bootloader/Src/stm32f10x_it.c ****   */
+ 119:../bootloader/Src/stm32f10x_it.c **** void DebugMon_Handler(void)
+ 120:../bootloader/Src/stm32f10x_it.c **** {
+ 121:../bootloader/Src/stm32f10x_it.c **** }
+ 122:../bootloader/Src/stm32f10x_it.c **** 
+ 123:../bootloader/Src/stm32f10x_it.c **** /**
+ 124:../bootloader/Src/stm32f10x_it.c ****   * @brief  This function handles PendSVC exception.
+ 125:../bootloader/Src/stm32f10x_it.c ****   * @param  None
+ 126:../bootloader/Src/stm32f10x_it.c ****   * @retval None
+ 127:../bootloader/Src/stm32f10x_it.c ****   */
+ 128:../bootloader/Src/stm32f10x_it.c **** void PendSV_Handler(void)
+ 129:../bootloader/Src/stm32f10x_it.c **** {
+ 130:../bootloader/Src/stm32f10x_it.c **** }
+ 131:../bootloader/Src/stm32f10x_it.c **** 
+ 132:../bootloader/Src/stm32f10x_it.c **** /**
+ 133:../bootloader/Src/stm32f10x_it.c ****   * @brief  This function handles SysTick Handler.
+ 134:../bootloader/Src/stm32f10x_it.c ****   * @param  None
+ 135:../bootloader/Src/stm32f10x_it.c ****   * @retval None
+ 136:../bootloader/Src/stm32f10x_it.c ****   */
+ 137:../bootloader/Src/stm32f10x_it.c **** //void SysTick_Handler(void)
+ 138:../bootloader/Src/stm32f10x_it.c **** //{
+ 139:../bootloader/Src/stm32f10x_it.c **** //	Ticks++;
+ 140:../bootloader/Src/stm32f10x_it.c **** //		
+ 141:../bootloader/Src/stm32f10x_it.c **** //	if (TimingDelay != 0x00)										
+ 142:../bootloader/Src/stm32f10x_it.c **** //  {
+ 143:../bootloader/Src/stm32f10x_it.c **** //    TimingDelay--;
+ 144:../bootloader/Src/stm32f10x_it.c **** //  }
+ 145:../bootloader/Src/stm32f10x_it.c **** //}
+ 146:../bootloader/Src/stm32f10x_it.c **** 
+ 147:../bootloader/Src/stm32f10x_it.c **** /******************************************************************************/
+ 148:../bootloader/Src/stm32f10x_it.c **** /*                 STM32F10x Peripherals Interrupt Handlers                   */
+ 149:../bootloader/Src/stm32f10x_it.c **** /*  Add here the Interrupt Handler for the used peripheral(s) (PPP), for the  */
+ 150:../bootloader/Src/stm32f10x_it.c **** /*  available peripheral interrupt handler's name please refer to the startup */
+ 151:../bootloader/Src/stm32f10x_it.c **** /*  file (startup_stm32f10x_xx.s).                                            */
+ 152:../bootloader/Src/stm32f10x_it.c **** /******************************************************************************/
+ 153:../bootloader/Src/stm32f10x_it.c **** 
+ 154:../bootloader/Src/stm32f10x_it.c **** /**
+ 155:../bootloader/Src/stm32f10x_it.c **** * @brief This function handles USB low priority or CAN RX0 interrupts.
+ 156:../bootloader/Src/stm32f10x_it.c **** */
+ 157:../bootloader/Src/stm32f10x_it.c **** void USB_LP_CAN1_RX0_IRQHandler(void)
+ 158:../bootloader/Src/stm32f10x_it.c **** {
+ 197              		.loc 1 158 1 view -0
+ARM GAS  /tmp/ccf0qTKT.s 			page 7
+
+
+ 198              		.cfi_startproc
+ 199              		@ args = 0, pretend = 0, frame = 0
+ 200              		@ frame_needed = 0, uses_anonymous_args = 0
+ 201              		@ link register save eliminated.
+ 159:../bootloader/Src/stm32f10x_it.c **** 	USB_Istr();
+ 202              		.loc 1 159 2 view .LVU19
+ 203 0000 FFF7FEBF 		b	USB_Istr
+ 204              	.LVL0:
+ 205              		.cfi_endproc
+ 206              	.LFE37:
+ 208              		.text
+ 209              	.Letext0:
+ 210              		.file 2 "/usr/lib/gcc/arm-none-eabi/9.2.1/include/stdint.h"
+ 211              		.file 3 "../Drivers/CMSIS/CM3/CoreSupport/core_cm3.h"
+ 212              		.file 4 "../Drivers/CMSIS/CM3/DeviceSupport/ST/STM32F10x/system_stm32f10x.h"
+ 213              		.file 5 "../Drivers/STM32_USB-FS-Device_Driver/inc/usb_type.h"
+ 214              		.file 6 "../bootloader/Inc/usb_hw.h"
+ 215              		.file 7 "../Drivers/STM32_USB-FS-Device_Driver/inc/usb_regs.h"
+ 216              		.file 8 "../Drivers/STM32_USB-FS-Device_Driver/inc/usb_core.h"
+ 217              		.file 9 "../Drivers/STM32_USB-FS-Device_Driver/inc/usb_init.h"
+ 218              		.file 10 "../Drivers/STM32_USB-FS-Device_Driver/inc/usb_lib.h"
+ 219              		.file 11 "../bootloader/Inc/usb_istr.h"
+ARM GAS  /tmp/ccf0qTKT.s 			page 8
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 stm32f10x_it.c
+     /tmp/ccf0qTKT.s:16     .text.NMI_Handler:0000000000000000 $t
+     /tmp/ccf0qTKT.s:24     .text.NMI_Handler:0000000000000000 NMI_Handler
+     /tmp/ccf0qTKT.s:38     .text.HardFault_Handler:0000000000000000 $t
+     /tmp/ccf0qTKT.s:45     .text.HardFault_Handler:0000000000000000 HardFault_Handler
+     /tmp/ccf0qTKT.s:62     .text.MemManage_Handler:0000000000000000 $t
+     /tmp/ccf0qTKT.s:69     .text.MemManage_Handler:0000000000000000 MemManage_Handler
+     /tmp/ccf0qTKT.s:86     .text.BusFault_Handler:0000000000000000 $t
+     /tmp/ccf0qTKT.s:93     .text.BusFault_Handler:0000000000000000 BusFault_Handler
+     /tmp/ccf0qTKT.s:110    .text.UsageFault_Handler:0000000000000000 $t
+     /tmp/ccf0qTKT.s:117    .text.UsageFault_Handler:0000000000000000 UsageFault_Handler
+     /tmp/ccf0qTKT.s:134    .text.SVC_Handler:0000000000000000 $t
+     /tmp/ccf0qTKT.s:141    .text.SVC_Handler:0000000000000000 SVC_Handler
+     /tmp/ccf0qTKT.s:152    .text.DebugMon_Handler:0000000000000000 $t
+     /tmp/ccf0qTKT.s:159    .text.DebugMon_Handler:0000000000000000 DebugMon_Handler
+     /tmp/ccf0qTKT.s:170    .text.PendSV_Handler:0000000000000000 $t
+     /tmp/ccf0qTKT.s:177    .text.PendSV_Handler:0000000000000000 PendSV_Handler
+     /tmp/ccf0qTKT.s:188    .text.USB_LP_CAN1_RX0_IRQHandler:0000000000000000 $t
+     /tmp/ccf0qTKT.s:195    .text.USB_LP_CAN1_RX0_IRQHandler:0000000000000000 USB_LP_CAN1_RX0_IRQHandler
+
+UNDEFINED SYMBOLS
+USB_Istr

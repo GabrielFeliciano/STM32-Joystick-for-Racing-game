@@ -1,0 +1,1126 @@
+ARM GAS  /tmp/cc7a26pd.s 			page 1
+
+
+   1              		.cpu cortex-m3
+   2              		.eabi_attribute 20, 1
+   3              		.eabi_attribute 21, 1
+   4              		.eabi_attribute 23, 3
+   5              		.eabi_attribute 24, 1
+   6              		.eabi_attribute 25, 1
+   7              		.eabi_attribute 26, 1
+   8              		.eabi_attribute 30, 2
+   9              		.eabi_attribute 34, 1
+  10              		.eabi_attribute 18, 4
+  11              		.file	"leds.c"
+  12              		.text
+  13              	.Ltext0:
+  14              		.cfi_sections	.debug_frame
+  15              		.section	.text.LEDs_LogicalProcess,"ax",%progbits
+  16              		.align	1
+  17              		.p2align 2,,3
+  18              		.global	LEDs_LogicalProcess
+  19              		.arch armv7-m
+  20              		.syntax unified
+  21              		.thumb
+  22              		.thumb_func
+  23              		.fpu softvfp
+  25              	LEDs_LogicalProcess:
+  26              	.LVL0:
+  27              	.LFB29:
+  28              		.file 1 "../application/Src/leds.c"
+   1:../application/Src/leds.c **** /**
+   2:../application/Src/leds.c ****   ******************************************************************************
+   3:../application/Src/leds.c ****   * @file           : leds.c
+   4:../application/Src/leds.c ****   * @brief          : LEDs driver implementation
+   5:../application/Src/leds.c **** 		
+   6:../application/Src/leds.c **** 		FreeJoy software for game device controllers
+   7:../application/Src/leds.c ****     Copyright (C) 2020  Yury Vostrenkov (yuvostrenkov@gmail.com)
+   8:../application/Src/leds.c **** 
+   9:../application/Src/leds.c ****     This program is free software: you can redistribute it and/or modify
+  10:../application/Src/leds.c ****     it under the terms of the GNU General Public License as published by
+  11:../application/Src/leds.c ****     the Free Software Foundation, either version 3 of the License, or
+  12:../application/Src/leds.c ****     (at your option) any later version.
+  13:../application/Src/leds.c **** 
+  14:../application/Src/leds.c ****     This program is distributed in the hope that it will be useful,
+  15:../application/Src/leds.c ****     but WITHOUT ANY WARRANTY; without even the implied warranty of
+  16:../application/Src/leds.c ****     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  17:../application/Src/leds.c ****     GNU General Public License for more details.
+  18:../application/Src/leds.c **** 
+  19:../application/Src/leds.c ****     You should have received a copy of the GNU General Public License
+  20:../application/Src/leds.c ****     along with this program.  If not, see <https://www.gnu.org/licenses/>.
+  21:../application/Src/leds.c **** 		******************************************************************************
+  22:../application/Src/leds.c **** */
+  23:../application/Src/leds.c **** 	
+  24:../application/Src/leds.c **** #include "leds.h"
+  25:../application/Src/leds.c **** #include "buttons.h"
+  26:../application/Src/leds.c **** 	
+  27:../application/Src/leds.c **** uint8_t leds_state[MAX_LEDS_NUM];
+  28:../application/Src/leds.c **** 	
+  29:../application/Src/leds.c **** void LEDs_LogicalProcess (dev_config_t * p_dev_config)
+  30:../application/Src/leds.c **** {
+ARM GAS  /tmp/cc7a26pd.s 			page 2
+
+
+  29              		.loc 1 30 1 view -0
+  30              		.cfi_startproc
+  31              		@ args = 0, pretend = 0, frame = 0
+  32              		@ frame_needed = 0, uses_anonymous_args = 0
+  33              		@ link register save eliminated.
+  31:../application/Src/leds.c **** 	for (uint8_t i=0; i<MAX_LEDS_NUM; i++)
+  34              		.loc 1 31 2 view .LVU1
+  35              	.LBB5:
+  36              		.loc 1 31 7 view .LVU2
+  37              		.loc 1 31 20 view .LVU3
+  38              	.LBE5:
+  30:../application/Src/leds.c **** 	for (uint8_t i=0; i<MAX_LEDS_NUM; i++)
+  39              		.loc 1 30 1 is_stmt 0 view .LVU4
+  40 0000 F0B4     		push	{r4, r5, r6, r7}
+  41              	.LCFI0:
+  42              		.cfi_def_cfa_offset 16
+  43              		.cfi_offset 4, -16
+  44              		.cfi_offset 5, -12
+  45              		.cfi_offset 6, -8
+  46              		.cfi_offset 7, -4
+  30:../application/Src/leds.c **** 	for (uint8_t i=0; i<MAX_LEDS_NUM; i++)
+  47              		.loc 1 30 1 view .LVU5
+  48 0002 0023     		movs	r3, #0
+  49              	.LBB6:
+  32:../application/Src/leds.c **** 	{
+  33:../application/Src/leds.c **** 		if (p_dev_config->leds[i].input_num >= 0)
+  34:../application/Src/leds.c **** 		{
+  35:../application/Src/leds.c **** 			switch (p_dev_config->leds[i].type)
+  36:../application/Src/leds.c **** 			{
+  37:../application/Src/leds.c **** 				default:
+  38:../application/Src/leds.c **** 				case LED_NORMAL:
+  39:../application/Src/leds.c **** 					leds_state[i] = logical_buttons_state[p_dev_config->leds[i].input_num].current_state;
+  40:../application/Src/leds.c **** 				break;
+  41:../application/Src/leds.c **** 				
+  42:../application/Src/leds.c **** 				case LED_INVERTED:
+  43:../application/Src/leds.c **** 					leds_state[i] = !logical_buttons_state[p_dev_config->leds[i].input_num].current_state;
+  50              		.loc 1 43 20 view .LVU6
+  51 0004 134E     		ldr	r6, .L10
+  52              		.loc 1 43 77 view .LVU7
+  53 0006 144D     		ldr	r5, .L10+4
+  54 0008 00F55274 		add	r4, r0, #840
+  55 000c 06E0     		b	.L4
+  56              	.LVL1:
+  57              	.L9:
+  39:../application/Src/leds.c **** 				break;
+  58              		.loc 1 39 76 view .LVU8
+  59 000e 3A79     		ldrb	r2, [r7, #4]	@ zero_extendqisi2
+  60 0010 C2F30012 		ubfx	r2, r2, #4, #1
+  39:../application/Src/leds.c **** 				break;
+  61              		.loc 1 39 20 view .LVU9
+  62 0014 9A55     		strb	r2, [r3, r6]
+  40:../application/Src/leds.c **** 				
+  63              		.loc 1 40 5 is_stmt 1 view .LVU10
+  64              	.L2:
+  31:../application/Src/leds.c **** 	{
+  65              		.loc 1 31 36 discriminator 2 view .LVU11
+  66              	.LVL2:
+ARM GAS  /tmp/cc7a26pd.s 			page 3
+
+
+  31:../application/Src/leds.c **** 	{
+  67              		.loc 1 31 20 discriminator 2 view .LVU12
+  68 0016 0133     		adds	r3, r3, #1
+  69              	.LVL3:
+  31:../application/Src/leds.c **** 	{
+  70              		.loc 1 31 2 is_stmt 0 discriminator 2 view .LVU13
+  71 0018 182B     		cmp	r3, #24
+  72 001a 18D0     		beq	.L8
+  73              	.L4:
+  74              	.LVL4:
+  33:../application/Src/leds.c **** 		{
+  75              		.loc 1 33 3 is_stmt 1 view .LVU14
+  35:../application/Src/leds.c **** 			{
+  76              		.loc 1 35 4 view .LVU15
+  33:../application/Src/leds.c **** 		{
+  77              		.loc 1 33 28 is_stmt 0 view .LVU16
+  78 001c 14F91320 		ldrsb	r2, [r4, r3, lsl #1]
+  35:../application/Src/leds.c **** 			{
+  79              		.loc 1 35 33 view .LVU17
+  80 0020 00EB4301 		add	r1, r0, r3, lsl #1
+  33:../application/Src/leds.c **** 		{
+  81              		.loc 1 33 6 view .LVU18
+  82 0024 002A     		cmp	r2, #0
+  83 0026 F6DB     		blt	.L2
+  39:../application/Src/leds.c **** 				break;
+  84              		.loc 1 39 6 is_stmt 1 view .LVU19
+  35:../application/Src/leds.c **** 			{
+  85              		.loc 1 35 33 is_stmt 0 view .LVU20
+  86 0028 91F84913 		ldrb	r1, [r1, #841]	@ zero_extendqisi2
+  39:../application/Src/leds.c **** 				break;
+  87              		.loc 1 39 76 view .LVU21
+  88 002c 05EBC207 		add	r7, r5, r2, lsl #3
+  35:../application/Src/leds.c **** 			{
+  89              		.loc 1 35 4 view .LVU22
+  90 0030 01F00701 		and	r1, r1, #7
+  91 0034 0129     		cmp	r1, #1
+  92 0036 EAD1     		bne	.L9
+  93              		.loc 1 43 6 is_stmt 1 view .LVU23
+  94              		.loc 1 43 77 is_stmt 0 view .LVU24
+  95 0038 05EBC202 		add	r2, r5, r2, lsl #3
+  96 003c 1279     		ldrb	r2, [r2, #4]	@ zero_extendqisi2
+  97 003e C2F30012 		ubfx	r2, r2, #4, #1
+  98              		.loc 1 43 22 view .LVU25
+  99 0042 82F00102 		eor	r2, r2, #1
+ 100              		.loc 1 43 20 view .LVU26
+ 101 0046 9A55     		strb	r2, [r3, r6]
+  44:../application/Src/leds.c **** 				break;
+ 102              		.loc 1 44 5 is_stmt 1 view .LVU27
+  31:../application/Src/leds.c **** 	{
+ 103              		.loc 1 31 36 view .LVU28
+ 104              	.LVL5:
+  31:../application/Src/leds.c **** 	{
+ 105              		.loc 1 31 20 view .LVU29
+ 106 0048 0133     		adds	r3, r3, #1
+ 107              	.LVL6:
+  31:../application/Src/leds.c **** 	{
+ 108              		.loc 1 31 2 is_stmt 0 view .LVU30
+ARM GAS  /tmp/cc7a26pd.s 			page 4
+
+
+ 109 004a 182B     		cmp	r3, #24
+ 110 004c E6D1     		bne	.L4
+ 111              	.L8:
+  31:../application/Src/leds.c **** 	{
+ 112              		.loc 1 31 2 view .LVU31
+ 113              	.LBE6:
+  45:../application/Src/leds.c **** 				
+  46:../application/Src/leds.c **** 			}
+  47:../application/Src/leds.c **** 		}
+  48:../application/Src/leds.c **** 	}
+  49:../application/Src/leds.c **** }
+ 114              		.loc 1 49 1 view .LVU32
+ 115 004e F0BC     		pop	{r4, r5, r6, r7}
+ 116              	.LCFI1:
+ 117              		.cfi_restore 7
+ 118              		.cfi_restore 6
+ 119              		.cfi_restore 5
+ 120              		.cfi_restore 4
+ 121              		.cfi_def_cfa_offset 0
+ 122 0050 7047     		bx	lr
+ 123              	.L11:
+ 124 0052 00BF     		.align	2
+ 125              	.L10:
+ 126 0054 00000000 		.word	leds_state
+ 127 0058 00000000 		.word	logical_buttons_state
+ 128              		.cfi_endproc
+ 129              	.LFE29:
+ 131              		.section	.text.LED_SetSingle,"ax",%progbits
+ 132              		.align	1
+ 133              		.p2align 2,,3
+ 134              		.global	LED_SetSingle
+ 135              		.syntax unified
+ 136              		.thumb
+ 137              		.thumb_func
+ 138              		.fpu softvfp
+ 140              	LED_SetSingle:
+ 141              	.LVL7:
+ 142              	.LFB30:
+  50:../application/Src/leds.c **** 
+  51:../application/Src/leds.c **** void LED_SetSingle(uint8_t * state_buf, dev_config_t * p_dev_config, uint8_t * pos)
+  52:../application/Src/leds.c **** {
+ 143              		.loc 1 52 1 is_stmt 1 view -0
+ 144              		.cfi_startproc
+ 145              		@ args = 0, pretend = 0, frame = 0
+ 146              		@ frame_needed = 0, uses_anonymous_args = 0
+ 147              		@ link register save eliminated.
+  53:../application/Src/leds.c **** 	for (uint8_t i=0; i<USED_PINS_NUM; i++)
+ 148              		.loc 1 53 2 view .LVU34
+ 149              	.LBB8:
+ 150              		.loc 1 53 7 view .LVU35
+ 151              		.loc 1 53 20 view .LVU36
+ 152 0000 114B     		ldr	r3, .L20
+ 153              	.LBE8:
+  52:../application/Src/leds.c **** 	for (uint8_t i=0; i<USED_PINS_NUM; i++)
+ 154              		.loc 1 52 1 is_stmt 0 view .LVU37
+ 155 0002 F0B4     		push	{r4, r5, r6, r7}
+ 156              	.LCFI2:
+ARM GAS  /tmp/cc7a26pd.s 			page 5
+
+
+ 157              		.cfi_def_cfa_offset 16
+ 158              		.cfi_offset 4, -16
+ 159              		.cfi_offset 5, -12
+ 160              		.cfi_offset 6, -8
+ 161              		.cfi_offset 7, -4
+ 162 0004 1F31     		adds	r1, r1, #31
+ 163              	.LVL8:
+ 164              	.LBB9:
+  54:../application/Src/leds.c **** 	{
+  55:../application/Src/leds.c **** 		if (p_dev_config->pins[i] == LED_SINGLE)
+  56:../application/Src/leds.c **** 		{
+  57:../application/Src/leds.c **** 			leds_state[*pos] ? (pin_config[i].port->ODR |= pin_config[i].pin) : (pin_config[i].port->ODR &= 
+ 165              		.loc 1 57 14 view .LVU38
+ 166 0006 114D     		ldr	r5, .L20+4
+ 167 0008 03F1F004 		add	r4, r3, #240
+ 168 000c 02E0     		b	.L16
+ 169              	.LVL9:
+ 170              	.L13:
+  53:../application/Src/leds.c **** 	{
+ 171              		.loc 1 53 37 is_stmt 1 discriminator 2 view .LVU39
+  53:../application/Src/leds.c **** 	{
+ 172              		.loc 1 53 20 discriminator 2 view .LVU40
+ 173 000e 0833     		adds	r3, r3, #8
+  53:../application/Src/leds.c **** 	{
+ 174              		.loc 1 53 2 is_stmt 0 discriminator 2 view .LVU41
+ 175 0010 A342     		cmp	r3, r4
+ 176 0012 11D0     		beq	.L19
+ 177              	.LVL10:
+ 178              	.L16:
+  55:../application/Src/leds.c **** 		{
+ 179              		.loc 1 55 3 is_stmt 1 view .LVU42
+  55:../application/Src/leds.c **** 		{
+ 180              		.loc 1 55 6 is_stmt 0 view .LVU43
+ 181 0014 11F9010F 		ldrsb	r0, [r1, #1]!
+ 182              	.LVL11:
+  55:../application/Src/leds.c **** 		{
+ 183              		.loc 1 55 6 view .LVU44
+ 184 0018 1628     		cmp	r0, #22
+ 185 001a F8D1     		bne	.L13
+ 186              		.loc 1 57 4 is_stmt 1 view .LVU45
+ 187              		.loc 1 57 15 is_stmt 0 view .LVU46
+ 188 001c 1078     		ldrb	r0, [r2]	@ zero_extendqisi2
+ 189              		.loc 1 57 37 view .LVU47
+ 190 001e 1E68     		ldr	r6, [r3]
+ 191              		.loc 1 57 70 view .LVU48
+ 192 0020 285C     		ldrb	r0, [r5, r0]	@ zero_extendqisi2
+ 193 0022 58B1     		cbz	r0, .L14
+ 194              		.loc 1 57 64 discriminator 1 view .LVU49
+ 195 0024 9888     		ldrh	r0, [r3, #4]
+ 196              		.loc 1 57 48 discriminator 1 view .LVU50
+ 197 0026 F768     		ldr	r7, [r6, #12]
+ 198 0028 3843     		orrs	r0, r0, r7
+ 199 002a F060     		str	r0, [r6, #12]
+ 200              	.L15:
+  58:../application/Src/leds.c **** 			(*pos)++;
+ 201              		.loc 1 58 4 is_stmt 1 view .LVU51
+ 202              		.loc 1 58 10 is_stmt 0 view .LVU52
+ARM GAS  /tmp/cc7a26pd.s 			page 6
+
+
+ 203 002c 1078     		ldrb	r0, [r2]	@ zero_extendqisi2
+ 204 002e 0833     		adds	r3, r3, #8
+ 205 0030 0130     		adds	r0, r0, #1
+  53:../application/Src/leds.c **** 	{
+ 206              		.loc 1 53 2 view .LVU53
+ 207 0032 A342     		cmp	r3, r4
+ 208              		.loc 1 58 10 view .LVU54
+ 209 0034 1070     		strb	r0, [r2]
+  53:../application/Src/leds.c **** 	{
+ 210              		.loc 1 53 37 is_stmt 1 view .LVU55
+ 211              	.LVL12:
+  53:../application/Src/leds.c **** 	{
+ 212              		.loc 1 53 20 view .LVU56
+  53:../application/Src/leds.c **** 	{
+ 213              		.loc 1 53 2 is_stmt 0 view .LVU57
+ 214 0036 EDD1     		bne	.L16
+ 215              	.LVL13:
+ 216              	.L19:
+  53:../application/Src/leds.c **** 	{
+ 217              		.loc 1 53 2 view .LVU58
+ 218              	.LBE9:
+  59:../application/Src/leds.c **** 		}
+  60:../application/Src/leds.c **** 	}
+  61:../application/Src/leds.c **** }
+ 219              		.loc 1 61 1 view .LVU59
+ 220 0038 F0BC     		pop	{r4, r5, r6, r7}
+ 221              	.LCFI3:
+ 222              		.cfi_remember_state
+ 223              		.cfi_restore 7
+ 224              		.cfi_restore 6
+ 225              		.cfi_restore 5
+ 226              		.cfi_restore 4
+ 227              		.cfi_def_cfa_offset 0
+ 228 003a 7047     		bx	lr
+ 229              	.L14:
+ 230              	.LCFI4:
+ 231              		.cfi_restore_state
+ 232              	.LBB10:
+  57:../application/Src/leds.c **** 			(*pos)++;
+ 233              		.loc 1 57 114 discriminator 2 view .LVU60
+ 234 003c 9F88     		ldrh	r7, [r3, #4]
+  57:../application/Src/leds.c **** 			(*pos)++;
+ 235              		.loc 1 57 97 discriminator 2 view .LVU61
+ 236 003e F068     		ldr	r0, [r6, #12]
+ 237 0040 20EA0700 		bic	r0, r0, r7
+ 238 0044 F060     		str	r0, [r6, #12]
+ 239 0046 F1E7     		b	.L15
+ 240              	.L21:
+ 241              		.align	2
+ 242              	.L20:
+ 243 0048 00000000 		.word	pin_config
+ 244 004c 00000000 		.word	leds_state
+ 245              	.LBE10:
+ 246              		.cfi_endproc
+ 247              	.LFE30:
+ 249              		.section	.text.LED_SetMatrix,"ax",%progbits
+ 250              		.align	1
+ARM GAS  /tmp/cc7a26pd.s 			page 7
+
+
+ 251              		.p2align 2,,3
+ 252              		.global	LED_SetMatrix
+ 253              		.syntax unified
+ 254              		.thumb
+ 255              		.thumb_func
+ 256              		.fpu softvfp
+ 258              	LED_SetMatrix:
+ 259              	.LVL14:
+ 260              	.LFB31:
+  62:../application/Src/leds.c **** 
+  63:../application/Src/leds.c **** void LED_SetMatrix(uint8_t * state_buf, dev_config_t * p_dev_config, uint8_t * pos)
+  64:../application/Src/leds.c **** {
+ 261              		.loc 1 64 1 is_stmt 1 view -0
+ 262              		.cfi_startproc
+ 263              		@ args = 0, pretend = 0, frame = 8
+ 264              		@ frame_needed = 0, uses_anonymous_args = 0
+  65:../application/Src/leds.c **** 	static int8_t last_row = -1;
+ 265              		.loc 1 65 2 view .LVU63
+  66:../application/Src/leds.c **** 	static uint8_t last_pos = 0;
+ 266              		.loc 1 66 2 view .LVU64
+  67:../application/Src/leds.c **** 	int8_t max_row = -1;
+ 267              		.loc 1 67 2 view .LVU65
+  68:../application/Src/leds.c **** 	
+  69:../application/Src/leds.c **** 	for (uint8_t i=0; i<USED_PINS_NUM; i++)
+ 268              		.loc 1 69 2 view .LVU66
+ 269              	.LBB11:
+ 270              		.loc 1 69 7 view .LVU67
+ 271              		.loc 1 69 20 view .LVU68
+ 272              	.LBE11:
+  64:../application/Src/leds.c **** 	static int8_t last_row = -1;
+ 273              		.loc 1 64 1 is_stmt 0 view .LVU69
+ 274 0000 2DE9F04F 		push	{r4, r5, r6, r7, r8, r9, r10, fp, lr}
+ 275              	.LCFI5:
+ 276              		.cfi_def_cfa_offset 36
+ 277              		.cfi_offset 4, -36
+ 278              		.cfi_offset 5, -32
+ 279              		.cfi_offset 6, -28
+ 280              		.cfi_offset 7, -24
+ 281              		.cfi_offset 8, -20
+ 282              		.cfi_offset 9, -16
+ 283              		.cfi_offset 10, -12
+ 284              		.cfi_offset 11, -8
+ 285              		.cfi_offset 14, -4
+ 286 0004 DFF828E1 		ldr	lr, .L46
+ 287 0008 01F11F09 		add	r9, r1, #31
+ 288 000c 4F46     		mov	r7, r9
+ 289 000e 6FEA090B 		mvn	fp, r9
+ 290 0012 F446     		mov	ip, lr
+  67:../application/Src/leds.c **** 	int8_t max_row = -1;
+ 291              		.loc 1 67 9 view .LVU70
+ 292 0014 4FF0FF3A 		mov	r10, #-1
+  64:../application/Src/leds.c **** 	static int8_t last_row = -1;
+ 293              		.loc 1 64 1 view .LVU71
+ 294 0018 83B0     		sub	sp, sp, #12
+ 295              	.LCFI6:
+ 296              		.cfi_def_cfa_offset 48
+ 297 001a 01F13D08 		add	r8, r1, #61
+ARM GAS  /tmp/cc7a26pd.s 			page 8
+
+
+ 298 001e 0EF1F005 		add	r5, lr, #240
+ 299 0022 03E0     		b	.L26
+ 300              	.LVL15:
+ 301              	.L23:
+ 302              	.LBB13:
+ 303              		.loc 1 69 37 is_stmt 1 discriminator 2 view .LVU72
+ 304              		.loc 1 69 20 discriminator 2 view .LVU73
+ 305              		.loc 1 69 2 is_stmt 0 discriminator 2 view .LVU74
+ 306 0024 4745     		cmp	r7, r8
+ 307 0026 0CF1080C 		add	ip, ip, #8
+ 308 002a 24D0     		beq	.L44
+ 309              	.LVL16:
+ 310              	.L26:
+  70:../application/Src/leds.c **** 	{
+  71:../application/Src/leds.c **** 		// turn off leds
+  72:../application/Src/leds.c **** 		if (p_dev_config->pins[i] == LED_ROW)
+ 311              		.loc 1 72 3 is_stmt 1 view .LVU75
+ 312              		.loc 1 72 6 is_stmt 0 view .LVU76
+ 313 002c 17F9013F 		ldrsb	r3, [r7, #1]!
+ 314              	.LVL17:
+ 315              		.loc 1 72 6 view .LVU77
+ 316 0030 172B     		cmp	r3, #23
+ 317 0032 F7D1     		bne	.L23
+  73:../application/Src/leds.c **** 		{
+  74:../application/Src/leds.c **** 			pin_config[i].port->ODR &= ~pin_config[i].pin;
+ 318              		.loc 1 74 4 is_stmt 1 view .LVU78
+ 319              		.loc 1 74 28 is_stmt 0 view .LVU79
+ 320 0034 7346     		mov	r3, lr
+ 321 0036 4946     		mov	r1, r9
+ 322              		.loc 1 74 17 view .LVU80
+ 323 0038 DCF80040 		ldr	r4, [ip]
+ 324              		.loc 1 74 45 view .LVU81
+ 325 003c BCF80460 		ldrh	r6, [ip, #4]
+ 326              		.loc 1 74 28 view .LVU82
+ 327 0040 E068     		ldr	r0, [r4, #12]
+ 328 0042 0BEB070A 		add	r10, fp, r7
+ 329 0046 20EA0600 		bic	r0, r0, r6
+ 330 004a E060     		str	r0, [r4, #12]
+  75:../application/Src/leds.c **** 			max_row = i;
+ 331              		.loc 1 75 4 is_stmt 1 view .LVU83
+ 332 004c 4FFA8AFA 		sxtb	r10, r10
+ 333              	.LVL18:
+  76:../application/Src/leds.c **** 			for (uint8_t j=0; j<USED_PINS_NUM; j++)
+ 334              		.loc 1 76 4 view .LVU84
+ 335              	.LBB12:
+ 336              		.loc 1 76 9 view .LVU85
+ 337              		.loc 1 76 22 view .LVU86
+ 338              	.L25:
+  77:../application/Src/leds.c **** 			{
+  78:../application/Src/leds.c **** 				if (p_dev_config->pins[j] == LED_COLUMN)
+ 339              		.loc 1 78 5 view .LVU87
+  76:../application/Src/leds.c **** 			for (uint8_t j=0; j<USED_PINS_NUM; j++)
+ 340              		.loc 1 76 39 view .LVU88
+ 341              		.loc 1 78 8 is_stmt 0 view .LVU89
+ 342 0050 11F9010F 		ldrsb	r0, [r1, #1]!
+ 343              	.LVL19:
+  76:../application/Src/leds.c **** 			for (uint8_t j=0; j<USED_PINS_NUM; j++)
+ARM GAS  /tmp/cc7a26pd.s 			page 9
+
+
+ 344              		.loc 1 76 22 is_stmt 1 view .LVU90
+ 345              		.loc 1 78 8 is_stmt 0 view .LVU91
+ 346 0054 1828     		cmp	r0, #24
+ 347 0056 07D1     		bne	.L24
+  79:../application/Src/leds.c **** 				{
+  80:../application/Src/leds.c **** 					pin_config[j].port->ODR |= pin_config[j].pin;
+ 348              		.loc 1 80 6 is_stmt 1 view .LVU92
+ 349              		.loc 1 80 19 is_stmt 0 view .LVU93
+ 350 0058 1C68     		ldr	r4, [r3]
+ 351              		.loc 1 80 46 view .LVU94
+ 352 005a 9888     		ldrh	r0, [r3, #4]
+ 353              		.loc 1 80 30 view .LVU95
+ 354 005c E668     		ldr	r6, [r4, #12]
+ 355 005e 3043     		orrs	r0, r0, r6
+ 356 0060 E060     		str	r0, [r4, #12]
+  81:../application/Src/leds.c **** 					(*pos)++;
+ 357              		.loc 1 81 6 is_stmt 1 view .LVU96
+ 358              		.loc 1 81 12 is_stmt 0 view .LVU97
+ 359 0062 1078     		ldrb	r0, [r2]	@ zero_extendqisi2
+ 360 0064 0130     		adds	r0, r0, #1
+ 361 0066 1070     		strb	r0, [r2]
+ 362              	.L24:
+ 363              		.loc 1 81 12 view .LVU98
+ 364 0068 0833     		adds	r3, r3, #8
+  76:../application/Src/leds.c **** 			{
+ 365              		.loc 1 76 4 discriminator 2 view .LVU99
+ 366 006a AB42     		cmp	r3, r5
+ 367 006c F0D1     		bne	.L25
+ 368              	.LVL20:
+  76:../application/Src/leds.c **** 			{
+ 369              		.loc 1 76 4 discriminator 2 view .LVU100
+ 370              	.LBE12:
+  69:../application/Src/leds.c **** 	{
+ 371              		.loc 1 69 37 is_stmt 1 view .LVU101
+  69:../application/Src/leds.c **** 	{
+ 372              		.loc 1 69 20 view .LVU102
+  69:../application/Src/leds.c **** 	{
+ 373              		.loc 1 69 2 is_stmt 0 view .LVU103
+ 374 006e 4745     		cmp	r7, r8
+ 375 0070 0CF1080C 		add	ip, ip, #8
+ 376 0074 DAD1     		bne	.L26
+ 377              	.LVL21:
+ 378              	.L44:
+  69:../application/Src/leds.c **** 	{
+ 379              		.loc 1 69 2 view .LVU104
+ 380              	.LBE13:
+ 381              	.LBB14:
+  82:../application/Src/leds.c **** 				}
+  83:../application/Src/leds.c **** 			}
+  84:../application/Src/leds.c **** 		}
+  85:../application/Src/leds.c **** 	}
+  86:../application/Src/leds.c **** 	for (uint8_t i=0; i<USED_PINS_NUM; i++)
+  87:../application/Src/leds.c **** 	{
+  88:../application/Src/leds.c **** 		if (p_dev_config->pins[i] == LED_ROW && (i > last_row || i == max_row))
+ 382              		.loc 1 88 46 view .LVU105
+ 383 0076 DFF8C4C0 		ldr	ip, .L46+12
+ 384 007a 4946     		mov	r1, r9
+ARM GAS  /tmp/cc7a26pd.s 			page 10
+
+
+ 385 007c 0023     		movs	r3, #0
+ 386 007e 9CF90040 		ldrsb	r4, [ip]
+ 387 0082 02E0     		b	.L37
+ 388              	.LVL22:
+ 389              	.L27:
+ 390              		.loc 1 88 46 view .LVU106
+ 391 0084 0133     		adds	r3, r3, #1
+ 392              	.LVL23:
+  86:../application/Src/leds.c **** 	{
+ 393              		.loc 1 86 2 discriminator 2 view .LVU107
+ 394 0086 1E2B     		cmp	r3, #30
+ 395 0088 41D0     		beq	.L22
+ 396              	.L37:
+ 397              	.LVL24:
+ 398              		.loc 1 88 3 is_stmt 1 view .LVU108
+  86:../application/Src/leds.c **** 	{
+ 399              		.loc 1 86 37 view .LVU109
+  86:../application/Src/leds.c **** 	{
+ 400              		.loc 1 86 20 view .LVU110
+ 401              		.loc 1 88 6 is_stmt 0 view .LVU111
+ 402 008a 11F9010F 		ldrsb	r0, [r1, #1]!
+ 403 008e 1728     		cmp	r0, #23
+ 404 0090 F8D1     		bne	.L27
+ 405              		.loc 1 88 40 discriminator 1 view .LVU112
+ 406 0092 A342     		cmp	r3, r4
+ 407 0094 01DC     		bgt	.L29
+ 408              		.loc 1 88 57 discriminator 2 view .LVU113
+ 409 0096 5345     		cmp	r3, r10
+ 410 0098 F4D1     		bne	.L27
+ 411              	.L29:
+  89:../application/Src/leds.c **** 		{
+  90:../application/Src/leds.c **** 			pin_config[i].port->ODR |= pin_config[i].pin;
+ 412              		.loc 1 90 4 is_stmt 1 view .LVU114
+ 413              		.loc 1 90 17 is_stmt 0 view .LVU115
+ 414 009a 2548     		ldr	r0, .L46
+ 415 009c DFF8A080 		ldr	r8, .L46+16
+ 416              	.LVL25:
+ 417              		.loc 1 90 17 view .LVU116
+ 418 00a0 50F83340 		ldr	r4, [r0, r3, lsl #3]
+ 419              		.loc 1 90 44 view .LVU117
+ 420 00a4 00EBC300 		add	r0, r0, r3, lsl #3
+ 421 00a8 8588     		ldrh	r5, [r0, #4]
+ 422              		.loc 1 90 28 view .LVU118
+ 423 00aa E068     		ldr	r0, [r4, #12]
+ 424 00ac 98F80010 		ldrb	r1, [r8]	@ zero_extendqisi2
+ 425 00b0 0543     		orrs	r5, r5, r0
+ 426 00b2 0026     		movs	r6, #0
+ 427 00b4 1F48     		ldr	r0, .L46+4
+ 428              	.LBB15:
+  91:../application/Src/leds.c **** 			for (uint8_t j=0; j<USED_PINS_NUM; j++)
+  92:../application/Src/leds.c **** 			{
+  93:../application/Src/leds.c **** 				if (p_dev_config->pins[j] == LED_COLUMN)
+  94:../application/Src/leds.c **** 				{
+  95:../application/Src/leds.c **** 					if (leds_state[last_pos++] > 0) 
+ 429              		.loc 1 95 20 view .LVU119
+ 430 00b6 204F     		ldr	r7, .L46+8
+ 431 00b8 0191     		str	r1, [sp, #4]
+ARM GAS  /tmp/cc7a26pd.s 			page 11
+
+
+ 432              	.LBE15:
+  90:../application/Src/leds.c **** 			for (uint8_t j=0; j<USED_PINS_NUM; j++)
+ 433              		.loc 1 90 28 view .LVU120
+ 434 00ba E560     		str	r5, [r4, #12]
+  91:../application/Src/leds.c **** 			for (uint8_t j=0; j<USED_PINS_NUM; j++)
+ 435              		.loc 1 91 4 is_stmt 1 view .LVU121
+ 436              	.LBB16:
+  91:../application/Src/leds.c **** 			for (uint8_t j=0; j<USED_PINS_NUM; j++)
+ 437              		.loc 1 91 9 view .LVU122
+ 438              	.LVL26:
+  91:../application/Src/leds.c **** 			for (uint8_t j=0; j<USED_PINS_NUM; j++)
+ 439              		.loc 1 91 22 view .LVU123
+ 440 00bc 03E0     		b	.L32
+ 441              	.LVL27:
+ 442              	.L30:
+  91:../application/Src/leds.c **** 			for (uint8_t j=0; j<USED_PINS_NUM; j++)
+ 443              		.loc 1 91 39 discriminator 2 view .LVU124
+  91:../application/Src/leds.c **** 			for (uint8_t j=0; j<USED_PINS_NUM; j++)
+ 444              		.loc 1 91 22 discriminator 2 view .LVU125
+ 445 00be 0EF1080E 		add	lr, lr, #8
+  91:../application/Src/leds.c **** 			for (uint8_t j=0; j<USED_PINS_NUM; j++)
+ 446              		.loc 1 91 4 is_stmt 0 discriminator 2 view .LVU126
+ 447 00c2 7045     		cmp	r0, lr
+ 448 00c4 15D0     		beq	.L45
+ 449              	.LVL28:
+ 450              	.L32:
+  93:../application/Src/leds.c **** 				{
+ 451              		.loc 1 93 5 is_stmt 1 view .LVU127
+  93:../application/Src/leds.c **** 				{
+ 452              		.loc 1 93 8 is_stmt 0 view .LVU128
+ 453 00c6 19F9014F 		ldrsb	r4, [r9, #1]!
+ 454              	.LVL29:
+  93:../application/Src/leds.c **** 				{
+ 455              		.loc 1 93 8 view .LVU129
+ 456 00ca 182C     		cmp	r4, #24
+ 457 00cc F7D1     		bne	.L30
+ 458              		.loc 1 95 6 is_stmt 1 view .LVU130
+  96:../application/Src/leds.c **** 					{
+  97:../application/Src/leds.c **** 						pin_config[j].port->ODR &= ~pin_config[j].pin;
+ 459              		.loc 1 97 7 view .LVU131
+  98:../application/Src/leds.c **** 					}
+  99:../application/Src/leds.c **** 					else
+ 100:../application/Src/leds.c **** 					{
+ 101:../application/Src/leds.c **** 						pin_config[j].port->ODR |= pin_config[j].pin; 
+ 460              		.loc 1 101 7 view .LVU132
+  95:../application/Src/leds.c **** 					{
+ 461              		.loc 1 95 9 is_stmt 0 view .LVU133
+ 462 00ce 7C5C     		ldrb	r4, [r7, r1]	@ zero_extendqisi2
+  95:../application/Src/leds.c **** 					{
+ 463              		.loc 1 95 29 view .LVU134
+ 464 00d0 0131     		adds	r1, r1, #1
+ 465 00d2 C9B2     		uxtb	r1, r1
+  95:../application/Src/leds.c **** 					{
+ 466              		.loc 1 95 9 view .LVU135
+ 467 00d4 F4B1     		cbz	r4, .L31
+  97:../application/Src/leds.c **** 					}
+ 468              		.loc 1 97 20 view .LVU136
+ARM GAS  /tmp/cc7a26pd.s 			page 12
+
+
+ 469 00d6 DEF80050 		ldr	r5, [lr]
+  97:../application/Src/leds.c **** 					}
+ 470              		.loc 1 97 48 view .LVU137
+ 471 00da BEF80460 		ldrh	r6, [lr, #4]
+  97:../application/Src/leds.c **** 					}
+ 472              		.loc 1 97 31 view .LVU138
+ 473 00de EC68     		ldr	r4, [r5, #12]
+ 474 00e0 0EF1080E 		add	lr, lr, #8
+ 475 00e4 24EA0604 		bic	r4, r4, r6
+  91:../application/Src/leds.c **** 			{
+ 476              		.loc 1 91 4 view .LVU139
+ 477 00e8 7045     		cmp	r0, lr
+ 478 00ea 4FF00106 		mov	r6, #1
+  91:../application/Src/leds.c **** 			{
+ 479              		.loc 1 91 39 is_stmt 1 view .LVU140
+ 480              	.LVL30:
+  91:../application/Src/leds.c **** 			{
+ 481              		.loc 1 91 22 view .LVU141
+  97:../application/Src/leds.c **** 					}
+ 482              		.loc 1 97 31 is_stmt 0 view .LVU142
+ 483 00ee EC60     		str	r4, [r5, #12]
+  91:../application/Src/leds.c **** 			{
+ 484              		.loc 1 91 4 view .LVU143
+ 485 00f0 E9D1     		bne	.L32
+ 486              	.LVL31:
+ 487              	.L45:
+  91:../application/Src/leds.c **** 			{
+ 488              		.loc 1 91 4 view .LVU144
+ 489 00f2 D6B1     		cbz	r6, .L38
+ 490 00f4 88F80010 		strb	r1, [r8]
+ 491              	.L33:
+ 492              	.LBE16:
+ 102:../application/Src/leds.c **** 					}				
+ 103:../application/Src/leds.c **** 				}
+ 104:../application/Src/leds.c **** 			}
+ 105:../application/Src/leds.c **** 			if (last_pos >= *pos) last_pos = 0;
+ 493              		.loc 1 105 4 is_stmt 1 view .LVU145
+ 494              		.loc 1 105 7 is_stmt 0 view .LVU146
+ 495 00f8 1278     		ldrb	r2, [r2]	@ zero_extendqisi2
+ 496              	.LVL32:
+ 497              		.loc 1 105 7 view .LVU147
+ 498 00fa 8A42     		cmp	r2, r1
+ 499              		.loc 1 105 26 is_stmt 1 view .LVU148
+ 500              		.loc 1 105 35 is_stmt 0 view .LVU149
+ 501 00fc 9CBF     		itt	ls
+ 502 00fe 0022     		movls	r2, #0
+ 503 0100 88F80020 		strbls	r2, [r8]
+ 106:../application/Src/leds.c **** 			(i == max_row) ? (last_row = -1): (last_row = i);
+ 504              		.loc 1 106 4 is_stmt 1 view .LVU150
+ 505              		.loc 1 106 36 is_stmt 0 view .LVU151
+ 506 0104 9A45     		cmp	r10, r3
+ 507              		.loc 1 106 31 view .LVU152
+ 508 0106 08BF     		it	eq
+ 509 0108 FF23     		moveq	r3, #255
+ 510              	.LVL33:
+ 511              		.loc 1 106 48 view .LVU153
+ 512 010a 8CF80030 		strb	r3, [ip]
+ARM GAS  /tmp/cc7a26pd.s 			page 13
+
+
+ 513              	.L22:
+ 514              		.loc 1 106 48 view .LVU154
+ 515              	.LBE14:
+ 107:../application/Src/leds.c **** 			break;
+ 108:../application/Src/leds.c **** 		}
+ 109:../application/Src/leds.c **** 		
+ 110:../application/Src/leds.c **** 	}
+ 111:../application/Src/leds.c **** }
+ 516              		.loc 1 111 1 view .LVU155
+ 517 010e 03B0     		add	sp, sp, #12
+ 518              	.LCFI7:
+ 519              		.cfi_remember_state
+ 520              		.cfi_def_cfa_offset 36
+ 521              		@ sp needed
+ 522 0110 BDE8F08F 		pop	{r4, r5, r6, r7, r8, r9, r10, fp, pc}
+ 523              	.LVL34:
+ 524              	.L31:
+ 525              	.LCFI8:
+ 526              		.cfi_restore_state
+ 527              	.LBB18:
+ 528              	.LBB17:
+ 101:../application/Src/leds.c **** 					}				
+ 529              		.loc 1 101 20 view .LVU156
+ 530 0114 DEF80050 		ldr	r5, [lr]
+ 101:../application/Src/leds.c **** 					}				
+ 531              		.loc 1 101 47 view .LVU157
+ 532 0118 BEF80440 		ldrh	r4, [lr, #4]
+ 101:../application/Src/leds.c **** 					}				
+ 533              		.loc 1 101 31 view .LVU158
+ 534 011c D5F80CB0 		ldr	fp, [r5, #12]
+ 535 0120 0126     		movs	r6, #1
+ 536 0122 44EA0B04 		orr	r4, r4, fp
+ 537 0126 EC60     		str	r4, [r5, #12]
+ 538 0128 C9E7     		b	.L30
+ 539              	.L38:
+  91:../application/Src/leds.c **** 			{
+ 540              		.loc 1 91 4 view .LVU159
+ 541 012a 0199     		ldr	r1, [sp, #4]
+ 542 012c E4E7     		b	.L33
+ 543              	.L47:
+ 544 012e 00BF     		.align	2
+ 545              	.L46:
+ 546 0130 00000000 		.word	pin_config
+ 547 0134 F0000000 		.word	pin_config+240
+ 548 0138 00000000 		.word	leds_state
+ 549 013c 00000000 		.word	.LANCHOR0
+ 550 0140 00000000 		.word	.LANCHOR1
+ 551              	.LBE17:
+ 552              	.LBE18:
+ 553              		.cfi_endproc
+ 554              	.LFE31:
+ 556              		.section	.text.LEDs_PhysicalProcess,"ax",%progbits
+ 557              		.align	1
+ 558              		.p2align 2,,3
+ 559              		.global	LEDs_PhysicalProcess
+ 560              		.syntax unified
+ 561              		.thumb
+ARM GAS  /tmp/cc7a26pd.s 			page 14
+
+
+ 562              		.thumb_func
+ 563              		.fpu softvfp
+ 565              	LEDs_PhysicalProcess:
+ 566              	.LVL35:
+ 567              	.LFB32:
+ 112:../application/Src/leds.c **** 
+ 113:../application/Src/leds.c **** void LEDs_PhysicalProcess (dev_config_t * p_dev_config)
+ 114:../application/Src/leds.c **** {
+ 568              		.loc 1 114 1 is_stmt 1 view -0
+ 569              		.cfi_startproc
+ 570              		@ args = 0, pretend = 0, frame = 8
+ 571              		@ frame_needed = 0, uses_anonymous_args = 0
+ 115:../application/Src/leds.c **** 	uint8_t pos = 0;
+ 572              		.loc 1 115 2 view .LVU161
+ 573              		.loc 1 115 10 is_stmt 0 view .LVU162
+ 574 0000 0022     		movs	r2, #0
+ 114:../application/Src/leds.c **** 	uint8_t pos = 0;
+ 575              		.loc 1 114 1 view .LVU163
+ 576 0002 F0B5     		push	{r4, r5, r6, r7, lr}
+ 577              	.LCFI9:
+ 578              		.cfi_def_cfa_offset 20
+ 579              		.cfi_offset 4, -20
+ 580              		.cfi_offset 5, -16
+ 581              		.cfi_offset 6, -12
+ 582              		.cfi_offset 7, -8
+ 583              		.cfi_offset 14, -4
+ 584 0004 83B0     		sub	sp, sp, #12
+ 585              	.LCFI10:
+ 586              		.cfi_def_cfa_offset 32
+ 114:../application/Src/leds.c **** 	uint8_t pos = 0;
+ 587              		.loc 1 114 1 view .LVU164
+ 588 0006 0546     		mov	r5, r0
+ 589              		.loc 1 115 10 view .LVU165
+ 590 0008 1346     		mov	r3, r2
+ 591              	.LBB24:
+ 592              	.LBB25:
+  43:../application/Src/leds.c **** 				break;
+ 593              		.loc 1 43 20 view .LVU166
+ 594 000a 284F     		ldr	r7, .L62
+  43:../application/Src/leds.c **** 				break;
+ 595              		.loc 1 43 77 view .LVU167
+ 596 000c 284E     		ldr	r6, .L62+4
+ 597 000e 00F55270 		add	r0, r0, #840
+ 598              	.LVL36:
+  43:../application/Src/leds.c **** 				break;
+ 599              		.loc 1 43 77 view .LVU168
+ 600              	.LBE25:
+ 601              	.LBE24:
+ 602              		.loc 1 115 10 view .LVU169
+ 603 0012 8DF80720 		strb	r2, [sp, #7]
+ 116:../application/Src/leds.c **** 	
+ 117:../application/Src/leds.c **** 	LEDs_LogicalProcess(p_dev_config);
+ 604              		.loc 1 117 2 is_stmt 1 view .LVU170
+ 605              	.LVL37:
+ 606              	.LBB27:
+ 607              	.LBI24:
+  29:../application/Src/leds.c **** {
+ARM GAS  /tmp/cc7a26pd.s 			page 15
+
+
+ 608              		.loc 1 29 6 view .LVU171
+ 609              	.LBE27:
+  31:../application/Src/leds.c **** 	{
+ 610              		.loc 1 31 2 view .LVU172
+ 611              	.LBB28:
+ 612              	.LBB26:
+  31:../application/Src/leds.c **** 	{
+ 613              		.loc 1 31 7 view .LVU173
+  31:../application/Src/leds.c **** 	{
+ 614              		.loc 1 31 20 view .LVU174
+ 615 0016 06E0     		b	.L51
+ 616              	.LVL38:
+ 617              	.L60:
+  39:../application/Src/leds.c **** 				break;
+ 618              		.loc 1 39 76 is_stmt 0 view .LVU175
+ 619 0018 0A79     		ldrb	r2, [r1, #4]	@ zero_extendqisi2
+ 620 001a C2F30012 		ubfx	r2, r2, #4, #1
+  39:../application/Src/leds.c **** 				break;
+ 621              		.loc 1 39 20 view .LVU176
+ 622 001e DA55     		strb	r2, [r3, r7]
+  40:../application/Src/leds.c **** 				
+ 623              		.loc 1 40 5 is_stmt 1 view .LVU177
+ 624              	.L49:
+  31:../application/Src/leds.c **** 	{
+ 625              		.loc 1 31 36 view .LVU178
+ 626              	.LVL39:
+  31:../application/Src/leds.c **** 	{
+ 627              		.loc 1 31 20 view .LVU179
+ 628 0020 0133     		adds	r3, r3, #1
+ 629              	.LVL40:
+  31:../application/Src/leds.c **** 	{
+ 630              		.loc 1 31 2 is_stmt 0 view .LVU180
+ 631 0022 182B     		cmp	r3, #24
+ 632 0024 18D0     		beq	.L59
+ 633              	.L51:
+ 634              	.LVL41:
+  33:../application/Src/leds.c **** 		{
+ 635              		.loc 1 33 3 is_stmt 1 view .LVU181
+  35:../application/Src/leds.c **** 			{
+ 636              		.loc 1 35 4 view .LVU182
+  33:../application/Src/leds.c **** 		{
+ 637              		.loc 1 33 28 is_stmt 0 view .LVU183
+ 638 0026 10F91320 		ldrsb	r2, [r0, r3, lsl #1]
+  35:../application/Src/leds.c **** 			{
+ 639              		.loc 1 35 33 view .LVU184
+ 640 002a 05EB4301 		add	r1, r5, r3, lsl #1
+  33:../application/Src/leds.c **** 		{
+ 641              		.loc 1 33 6 view .LVU185
+ 642 002e 002A     		cmp	r2, #0
+ 643 0030 F6DB     		blt	.L49
+  39:../application/Src/leds.c **** 				break;
+ 644              		.loc 1 39 6 is_stmt 1 view .LVU186
+  35:../application/Src/leds.c **** 			{
+ 645              		.loc 1 35 33 is_stmt 0 view .LVU187
+ 646 0032 91F84943 		ldrb	r4, [r1, #841]	@ zero_extendqisi2
+  39:../application/Src/leds.c **** 				break;
+ 647              		.loc 1 39 76 view .LVU188
+ARM GAS  /tmp/cc7a26pd.s 			page 16
+
+
+ 648 0036 06EBC201 		add	r1, r6, r2, lsl #3
+  35:../application/Src/leds.c **** 			{
+ 649              		.loc 1 35 4 view .LVU189
+ 650 003a 04F00704 		and	r4, r4, #7
+ 651 003e 012C     		cmp	r4, #1
+ 652 0040 EAD1     		bne	.L60
+  43:../application/Src/leds.c **** 				break;
+ 653              		.loc 1 43 6 is_stmt 1 view .LVU190
+  43:../application/Src/leds.c **** 				break;
+ 654              		.loc 1 43 77 is_stmt 0 view .LVU191
+ 655 0042 06EBC202 		add	r2, r6, r2, lsl #3
+ 656 0046 1279     		ldrb	r2, [r2, #4]	@ zero_extendqisi2
+ 657 0048 C2F30012 		ubfx	r2, r2, #4, #1
+  43:../application/Src/leds.c **** 				break;
+ 658              		.loc 1 43 22 view .LVU192
+ 659 004c 82F00102 		eor	r2, r2, #1
+  43:../application/Src/leds.c **** 				break;
+ 660              		.loc 1 43 20 view .LVU193
+ 661 0050 DA55     		strb	r2, [r3, r7]
+  44:../application/Src/leds.c **** 				
+ 662              		.loc 1 44 5 is_stmt 1 view .LVU194
+  31:../application/Src/leds.c **** 	{
+ 663              		.loc 1 31 36 view .LVU195
+ 664              	.LVL42:
+  31:../application/Src/leds.c **** 	{
+ 665              		.loc 1 31 20 view .LVU196
+ 666 0052 0133     		adds	r3, r3, #1
+ 667              	.LVL43:
+  31:../application/Src/leds.c **** 	{
+ 668              		.loc 1 31 2 is_stmt 0 view .LVU197
+ 669 0054 182B     		cmp	r3, #24
+ 670 0056 E6D1     		bne	.L51
+ 671              	.L59:
+ 672              	.LVL44:
+  31:../application/Src/leds.c **** 	{
+ 673              		.loc 1 31 2 view .LVU198
+ 674              	.LBE26:
+ 675              	.LBE28:
+ 118:../application/Src/leds.c **** 	
+ 119:../application/Src/leds.c **** 	LED_SetMatrix(leds_state, p_dev_config, &pos);
+ 676              		.loc 1 119 2 is_stmt 1 view .LVU199
+ 677 0058 2946     		mov	r1, r5
+ 678 005a 0DF10702 		add	r2, sp, #7
+ 679 005e 1348     		ldr	r0, .L62
+ 680 0060 FFF7FEFF 		bl	LED_SetMatrix
+ 681              	.LVL45:
+ 120:../application/Src/leds.c **** 	LED_SetSingle(leds_state, p_dev_config, &pos);
+ 682              		.loc 1 120 2 view .LVU200
+ 683              	.LBB29:
+ 684              	.LBI29:
+  51:../application/Src/leds.c **** {
+ 685              		.loc 1 51 6 view .LVU201
+ 686              	.LBB30:
+  53:../application/Src/leds.c **** 	{
+ 687              		.loc 1 53 20 view .LVU202
+ 688 0064 134B     		ldr	r3, .L62+8
+ 689 0066 9DF80720 		ldrb	r2, [sp, #7]	@ zero_extendqisi2
+ARM GAS  /tmp/cc7a26pd.s 			page 17
+
+
+  57:../application/Src/leds.c **** 			(*pos)++;
+ 690              		.loc 1 57 14 is_stmt 0 view .LVU203
+ 691 006a 104E     		ldr	r6, .L62
+ 692 006c 05F11F01 		add	r1, r5, #31
+ 693 0070 03F1F004 		add	r4, r3, #240
+ 694 0074 02E0     		b	.L55
+ 695              	.LVL46:
+ 696              	.L52:
+  53:../application/Src/leds.c **** 	{
+ 697              		.loc 1 53 37 is_stmt 1 view .LVU204
+  53:../application/Src/leds.c **** 	{
+ 698              		.loc 1 53 20 view .LVU205
+ 699 0076 0833     		adds	r3, r3, #8
+  53:../application/Src/leds.c **** 	{
+ 700              		.loc 1 53 2 is_stmt 0 view .LVU206
+ 701 0078 9C42     		cmp	r4, r3
+ 702 007a 0FD0     		beq	.L61
+ 703              	.LVL47:
+ 704              	.L55:
+  55:../application/Src/leds.c **** 		{
+ 705              		.loc 1 55 3 is_stmt 1 view .LVU207
+  55:../application/Src/leds.c **** 		{
+ 706              		.loc 1 55 6 is_stmt 0 view .LVU208
+ 707 007c 11F9010F 		ldrsb	r0, [r1, #1]!
+ 708              	.LVL48:
+  55:../application/Src/leds.c **** 		{
+ 709              		.loc 1 55 6 view .LVU209
+ 710 0080 1628     		cmp	r0, #22
+ 711 0082 F8D1     		bne	.L52
+  57:../application/Src/leds.c **** 			(*pos)++;
+ 712              		.loc 1 57 4 is_stmt 1 view .LVU210
+  57:../application/Src/leds.c **** 			(*pos)++;
+ 713              		.loc 1 57 70 is_stmt 0 view .LVU211
+ 714 0084 B05C     		ldrb	r0, [r6, r2]	@ zero_extendqisi2
+  57:../application/Src/leds.c **** 			(*pos)++;
+ 715              		.loc 1 57 37 view .LVU212
+ 716 0086 1D68     		ldr	r5, [r3]
+  57:../application/Src/leds.c **** 			(*pos)++;
+ 717              		.loc 1 57 70 view .LVU213
+ 718 0088 50B1     		cbz	r0, .L53
+  57:../application/Src/leds.c **** 			(*pos)++;
+ 719              		.loc 1 57 64 view .LVU214
+ 720 008a 9888     		ldrh	r0, [r3, #4]
+  57:../application/Src/leds.c **** 			(*pos)++;
+ 721              		.loc 1 57 48 view .LVU215
+ 722 008c EF68     		ldr	r7, [r5, #12]
+ 723 008e 3843     		orrs	r0, r0, r7
+ 724 0090 E860     		str	r0, [r5, #12]
+ 725              	.L54:
+  58:../application/Src/leds.c **** 		}
+ 726              		.loc 1 58 4 is_stmt 1 view .LVU216
+ 727 0092 0833     		adds	r3, r3, #8
+  58:../application/Src/leds.c **** 		}
+ 728              		.loc 1 58 10 is_stmt 0 view .LVU217
+ 729 0094 0132     		adds	r2, r2, #1
+  53:../application/Src/leds.c **** 	{
+ 730              		.loc 1 53 2 view .LVU218
+ARM GAS  /tmp/cc7a26pd.s 			page 18
+
+
+ 731 0096 9C42     		cmp	r4, r3
+  58:../application/Src/leds.c **** 		}
+ 732              		.loc 1 58 10 view .LVU219
+ 733 0098 D2B2     		uxtb	r2, r2
+  53:../application/Src/leds.c **** 	{
+ 734              		.loc 1 53 37 is_stmt 1 view .LVU220
+ 735              	.LVL49:
+  53:../application/Src/leds.c **** 	{
+ 736              		.loc 1 53 20 view .LVU221
+  53:../application/Src/leds.c **** 	{
+ 737              		.loc 1 53 2 is_stmt 0 view .LVU222
+ 738 009a EFD1     		bne	.L55
+ 739              	.LVL50:
+ 740              	.L61:
+  53:../application/Src/leds.c **** 	{
+ 741              		.loc 1 53 2 view .LVU223
+ 742              	.LBE30:
+ 743              	.LBE29:
+ 121:../application/Src/leds.c **** 		
+ 122:../application/Src/leds.c **** }
+ 744              		.loc 1 122 1 view .LVU224
+ 745 009c 03B0     		add	sp, sp, #12
+ 746              	.LCFI11:
+ 747              		.cfi_remember_state
+ 748              		.cfi_def_cfa_offset 20
+ 749              		@ sp needed
+ 750 009e F0BD     		pop	{r4, r5, r6, r7, pc}
+ 751              	.LVL51:
+ 752              	.L53:
+ 753              	.LCFI12:
+ 754              		.cfi_restore_state
+ 755              	.LBB32:
+ 756              	.LBB31:
+  57:../application/Src/leds.c **** 			(*pos)++;
+ 757              		.loc 1 57 114 view .LVU225
+ 758 00a0 9F88     		ldrh	r7, [r3, #4]
+  57:../application/Src/leds.c **** 			(*pos)++;
+ 759              		.loc 1 57 97 view .LVU226
+ 760 00a2 E868     		ldr	r0, [r5, #12]
+ 761 00a4 20EA0700 		bic	r0, r0, r7
+ 762 00a8 E860     		str	r0, [r5, #12]
+ 763 00aa F2E7     		b	.L54
+ 764              	.L63:
+ 765              		.align	2
+ 766              	.L62:
+ 767 00ac 00000000 		.word	leds_state
+ 768 00b0 00000000 		.word	logical_buttons_state
+ 769 00b4 00000000 		.word	pin_config
+ 770              	.LBE31:
+ 771              	.LBE32:
+ 772              		.cfi_endproc
+ 773              	.LFE32:
+ 775              		.comm	leds_state,24,4
+ 776              		.section	.bss.last_pos.6720,"aw",%nobits
+ 777              		.set	.LANCHOR1,. + 0
+ 780              	last_pos.6720:
+ 781 0000 00       		.space	1
+ARM GAS  /tmp/cc7a26pd.s 			page 19
+
+
+ 782              		.section	.data.last_row.6719,"aw"
+ 783              		.set	.LANCHOR0,. + 0
+ 786              	last_row.6719:
+ 787 0000 FF       		.byte	-1
+ 788              		.text
+ 789              	.Letext0:
+ 790              		.file 2 "/usr/lib/gcc/arm-none-eabi/9.2.1/include/stdint.h"
+ 791              		.file 3 "../application/Inc/common_types.h"
+ 792              		.file 4 "../Drivers/CMSIS/CM3/CoreSupport/core_cm3.h"
+ 793              		.file 5 "../Drivers/CMSIS/CM3/DeviceSupport/ST/STM32F10x/system_stm32f10x.h"
+ 794              		.file 6 "../Drivers/CMSIS/CM3/DeviceSupport/ST/STM32F10x/stm32f10x.h"
+ 795              		.file 7 "/usr/lib/gcc/arm-none-eabi/9.2.1/include/stddef.h"
+ 796              		.file 8 "/usr/include/newlib/sys/_types.h"
+ 797              		.file 9 "/usr/include/newlib/sys/reent.h"
+ 798              		.file 10 "/usr/include/newlib/sys/lock.h"
+ 799              		.file 11 "../application/Inc/periphery.h"
+ 800              		.file 12 "../application/Inc/analog.h"
+ 801              		.file 13 "../application/Inc/buttons.h"
+ARM GAS  /tmp/cc7a26pd.s 			page 20
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 leds.c
+     /tmp/cc7a26pd.s:16     .text.LEDs_LogicalProcess:0000000000000000 $t
+     /tmp/cc7a26pd.s:25     .text.LEDs_LogicalProcess:0000000000000000 LEDs_LogicalProcess
+     /tmp/cc7a26pd.s:126    .text.LEDs_LogicalProcess:0000000000000054 $d
+                            *COM*:0000000000000018 leds_state
+     /tmp/cc7a26pd.s:132    .text.LED_SetSingle:0000000000000000 $t
+     /tmp/cc7a26pd.s:140    .text.LED_SetSingle:0000000000000000 LED_SetSingle
+     /tmp/cc7a26pd.s:243    .text.LED_SetSingle:0000000000000048 $d
+     /tmp/cc7a26pd.s:250    .text.LED_SetMatrix:0000000000000000 $t
+     /tmp/cc7a26pd.s:258    .text.LED_SetMatrix:0000000000000000 LED_SetMatrix
+     /tmp/cc7a26pd.s:546    .text.LED_SetMatrix:0000000000000130 $d
+     /tmp/cc7a26pd.s:557    .text.LEDs_PhysicalProcess:0000000000000000 $t
+     /tmp/cc7a26pd.s:565    .text.LEDs_PhysicalProcess:0000000000000000 LEDs_PhysicalProcess
+     /tmp/cc7a26pd.s:767    .text.LEDs_PhysicalProcess:00000000000000ac $d
+     /tmp/cc7a26pd.s:780    .bss.last_pos.6720:0000000000000000 last_pos.6720
+     /tmp/cc7a26pd.s:781    .bss.last_pos.6720:0000000000000000 $d
+     /tmp/cc7a26pd.s:786    .data.last_row.6719:0000000000000000 last_row.6719
+
+UNDEFINED SYMBOLS
+logical_buttons_state
+pin_config

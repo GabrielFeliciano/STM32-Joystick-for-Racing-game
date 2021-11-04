@@ -1,0 +1,2011 @@
+ARM GAS  /tmp/ccGMuq7y.s 			page 1
+
+
+   1              		.cpu cortex-m3
+   2              		.eabi_attribute 20, 1
+   3              		.eabi_attribute 21, 1
+   4              		.eabi_attribute 23, 3
+   5              		.eabi_attribute 24, 1
+   6              		.eabi_attribute 25, 1
+   7              		.eabi_attribute 26, 1
+   8              		.eabi_attribute 30, 2
+   9              		.eabi_attribute 34, 1
+  10              		.eabi_attribute 18, 4
+  11              		.file	"usb_prop.c"
+  12              		.text
+  13              	.Ltext0:
+  14              		.cfi_sections	.debug_frame
+  15              		.section	.text.CustomHID_SetConfiguration,"ax",%progbits
+  16              		.align	1
+  17              		.p2align 2,,3
+  18              		.global	CustomHID_SetConfiguration
+  19              		.arch armv7-m
+  20              		.syntax unified
+  21              		.thumb
+  22              		.thumb_func
+  23              		.fpu softvfp
+  25              	CustomHID_SetConfiguration:
+  26              	.LFB31:
+  27              		.file 1 "../application/Src/usb_prop.c"
+   1:../application/Src/usb_prop.c **** /**
+   2:../application/Src/usb_prop.c ****   ******************************************************************************
+   3:../application/Src/usb_prop.c ****   * @file    usb_prop.c
+   4:../application/Src/usb_prop.c ****   * @author  MCD Application Team
+   5:../application/Src/usb_prop.c ****   * @version V4.1.0
+   6:../application/Src/usb_prop.c ****   * @date    26-May-2017
+   7:../application/Src/usb_prop.c ****   * @brief   All processing related to Custom HID Demo
+   8:../application/Src/usb_prop.c ****   ******************************************************************************
+   9:../application/Src/usb_prop.c ****   * @attention
+  10:../application/Src/usb_prop.c ****   *
+  11:../application/Src/usb_prop.c ****   * <h2><center>&copy; COPYRIGHT(c) 2017 STMicroelectronics</center></h2>
+  12:../application/Src/usb_prop.c ****   *
+  13:../application/Src/usb_prop.c ****   * Redistribution and use in source and binary forms, with or without modification,
+  14:../application/Src/usb_prop.c ****   * are permitted provided that the following conditions are met:
+  15:../application/Src/usb_prop.c ****   *   1. Redistributions of source code must retain the above copyright notice,
+  16:../application/Src/usb_prop.c ****   *      this list of conditions and the following disclaimer.
+  17:../application/Src/usb_prop.c ****   *   2. Redistributions in binary form must reproduce the above copyright notice,
+  18:../application/Src/usb_prop.c ****   *      this list of conditions and the following disclaimer in the documentation
+  19:../application/Src/usb_prop.c ****   *      and/or other materials provided with the distribution.
+  20:../application/Src/usb_prop.c ****   *   3. Neither the name of STMicroelectronics nor the names of its contributors
+  21:../application/Src/usb_prop.c ****   *      may be used to endorse or promote products derived from this software
+  22:../application/Src/usb_prop.c ****   *      without specific prior written permission.
+  23:../application/Src/usb_prop.c ****   *
+  24:../application/Src/usb_prop.c ****   * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+  25:../application/Src/usb_prop.c ****   * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+  26:../application/Src/usb_prop.c ****   * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+  27:../application/Src/usb_prop.c ****   * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+  28:../application/Src/usb_prop.c ****   * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+  29:../application/Src/usb_prop.c ****   * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+  30:../application/Src/usb_prop.c ****   * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+  31:../application/Src/usb_prop.c ****   * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+ARM GAS  /tmp/ccGMuq7y.s 			page 2
+
+
+  32:../application/Src/usb_prop.c ****   * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+  33:../application/Src/usb_prop.c ****   * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  34:../application/Src/usb_prop.c ****   *
+  35:../application/Src/usb_prop.c ****   ******************************************************************************
+  36:../application/Src/usb_prop.c ****   */
+  37:../application/Src/usb_prop.c **** 
+  38:../application/Src/usb_prop.c **** 
+  39:../application/Src/usb_prop.c **** /* Includes ------------------------------------------------------------------*/
+  40:../application/Src/usb_prop.c **** 
+  41:../application/Src/usb_prop.c **** #include "usb_hw.h" 
+  42:../application/Src/usb_prop.c **** #include "usb_lib.h"
+  43:../application/Src/usb_prop.c **** #include "usb_conf.h"
+  44:../application/Src/usb_prop.c **** #include "usb_prop.h"
+  45:../application/Src/usb_prop.c **** #include "usb_desc.h"
+  46:../application/Src/usb_prop.c **** #include "usb_pwr.h"
+  47:../application/Src/usb_prop.c **** 
+  48:../application/Src/usb_prop.c **** 
+  49:../application/Src/usb_prop.c **** /* Private typedef -----------------------------------------------------------*/ 
+  50:../application/Src/usb_prop.c **** /* Private define ------------------------------------------------------------*/
+  51:../application/Src/usb_prop.c **** /* Private macro -------------------------------------------------------------*/
+  52:../application/Src/usb_prop.c **** /* Private variables ---------------------------------------------------------*/
+  53:../application/Src/usb_prop.c **** uint32_t ProtocolValue;
+  54:../application/Src/usb_prop.c **** __IO uint8_t EXTI_Enable;
+  55:../application/Src/usb_prop.c **** __IO uint8_t Request = 0;
+  56:../application/Src/usb_prop.c **** uint8_t Report_Buf[2];   
+  57:../application/Src/usb_prop.c **** /* -------------------------------------------------------------------------- */
+  58:../application/Src/usb_prop.c **** /*  Structures initializations */
+  59:../application/Src/usb_prop.c **** /* -------------------------------------------------------------------------- */
+  60:../application/Src/usb_prop.c **** 
+  61:../application/Src/usb_prop.c **** DEVICE Device_Table =
+  62:../application/Src/usb_prop.c ****   {
+  63:../application/Src/usb_prop.c ****     EP_NUM,
+  64:../application/Src/usb_prop.c ****     1
+  65:../application/Src/usb_prop.c ****   };
+  66:../application/Src/usb_prop.c **** 
+  67:../application/Src/usb_prop.c **** DEVICE_PROP Device_Property =
+  68:../application/Src/usb_prop.c ****   {
+  69:../application/Src/usb_prop.c ****     CustomHID_init,
+  70:../application/Src/usb_prop.c ****     CustomHID_Reset,
+  71:../application/Src/usb_prop.c ****     CustomHID_Status_In,
+  72:../application/Src/usb_prop.c ****     CustomHID_Status_Out,
+  73:../application/Src/usb_prop.c ****     CustomHID_Data_Setup,
+  74:../application/Src/usb_prop.c ****     CustomHID_NoData_Setup,
+  75:../application/Src/usb_prop.c ****     CustomHID_Get_Interface_Setting,
+  76:../application/Src/usb_prop.c ****     CustomHID_GetDeviceDescriptor,
+  77:../application/Src/usb_prop.c ****     CustomHID_GetConfigDescriptor,
+  78:../application/Src/usb_prop.c ****     CustomHID_GetStringDescriptor,
+  79:../application/Src/usb_prop.c ****     0,
+  80:../application/Src/usb_prop.c ****     0x40 /*MAX PACKET SIZE*/
+  81:../application/Src/usb_prop.c ****   };
+  82:../application/Src/usb_prop.c **** USER_STANDARD_REQUESTS User_Standard_Requests =
+  83:../application/Src/usb_prop.c ****   {
+  84:../application/Src/usb_prop.c ****     CustomHID_GetConfiguration,
+  85:../application/Src/usb_prop.c ****     CustomHID_SetConfiguration,
+  86:../application/Src/usb_prop.c ****     CustomHID_GetInterface,
+  87:../application/Src/usb_prop.c ****     CustomHID_SetInterface,
+  88:../application/Src/usb_prop.c ****     CustomHID_GetStatus,
+ARM GAS  /tmp/ccGMuq7y.s 			page 3
+
+
+  89:../application/Src/usb_prop.c ****     CustomHID_ClearFeature,
+  90:../application/Src/usb_prop.c ****     CustomHID_SetEndPointFeature,
+  91:../application/Src/usb_prop.c ****     CustomHID_SetDeviceFeature,
+  92:../application/Src/usb_prop.c ****     CustomHID_SetDeviceAddress
+  93:../application/Src/usb_prop.c ****   };
+  94:../application/Src/usb_prop.c **** 
+  95:../application/Src/usb_prop.c **** ONE_DESCRIPTOR Device_Descriptor =
+  96:../application/Src/usb_prop.c ****   {
+  97:../application/Src/usb_prop.c ****     (uint8_t*)Composite_DeviceDescriptor,
+  98:../application/Src/usb_prop.c ****     Composite_SIZ_DEVICE_DESC
+  99:../application/Src/usb_prop.c ****   };
+ 100:../application/Src/usb_prop.c **** 
+ 101:../application/Src/usb_prop.c **** ONE_DESCRIPTOR Config_Descriptor =
+ 102:../application/Src/usb_prop.c ****   {
+ 103:../application/Src/usb_prop.c ****     (uint8_t*)Composite_ConfigDescriptor,
+ 104:../application/Src/usb_prop.c ****     Composite_SIZ_CONFIG_DESC
+ 105:../application/Src/usb_prop.c ****   };
+ 106:../application/Src/usb_prop.c **** 
+ 107:../application/Src/usb_prop.c **** ONE_DESCRIPTOR JoystickHID_Report_Descriptor =
+ 108:../application/Src/usb_prop.c ****   {
+ 109:../application/Src/usb_prop.c ****     (uint8_t *)JoystickHID_ReportDescriptor,
+ 110:../application/Src/usb_prop.c ****     JoystickHID_SIZ_REPORT_DESC
+ 111:../application/Src/usb_prop.c ****   };
+ 112:../application/Src/usb_prop.c **** 	
+ 113:../application/Src/usb_prop.c **** ONE_DESCRIPTOR CustomHID_Report_Descriptor =
+ 114:../application/Src/usb_prop.c ****   {
+ 115:../application/Src/usb_prop.c ****     (uint8_t *)CustomHID_ReportDescriptor,
+ 116:../application/Src/usb_prop.c ****     CustomHID_SIZ_REPORT_DESC
+ 117:../application/Src/usb_prop.c ****   };
+ 118:../application/Src/usb_prop.c **** 
+ 119:../application/Src/usb_prop.c **** ONE_DESCRIPTOR JoystickHID_Hid_Descriptor =
+ 120:../application/Src/usb_prop.c ****   {
+ 121:../application/Src/usb_prop.c ****     (uint8_t*)Composite_ConfigDescriptor + JoystickHID_OFF_HID_DESC,
+ 122:../application/Src/usb_prop.c ****     JoystickHID_SIZ_HID_DESC
+ 123:../application/Src/usb_prop.c ****   };
+ 124:../application/Src/usb_prop.c **** 	
+ 125:../application/Src/usb_prop.c **** ONE_DESCRIPTOR CustomHID_Hid_Descriptor =
+ 126:../application/Src/usb_prop.c ****   {
+ 127:../application/Src/usb_prop.c ****     (uint8_t*)Composite_ConfigDescriptor + CustomHID_OFF_HID_DESC,
+ 128:../application/Src/usb_prop.c ****     CustomHID_SIZ_HID_DESC
+ 129:../application/Src/usb_prop.c ****   };
+ 130:../application/Src/usb_prop.c **** 
+ 131:../application/Src/usb_prop.c **** ONE_DESCRIPTOR String_Descriptor[4] =
+ 132:../application/Src/usb_prop.c ****   {
+ 133:../application/Src/usb_prop.c ****     {(uint8_t*)Composite_StringLangID, Composite_SIZ_STRING_LANGID},
+ 134:../application/Src/usb_prop.c ****     {(uint8_t*)Composite_StringVendor, Composite_SIZ_STRING_VENDOR},
+ 135:../application/Src/usb_prop.c ****     {(uint8_t*)Composite_StringProduct, Composite_SIZ_STRING_PRODUCT},
+ 136:../application/Src/usb_prop.c ****     {(uint8_t*)Composite_StringSerial, Composite_SIZ_STRING_SERIAL}
+ 137:../application/Src/usb_prop.c ****   };
+ 138:../application/Src/usb_prop.c **** 
+ 139:../application/Src/usb_prop.c **** /* Extern variables ----------------------------------------------------------*/
+ 140:../application/Src/usb_prop.c **** /* Private function prototypes -----------------------------------------------*/
+ 141:../application/Src/usb_prop.c **** 
+ 142:../application/Src/usb_prop.c **** /*CustomHID_SetReport_Feature function prototypes*/
+ 143:../application/Src/usb_prop.c **** uint8_t *CustomHID_SetReport_Feature(uint16_t Length);
+ 144:../application/Src/usb_prop.c **** 
+ 145:../application/Src/usb_prop.c **** /* Extern function prototypes ------------------------------------------------*/
+ARM GAS  /tmp/ccGMuq7y.s 			page 4
+
+
+ 146:../application/Src/usb_prop.c **** /* Private functions ---------------------------------------------------------*/
+ 147:../application/Src/usb_prop.c **** 
+ 148:../application/Src/usb_prop.c **** /*******************************************************************************
+ 149:../application/Src/usb_prop.c **** * Function Name  : CustomHID_init.
+ 150:../application/Src/usb_prop.c **** * Description    : Custom HID init routine.
+ 151:../application/Src/usb_prop.c **** * Input          : None.
+ 152:../application/Src/usb_prop.c **** * Output         : None.
+ 153:../application/Src/usb_prop.c **** * Return         : None.
+ 154:../application/Src/usb_prop.c **** *******************************************************************************/
+ 155:../application/Src/usb_prop.c **** void CustomHID_init(void)
+ 156:../application/Src/usb_prop.c **** {
+ 157:../application/Src/usb_prop.c ****   /* Update the serial number string descriptor with the data from the unique 
+ 158:../application/Src/usb_prop.c ****   ID*/	
+ 159:../application/Src/usb_prop.c ****   Get_SerialNum();
+ 160:../application/Src/usb_prop.c **** 	Get_ProductStr();
+ 161:../application/Src/usb_prop.c **** 	Get_VidPid();
+ 162:../application/Src/usb_prop.c **** 	JoystickHID_Report_Descriptor.Descriptor_Size = Get_ReportDesc();
+ 163:../application/Src/usb_prop.c ****     
+ 164:../application/Src/usb_prop.c ****   pInformation->Current_Configuration = 0;
+ 165:../application/Src/usb_prop.c ****   /* Connect the device */
+ 166:../application/Src/usb_prop.c ****   PowerOn();
+ 167:../application/Src/usb_prop.c **** 
+ 168:../application/Src/usb_prop.c ****   /* Perform basic device initialization operations */
+ 169:../application/Src/usb_prop.c ****   USB_SIL_Init();
+ 170:../application/Src/usb_prop.c **** 
+ 171:../application/Src/usb_prop.c ****   bDeviceState = UNCONNECTED;
+ 172:../application/Src/usb_prop.c **** }
+ 173:../application/Src/usb_prop.c **** 
+ 174:../application/Src/usb_prop.c **** /*******************************************************************************
+ 175:../application/Src/usb_prop.c **** * Function Name  : CustomHID_Reset.
+ 176:../application/Src/usb_prop.c **** * Description    : Custom HID reset routine.
+ 177:../application/Src/usb_prop.c **** * Input          : None.
+ 178:../application/Src/usb_prop.c **** * Output         : None.
+ 179:../application/Src/usb_prop.c **** * Return         : None.
+ 180:../application/Src/usb_prop.c **** *******************************************************************************/
+ 181:../application/Src/usb_prop.c **** void CustomHID_Reset(void)
+ 182:../application/Src/usb_prop.c **** {
+ 183:../application/Src/usb_prop.c ****   /* Set CustomHID_DEVICE as not configured */
+ 184:../application/Src/usb_prop.c ****   pInformation->Current_Configuration = 0;
+ 185:../application/Src/usb_prop.c ****   pInformation->Current_Interface = 0;/*the default Interface*/
+ 186:../application/Src/usb_prop.c ****   
+ 187:../application/Src/usb_prop.c ****   /* Current Feature initialization */
+ 188:../application/Src/usb_prop.c ****   pInformation->Current_Feature = Composite_ConfigDescriptor[7];
+ 189:../application/Src/usb_prop.c ****  
+ 190:../application/Src/usb_prop.c ****   SetBTABLE(BTABLE_ADDRESS);
+ 191:../application/Src/usb_prop.c **** 
+ 192:../application/Src/usb_prop.c ****   /* Initialize Endpoint 0 */
+ 193:../application/Src/usb_prop.c ****   SetEPType(ENDP0, EP_CONTROL);
+ 194:../application/Src/usb_prop.c ****   SetEPTxStatus(ENDP0, EP_TX_STALL);
+ 195:../application/Src/usb_prop.c ****   SetEPRxAddr(ENDP0, ENDP0_RXADDR);
+ 196:../application/Src/usb_prop.c ****   SetEPTxAddr(ENDP0, ENDP0_TXADDR);
+ 197:../application/Src/usb_prop.c ****   Clear_Status_Out(ENDP0);
+ 198:../application/Src/usb_prop.c ****   SetEPRxCount(ENDP0, Device_Property.MaxPacketSize);
+ 199:../application/Src/usb_prop.c ****   SetEPRxValid(ENDP0);
+ 200:../application/Src/usb_prop.c **** 
+ 201:../application/Src/usb_prop.c ****   /* Initialize Endpoint 1 */
+ 202:../application/Src/usb_prop.c ****   SetEPType(ENDP1, EP_INTERRUPT);
+ARM GAS  /tmp/ccGMuq7y.s 			page 5
+
+
+ 203:../application/Src/usb_prop.c ****   SetEPTxAddr(ENDP1, ENDP1_TXADDR);
+ 204:../application/Src/usb_prop.c ****   SetEPRxAddr(ENDP1, ENDP1_RXADDR);
+ 205:../application/Src/usb_prop.c ****   SetEPTxCount(ENDP1, 0);
+ 206:../application/Src/usb_prop.c ****   SetEPRxCount(ENDP1, 64);
+ 207:../application/Src/usb_prop.c ****   SetEPRxStatus(ENDP1, EP_RX_VALID);
+ 208:../application/Src/usb_prop.c ****   SetEPTxStatus(ENDP1, EP_TX_NAK);
+ 209:../application/Src/usb_prop.c **** 	
+ 210:../application/Src/usb_prop.c **** 	/* Initialize Endpoint 2 */
+ 211:../application/Src/usb_prop.c ****   SetEPType(ENDP2, EP_INTERRUPT);
+ 212:../application/Src/usb_prop.c ****   SetEPTxAddr(ENDP2, ENDP2_TXADDR);
+ 213:../application/Src/usb_prop.c ****   SetEPRxAddr(ENDP2, ENDP2_RXADDR);
+ 214:../application/Src/usb_prop.c ****   SetEPTxCount(ENDP2, 0);
+ 215:../application/Src/usb_prop.c ****   SetEPRxCount(ENDP2, 64);
+ 216:../application/Src/usb_prop.c ****   SetEPRxStatus(ENDP2, EP_RX_VALID);
+ 217:../application/Src/usb_prop.c ****   SetEPTxStatus(ENDP2, EP_TX_NAK);
+ 218:../application/Src/usb_prop.c **** 
+ 219:../application/Src/usb_prop.c ****   /* Set this device to response on default address */
+ 220:../application/Src/usb_prop.c ****   SetDeviceAddress(0);
+ 221:../application/Src/usb_prop.c ****   bDeviceState = ATTACHED;
+ 222:../application/Src/usb_prop.c **** 	
+ 223:../application/Src/usb_prop.c **** 	EP1_PrevXferComplete = 1;
+ 224:../application/Src/usb_prop.c **** 	EP2_PrevXferComplete = 1;
+ 225:../application/Src/usb_prop.c **** }
+ 226:../application/Src/usb_prop.c **** /*******************************************************************************
+ 227:../application/Src/usb_prop.c **** * Function Name  : CustomHID_SetConfiguration.
+ 228:../application/Src/usb_prop.c **** * Description    : Update the device state to configured and command the ADC 
+ 229:../application/Src/usb_prop.c **** *                  conversion.
+ 230:../application/Src/usb_prop.c **** * Input          : None.
+ 231:../application/Src/usb_prop.c **** * Output         : None.
+ 232:../application/Src/usb_prop.c **** * Return         : None.
+ 233:../application/Src/usb_prop.c **** *******************************************************************************/
+ 234:../application/Src/usb_prop.c **** void CustomHID_SetConfiguration(void)
+ 235:../application/Src/usb_prop.c **** {
+  28              		.loc 1 235 1 view -0
+  29              		.cfi_startproc
+  30              		@ args = 0, pretend = 0, frame = 0
+  31              		@ frame_needed = 0, uses_anonymous_args = 0
+  32              		@ link register save eliminated.
+ 236:../application/Src/usb_prop.c ****   if (pInformation->Current_Configuration != 0)
+  33              		.loc 1 236 3 view .LVU1
+  34              		.loc 1 236 19 is_stmt 0 view .LVU2
+  35 0000 034B     		ldr	r3, .L7
+  36 0002 1B68     		ldr	r3, [r3]
+  37              		.loc 1 236 6 view .LVU3
+  38 0004 9B7A     		ldrb	r3, [r3, #10]	@ zero_extendqisi2
+  39 0006 13B1     		cbz	r3, .L1
+ 237:../application/Src/usb_prop.c ****   {
+ 238:../application/Src/usb_prop.c ****     /* Device configured */
+ 239:../application/Src/usb_prop.c ****     bDeviceState = CONFIGURED;
+  40              		.loc 1 239 5 is_stmt 1 view .LVU4
+  41              		.loc 1 239 18 is_stmt 0 view .LVU5
+  42 0008 0522     		movs	r2, #5
+  43 000a 024B     		ldr	r3, .L7+4
+  44 000c 1A60     		str	r2, [r3]
+  45              	.L1:
+ 240:../application/Src/usb_prop.c ****     
+ 241:../application/Src/usb_prop.c ****   }
+ARM GAS  /tmp/ccGMuq7y.s 			page 6
+
+
+ 242:../application/Src/usb_prop.c **** }
+  46              		.loc 1 242 1 view .LVU6
+  47 000e 7047     		bx	lr
+  48              	.L8:
+  49              		.align	2
+  50              	.L7:
+  51 0010 00000000 		.word	pInformation
+  52 0014 00000000 		.word	bDeviceState
+  53              		.cfi_endproc
+  54              	.LFE31:
+  56              		.section	.text.CustomHID_SetDeviceAddress,"ax",%progbits
+  57              		.align	1
+  58              		.p2align 2,,3
+  59              		.global	CustomHID_SetDeviceAddress
+  60              		.syntax unified
+  61              		.thumb
+  62              		.thumb_func
+  63              		.fpu softvfp
+  65              	CustomHID_SetDeviceAddress:
+  66              	.LFB32:
+ 243:../application/Src/usb_prop.c **** /*******************************************************************************
+ 244:../application/Src/usb_prop.c **** * Function Name  : CustomHID_SetConfiguration.
+ 245:../application/Src/usb_prop.c **** * Description    : Update the device state to addressed.
+ 246:../application/Src/usb_prop.c **** * Input          : None.
+ 247:../application/Src/usb_prop.c **** * Output         : None.
+ 248:../application/Src/usb_prop.c **** * Return         : None.
+ 249:../application/Src/usb_prop.c **** *******************************************************************************/
+ 250:../application/Src/usb_prop.c **** void CustomHID_SetDeviceAddress (void)
+ 251:../application/Src/usb_prop.c **** {
+  67              		.loc 1 251 1 is_stmt 1 view -0
+  68              		.cfi_startproc
+  69              		@ args = 0, pretend = 0, frame = 0
+  70              		@ frame_needed = 0, uses_anonymous_args = 0
+  71              		@ link register save eliminated.
+ 252:../application/Src/usb_prop.c ****   bDeviceState = ADDRESSED;
+  72              		.loc 1 252 3 view .LVU8
+  73              		.loc 1 252 16 is_stmt 0 view .LVU9
+  74 0000 0422     		movs	r2, #4
+  75 0002 014B     		ldr	r3, .L10
+  76 0004 1A60     		str	r2, [r3]
+ 253:../application/Src/usb_prop.c **** }
+  77              		.loc 1 253 1 view .LVU10
+  78 0006 7047     		bx	lr
+  79              	.L11:
+  80              		.align	2
+  81              	.L10:
+  82 0008 00000000 		.word	bDeviceState
+  83              		.cfi_endproc
+  84              	.LFE32:
+  86              		.section	.text.CustomHID_Status_In,"ax",%progbits
+  87              		.align	1
+  88              		.p2align 2,,3
+  89              		.global	CustomHID_Status_In
+  90              		.syntax unified
+  91              		.thumb
+  92              		.thumb_func
+  93              		.fpu softvfp
+ARM GAS  /tmp/ccGMuq7y.s 			page 7
+
+
+  95              	CustomHID_Status_In:
+  96              	.LFB33:
+ 254:../application/Src/usb_prop.c **** /*******************************************************************************
+ 255:../application/Src/usb_prop.c **** * Function Name  : CustomHID_Status_In.
+ 256:../application/Src/usb_prop.c **** * Description    : Joystick status IN routine.
+ 257:../application/Src/usb_prop.c **** * Input          : None.
+ 258:../application/Src/usb_prop.c **** * Output         : None.
+ 259:../application/Src/usb_prop.c **** * Return         : None.
+ 260:../application/Src/usb_prop.c **** *******************************************************************************/
+ 261:../application/Src/usb_prop.c **** void CustomHID_Status_In(void)
+ 262:../application/Src/usb_prop.c **** {  
+  97              		.loc 1 262 1 is_stmt 1 view -0
+  98              		.cfi_startproc
+  99              		@ args = 0, pretend = 0, frame = 0
+ 100              		@ frame_needed = 0, uses_anonymous_args = 0
+ 101              		@ link register save eliminated.
+ 263:../application/Src/usb_prop.c **** 
+ 264:../application/Src/usb_prop.c **** }
+ 102              		.loc 1 264 1 view .LVU12
+ 103 0000 7047     		bx	lr
+ 104              		.cfi_endproc
+ 105              	.LFE33:
+ 107 0002 00BF     		.section	.text.CustomHID_Data_Setup,"ax",%progbits
+ 108              		.align	1
+ 109              		.p2align 2,,3
+ 110              		.global	CustomHID_Data_Setup
+ 111              		.syntax unified
+ 112              		.thumb
+ 113              		.thumb_func
+ 114              		.fpu softvfp
+ 116              	CustomHID_Data_Setup:
+ 117              	.LVL0:
+ 118              	.LFB35:
+ 265:../application/Src/usb_prop.c **** 
+ 266:../application/Src/usb_prop.c **** /*******************************************************************************
+ 267:../application/Src/usb_prop.c **** * Function Name  : CustomHID_Status_Out
+ 268:../application/Src/usb_prop.c **** * Description    : Joystick status OUT routine.
+ 269:../application/Src/usb_prop.c **** * Input          : None.
+ 270:../application/Src/usb_prop.c **** * Output         : None.
+ 271:../application/Src/usb_prop.c **** * Return         : None.
+ 272:../application/Src/usb_prop.c **** *******************************************************************************/
+ 273:../application/Src/usb_prop.c **** void CustomHID_Status_Out (void)
+ 274:../application/Src/usb_prop.c **** {
+ 275:../application/Src/usb_prop.c **** }
+ 276:../application/Src/usb_prop.c **** 
+ 277:../application/Src/usb_prop.c **** /*******************************************************************************
+ 278:../application/Src/usb_prop.c **** * Function Name  : CustomHID_Data_Setup
+ 279:../application/Src/usb_prop.c **** * Description    : Handle the data class specific requests.
+ 280:../application/Src/usb_prop.c **** * Input          : Request Nb.
+ 281:../application/Src/usb_prop.c **** * Output         : None.
+ 282:../application/Src/usb_prop.c **** * Return         : USB_UNSUPPORT or USB_SUCCESS.
+ 283:../application/Src/usb_prop.c **** *******************************************************************************/
+ 284:../application/Src/usb_prop.c **** RESULT CustomHID_Data_Setup(uint8_t RequestNo)
+ 285:../application/Src/usb_prop.c **** {
+ 119              		.loc 1 285 1 view -0
+ 120              		.cfi_startproc
+ 121              		@ args = 0, pretend = 0, frame = 0
+ARM GAS  /tmp/ccGMuq7y.s 			page 8
+
+
+ 122              		@ frame_needed = 0, uses_anonymous_args = 0
+ 286:../application/Src/usb_prop.c ****   uint8_t *(*CopyRoutine)(uint16_t);
+ 123              		.loc 1 286 3 view .LVU14
+ 287:../application/Src/usb_prop.c ****   
+ 288:../application/Src/usb_prop.c **** //  if (pInformation->USBwIndex != 0) 				// I had to exclude this code to allow 
+ 289:../application/Src/usb_prop.c **** //    return USB_UNSUPPORT;    								// programm setup Interface #1
+ 290:../application/Src/usb_prop.c ****   
+ 291:../application/Src/usb_prop.c ****   CopyRoutine = NULL;
+ 124              		.loc 1 291 3 view .LVU15
+ 292:../application/Src/usb_prop.c ****   
+ 293:../application/Src/usb_prop.c ****   if ((RequestNo == GET_DESCRIPTOR)
+ 125              		.loc 1 293 3 view .LVU16
+ 294:../application/Src/usb_prop.c ****       && (Type_Recipient == (STANDARD_REQUEST | INTERFACE_RECIPIENT))
+ 126              		.loc 1 294 11 is_stmt 0 view .LVU17
+ 127 0000 194B     		ldr	r3, .L33
+ 293:../application/Src/usb_prop.c ****       && (Type_Recipient == (STANDARD_REQUEST | INTERFACE_RECIPIENT))
+ 128              		.loc 1 293 6 view .LVU18
+ 129 0002 0628     		cmp	r0, #6
+ 130              		.loc 1 294 11 view .LVU19
+ 131 0004 1B68     		ldr	r3, [r3]
+ 132              		.loc 1 294 7 view .LVU20
+ 133 0006 1A78     		ldrb	r2, [r3]	@ zero_extendqisi2
+ 134 0008 02F07F02 		and	r2, r2, #127
+ 293:../application/Src/usb_prop.c ****       && (Type_Recipient == (STANDARD_REQUEST | INTERFACE_RECIPIENT))
+ 135              		.loc 1 293 6 view .LVU21
+ 136 000c 10D0     		beq	.L30
+ 295:../application/Src/usb_prop.c ****         )
+ 296:../application/Src/usb_prop.c ****   {
+ 297:../application/Src/usb_prop.c ****     
+ 298:../application/Src/usb_prop.c ****     if (pInformation->USBwValue1 == REPORT_DESCRIPTOR)
+ 299:../application/Src/usb_prop.c ****     {
+ 300:../application/Src/usb_prop.c **** 			if (pInformation->USBwIndex0	== 0)				// Interface #0
+ 301:../application/Src/usb_prop.c **** 			{
+ 302:../application/Src/usb_prop.c **** 				CopyRoutine = JoystickHID_GetReportDescriptor;
+ 303:../application/Src/usb_prop.c **** 			}
+ 304:../application/Src/usb_prop.c **** 			else if (pInformation->USBwIndex0 == 1)	// Interface #1
+ 305:../application/Src/usb_prop.c **** 			{
+ 306:../application/Src/usb_prop.c **** 				CopyRoutine = CustomHID_GetReportDescriptor;
+ 307:../application/Src/usb_prop.c **** 			}
+ 308:../application/Src/usb_prop.c ****     }
+ 309:../application/Src/usb_prop.c ****     else if (pInformation->USBwValue1 == HID_DESCRIPTOR_TYPE)
+ 310:../application/Src/usb_prop.c ****     {
+ 311:../application/Src/usb_prop.c **** 			if (pInformation->USBwIndex0	== 0)				// Interface #0
+ 312:../application/Src/usb_prop.c **** 			{
+ 313:../application/Src/usb_prop.c **** 				CopyRoutine = JoystickHID_GetHIDDescriptor;
+ 314:../application/Src/usb_prop.c **** 			}
+ 315:../application/Src/usb_prop.c **** 			else if (pInformation->USBwIndex0	== 1)	// Interface #1
+ 316:../application/Src/usb_prop.c **** 			{
+ 317:../application/Src/usb_prop.c **** 				CopyRoutine = CustomHID_GetHIDDescriptor;
+ 318:../application/Src/usb_prop.c **** 			}
+ 319:../application/Src/usb_prop.c ****     }
+ 320:../application/Src/usb_prop.c ****     
+ 321:../application/Src/usb_prop.c ****   } /* End of GET_DESCRIPTOR */
+ 322:../application/Src/usb_prop.c ****   
+ 323:../application/Src/usb_prop.c ****   /*** GET_PROTOCOL, GET_REPORT, SET_REPORT ***/
+ 324:../application/Src/usb_prop.c ****   else if ( (Type_Recipient == (CLASS_REQUEST | INTERFACE_RECIPIENT)) )
+ 137              		.loc 1 324 8 is_stmt 1 view .LVU22
+ARM GAS  /tmp/ccGMuq7y.s 			page 9
+
+
+ 138              		.loc 1 324 11 is_stmt 0 view .LVU23
+ 139 000e 212A     		cmp	r2, #33
+ 140 0010 10D1     		bne	.L26
+ 325:../application/Src/usb_prop.c ****   {         
+ 326:../application/Src/usb_prop.c ****     switch( RequestNo )
+ 141              		.loc 1 326 5 is_stmt 1 view .LVU24
+ 142 0012 0328     		cmp	r0, #3
+ 143 0014 1BD0     		beq	.L25
+ 144 0016 0928     		cmp	r0, #9
+ 145 0018 0CD1     		bne	.L26
+ 327:../application/Src/usb_prop.c ****     {
+ 328:../application/Src/usb_prop.c ****     case GET_PROTOCOL:
+ 329:../application/Src/usb_prop.c ****       CopyRoutine = CustomHID_GetProtocolValue;
+ 330:../application/Src/usb_prop.c ****       break;
+ 331:../application/Src/usb_prop.c ****     case SET_REPORT:
+ 332:../application/Src/usb_prop.c ****       CopyRoutine = CustomHID_SetReport_Feature;
+ 146              		.loc 1 332 7 view .LVU25
+ 147              	.LVL1:
+ 333:../application/Src/usb_prop.c ****       Request = SET_REPORT;
+ 148              		.loc 1 333 7 view .LVU26
+ 149              		.loc 1 333 15 is_stmt 0 view .LVU27
+ 150 001a 1449     		ldr	r1, .L33+4
+ 332:../application/Src/usb_prop.c ****       Request = SET_REPORT;
+ 151              		.loc 1 332 19 view .LVU28
+ 152 001c 144A     		ldr	r2, .L33+8
+ 153              		.loc 1 333 15 view .LVU29
+ 154 001e 0870     		strb	r0, [r1]
+ 334:../application/Src/usb_prop.c ****       break;
+ 155              		.loc 1 334 7 is_stmt 1 view .LVU30
+ 156              	.L17:
+ 157              	.LVL2:
+ 335:../application/Src/usb_prop.c ****     default:
+ 336:../application/Src/usb_prop.c ****       break;
+ 337:../application/Src/usb_prop.c ****     }
+ 338:../application/Src/usb_prop.c ****   }
+ 339:../application/Src/usb_prop.c ****   
+ 340:../application/Src/usb_prop.c ****   if (CopyRoutine == NULL)
+ 158              		.loc 1 340 3 view .LVU31
+ 341:../application/Src/usb_prop.c ****   {
+ 342:../application/Src/usb_prop.c ****     return USB_UNSUPPORT;
+ 343:../application/Src/usb_prop.c ****   }
+ 344:../application/Src/usb_prop.c ****   
+ 345:../application/Src/usb_prop.c ****   pInformation->Ctrl_Info.CopyData = CopyRoutine;
+ 159              		.loc 1 345 3 view .LVU32
+ 285:../application/Src/usb_prop.c ****   uint8_t *(*CopyRoutine)(uint16_t);
+ 160              		.loc 1 285 1 is_stmt 0 view .LVU33
+ 161 0020 10B5     		push	{r4, lr}
+ 162              	.LCFI0:
+ 163              		.cfi_def_cfa_offset 8
+ 164              		.cfi_offset 4, -8
+ 165              		.cfi_offset 14, -4
+ 346:../application/Src/usb_prop.c ****   pInformation->Ctrl_Info.Usb_wOffset = 0;
+ 166              		.loc 1 346 39 view .LVU34
+ 167 0022 0024     		movs	r4, #0
+ 345:../application/Src/usb_prop.c ****   pInformation->Ctrl_Info.Usb_wOffset = 0;
+ 168              		.loc 1 345 36 view .LVU35
+ 169 0024 9A61     		str	r2, [r3, #24]
+ARM GAS  /tmp/ccGMuq7y.s 			page 10
+
+
+ 170              		.loc 1 346 3 is_stmt 1 view .LVU36
+ 347:../application/Src/usb_prop.c ****   (*CopyRoutine)(0);
+ 171              		.loc 1 347 4 is_stmt 0 view .LVU37
+ 172 0026 2046     		mov	r0, r4
+ 173              	.LVL3:
+ 346:../application/Src/usb_prop.c ****   pInformation->Ctrl_Info.Usb_wOffset = 0;
+ 174              		.loc 1 346 39 view .LVU38
+ 175 0028 5C82     		strh	r4, [r3, #18]	@ movhi
+ 176              		.loc 1 347 3 is_stmt 1 view .LVU39
+ 177              		.loc 1 347 4 is_stmt 0 view .LVU40
+ 178 002a 9047     		blx	r2
+ 179              	.LVL4:
+ 348:../application/Src/usb_prop.c ****   return USB_SUCCESS;
+ 180              		.loc 1 348 3 is_stmt 1 view .LVU41
+ 181              		.loc 1 348 10 is_stmt 0 view .LVU42
+ 182 002c 2046     		mov	r0, r4
+ 349:../application/Src/usb_prop.c **** }
+ 183              		.loc 1 349 1 view .LVU43
+ 184 002e 10BD     		pop	{r4, pc}
+ 185              	.LVL5:
+ 186              	.L30:
+ 187              	.LCFI1:
+ 188              		.cfi_def_cfa_offset 0
+ 189              		.cfi_restore 4
+ 190              		.cfi_restore 14
+ 294:../application/Src/usb_prop.c ****         )
+ 191              		.loc 1 294 7 view .LVU44
+ 192 0030 012A     		cmp	r2, #1
+ 193 0032 01D0     		beq	.L31
+ 194              	.L26:
+ 326:../application/Src/usb_prop.c ****     {
+ 195              		.loc 1 326 5 view .LVU45
+ 196 0034 0220     		movs	r0, #2
+ 197              	.LVL6:
+ 198              		.loc 1 349 1 view .LVU46
+ 199 0036 7047     		bx	lr
+ 200              	.LVL7:
+ 201              	.L31:
+ 298:../application/Src/usb_prop.c ****     {
+ 202              		.loc 1 298 5 is_stmt 1 view .LVU47
+ 298:../application/Src/usb_prop.c ****     {
+ 203              		.loc 1 298 23 is_stmt 0 view .LVU48
+ 204 0038 9A78     		ldrb	r2, [r3, #2]	@ zero_extendqisi2
+ 298:../application/Src/usb_prop.c ****     {
+ 205              		.loc 1 298 8 view .LVU49
+ 206 003a 222A     		cmp	r2, #34
+ 207 003c 09D0     		beq	.L32
+ 309:../application/Src/usb_prop.c ****     {
+ 208              		.loc 1 309 10 is_stmt 1 view .LVU50
+ 309:../application/Src/usb_prop.c ****     {
+ 209              		.loc 1 309 13 is_stmt 0 view .LVU51
+ 210 003e 212A     		cmp	r2, #33
+ 211 0040 F8D1     		bne	.L26
+ 311:../application/Src/usb_prop.c **** 			{
+ 212              		.loc 1 311 4 is_stmt 1 view .LVU52
+ 311:../application/Src/usb_prop.c **** 			{
+ 213              		.loc 1 311 22 is_stmt 0 view .LVU53
+ARM GAS  /tmp/ccGMuq7y.s 			page 11
+
+
+ 214 0042 5A79     		ldrb	r2, [r3, #5]	@ zero_extendqisi2
+ 311:../application/Src/usb_prop.c **** 			{
+ 215              		.loc 1 311 7 view .LVU54
+ 216 0044 5AB1     		cbz	r2, .L22
+ 315:../application/Src/usb_prop.c **** 			{
+ 217              		.loc 1 315 9 is_stmt 1 view .LVU55
+ 315:../application/Src/usb_prop.c **** 			{
+ 218              		.loc 1 315 12 is_stmt 0 view .LVU56
+ 219 0046 012A     		cmp	r2, #1
+ 220 0048 F4D1     		bne	.L26
+ 317:../application/Src/usb_prop.c **** 			}
+ 221              		.loc 1 317 17 view .LVU57
+ 222 004a 0A4A     		ldr	r2, .L33+12
+ 223 004c E8E7     		b	.L17
+ 224              	.L25:
+ 326:../application/Src/usb_prop.c ****     {
+ 225              		.loc 1 326 5 view .LVU58
+ 226 004e 0A4A     		ldr	r2, .L33+16
+ 227 0050 E6E7     		b	.L17
+ 228              	.L32:
+ 300:../application/Src/usb_prop.c **** 			{
+ 229              		.loc 1 300 4 is_stmt 1 view .LVU59
+ 300:../application/Src/usb_prop.c **** 			{
+ 230              		.loc 1 300 22 is_stmt 0 view .LVU60
+ 231 0052 5A79     		ldrb	r2, [r3, #5]	@ zero_extendqisi2
+ 300:../application/Src/usb_prop.c **** 			{
+ 232              		.loc 1 300 7 view .LVU61
+ 233 0054 2AB1     		cbz	r2, .L19
+ 304:../application/Src/usb_prop.c **** 			{
+ 234              		.loc 1 304 9 is_stmt 1 view .LVU62
+ 304:../application/Src/usb_prop.c **** 			{
+ 235              		.loc 1 304 12 is_stmt 0 view .LVU63
+ 236 0056 012A     		cmp	r2, #1
+ 237 0058 ECD1     		bne	.L26
+ 306:../application/Src/usb_prop.c **** 			}
+ 238              		.loc 1 306 17 view .LVU64
+ 239 005a 084A     		ldr	r2, .L33+20
+ 240 005c E0E7     		b	.L17
+ 241              	.L22:
+ 313:../application/Src/usb_prop.c **** 			}
+ 242              		.loc 1 313 17 view .LVU65
+ 243 005e 084A     		ldr	r2, .L33+24
+ 244 0060 DEE7     		b	.L17
+ 245              	.L19:
+ 302:../application/Src/usb_prop.c **** 			}
+ 246              		.loc 1 302 17 view .LVU66
+ 247 0062 084A     		ldr	r2, .L33+28
+ 248 0064 DCE7     		b	.L17
+ 249              	.L34:
+ 250 0066 00BF     		.align	2
+ 251              	.L33:
+ 252 0068 00000000 		.word	pInformation
+ 253 006c 00000000 		.word	.LANCHOR0
+ 254 0070 00000000 		.word	CustomHID_SetReport_Feature
+ 255 0074 00000000 		.word	CustomHID_GetHIDDescriptor
+ 256 0078 00000000 		.word	CustomHID_GetProtocolValue
+ 257 007c 00000000 		.word	CustomHID_GetReportDescriptor
+ARM GAS  /tmp/ccGMuq7y.s 			page 12
+
+
+ 258 0080 00000000 		.word	JoystickHID_GetHIDDescriptor
+ 259 0084 00000000 		.word	JoystickHID_GetReportDescriptor
+ 260              		.cfi_endproc
+ 261              	.LFE35:
+ 263              		.section	.text.CustomHID_SetReport_Feature,"ax",%progbits
+ 264              		.align	1
+ 265              		.p2align 2,,3
+ 266              		.global	CustomHID_SetReport_Feature
+ 267              		.syntax unified
+ 268              		.thumb
+ 269              		.thumb_func
+ 270              		.fpu softvfp
+ 272              	CustomHID_SetReport_Feature:
+ 273              	.LVL8:
+ 274              	.LFB36:
+ 350:../application/Src/usb_prop.c **** 
+ 351:../application/Src/usb_prop.c **** /*******************************************************************************
+ 352:../application/Src/usb_prop.c **** * Function Name  : CustomHID_SetReport_Feature
+ 353:../application/Src/usb_prop.c **** * Description    : Set Feature request handling
+ 354:../application/Src/usb_prop.c **** * Input          : Length.
+ 355:../application/Src/usb_prop.c **** * Output         : None.
+ 356:../application/Src/usb_prop.c **** * Return         : Buffer
+ 357:../application/Src/usb_prop.c **** *******************************************************************************/
+ 358:../application/Src/usb_prop.c **** uint8_t *CustomHID_SetReport_Feature(uint16_t Length)
+ 359:../application/Src/usb_prop.c **** {
+ 275              		.loc 1 359 1 is_stmt 1 view -0
+ 276              		.cfi_startproc
+ 277              		@ args = 0, pretend = 0, frame = 0
+ 278              		@ frame_needed = 0, uses_anonymous_args = 0
+ 279              		@ link register save eliminated.
+ 360:../application/Src/usb_prop.c ****   if (Length == 0)
+ 280              		.loc 1 360 3 view .LVU68
+ 281              		.loc 1 360 6 is_stmt 0 view .LVU69
+ 282 0000 08B1     		cbz	r0, .L38
+ 361:../application/Src/usb_prop.c ****   {
+ 362:../application/Src/usb_prop.c ****     pInformation->Ctrl_Info.Usb_wLength = 2;
+ 363:../application/Src/usb_prop.c ****     return NULL;
+ 364:../application/Src/usb_prop.c ****   }
+ 365:../application/Src/usb_prop.c ****   else
+ 366:../application/Src/usb_prop.c ****   {
+ 367:../application/Src/usb_prop.c ****     return Report_Buf;
+ 283              		.loc 1 367 12 view .LVU70
+ 284 0002 0348     		ldr	r0, .L39
+ 285              	.LVL9:
+ 368:../application/Src/usb_prop.c ****   }
+ 369:../application/Src/usb_prop.c **** }
+ 286              		.loc 1 369 1 view .LVU71
+ 287 0004 7047     		bx	lr
+ 288              	.LVL10:
+ 289              	.L38:
+ 362:../application/Src/usb_prop.c ****     return NULL;
+ 290              		.loc 1 362 5 is_stmt 1 view .LVU72
+ 362:../application/Src/usb_prop.c ****     return NULL;
+ 291              		.loc 1 362 41 is_stmt 0 view .LVU73
+ 292 0006 0222     		movs	r2, #2
+ 293 0008 024B     		ldr	r3, .L39+4
+ 294 000a 1B68     		ldr	r3, [r3]
+ARM GAS  /tmp/ccGMuq7y.s 			page 13
+
+
+ 295 000c 1A82     		strh	r2, [r3, #16]	@ movhi
+ 363:../application/Src/usb_prop.c ****   }
+ 296              		.loc 1 363 5 is_stmt 1 view .LVU74
+ 363:../application/Src/usb_prop.c ****   }
+ 297              		.loc 1 363 12 is_stmt 0 view .LVU75
+ 298 000e 7047     		bx	lr
+ 299              	.L40:
+ 300              		.align	2
+ 301              	.L39:
+ 302 0010 00000000 		.word	Report_Buf
+ 303 0014 00000000 		.word	pInformation
+ 304              		.cfi_endproc
+ 305              	.LFE36:
+ 307              		.section	.text.CustomHID_NoData_Setup,"ax",%progbits
+ 308              		.align	1
+ 309              		.p2align 2,,3
+ 310              		.global	CustomHID_NoData_Setup
+ 311              		.syntax unified
+ 312              		.thumb
+ 313              		.thumb_func
+ 314              		.fpu softvfp
+ 316              	CustomHID_NoData_Setup:
+ 317              	.LVL11:
+ 318              	.LFB37:
+ 370:../application/Src/usb_prop.c **** 
+ 371:../application/Src/usb_prop.c **** /*******************************************************************************
+ 372:../application/Src/usb_prop.c **** * Function Name  : CustomHID_NoData_Setup
+ 373:../application/Src/usb_prop.c **** * Description    : handle the no data class specific requests
+ 374:../application/Src/usb_prop.c **** * Input          : Request Nb.
+ 375:../application/Src/usb_prop.c **** * Output         : None.
+ 376:../application/Src/usb_prop.c **** * Return         : USB_UNSUPPORT or USB_SUCCESS.
+ 377:../application/Src/usb_prop.c **** *******************************************************************************/
+ 378:../application/Src/usb_prop.c **** RESULT CustomHID_NoData_Setup(uint8_t RequestNo)
+ 379:../application/Src/usb_prop.c **** {
+ 319              		.loc 1 379 1 is_stmt 1 view -0
+ 320              		.cfi_startproc
+ 321              		@ args = 0, pretend = 0, frame = 0
+ 322              		@ frame_needed = 0, uses_anonymous_args = 0
+ 323              		@ link register save eliminated.
+ 380:../application/Src/usb_prop.c ****   if ((Type_Recipient == (CLASS_REQUEST | INTERFACE_RECIPIENT))
+ 324              		.loc 1 380 3 view .LVU77
+ 325              		.loc 1 380 8 is_stmt 0 view .LVU78
+ 326 0000 074B     		ldr	r3, .L46
+ 327 0002 1A68     		ldr	r2, [r3]
+ 328              		.loc 1 380 6 view .LVU79
+ 329 0004 1378     		ldrb	r3, [r2]	@ zero_extendqisi2
+ 330 0006 03F07F03 		and	r3, r3, #127
+ 331 000a 212B     		cmp	r3, #33
+ 332 000c 01D1     		bne	.L44
+ 381:../application/Src/usb_prop.c ****       && (RequestNo == SET_PROTOCOL))
+ 333              		.loc 1 381 7 view .LVU80
+ 334 000e 0B28     		cmp	r0, #11
+ 335 0010 01D0     		beq	.L45
+ 336              	.L44:
+ 382:../application/Src/usb_prop.c ****   {
+ 383:../application/Src/usb_prop.c ****     return CustomHID_SetProtocol();
+ 384:../application/Src/usb_prop.c ****   }
+ARM GAS  /tmp/ccGMuq7y.s 			page 14
+
+
+ 385:../application/Src/usb_prop.c **** 
+ 386:../application/Src/usb_prop.c ****   else
+ 387:../application/Src/usb_prop.c ****   {
+ 388:../application/Src/usb_prop.c ****     return USB_UNSUPPORT;
+ 337              		.loc 1 388 12 view .LVU81
+ 338 0012 0220     		movs	r0, #2
+ 339              	.LVL12:
+ 389:../application/Src/usb_prop.c ****   }
+ 390:../application/Src/usb_prop.c **** }
+ 340              		.loc 1 390 1 view .LVU82
+ 341 0014 7047     		bx	lr
+ 342              	.LVL13:
+ 343              	.L45:
+ 383:../application/Src/usb_prop.c ****   }
+ 344              		.loc 1 383 5 is_stmt 1 view .LVU83
+ 345              	.LBB4:
+ 346              	.LBI4:
+ 391:../application/Src/usb_prop.c **** 
+ 392:../application/Src/usb_prop.c **** /*******************************************************************************
+ 393:../application/Src/usb_prop.c **** * Function Name  : CustomHID_GetDeviceDescriptor.
+ 394:../application/Src/usb_prop.c **** * Description    : Gets the device descriptor.
+ 395:../application/Src/usb_prop.c **** * Input          : Length
+ 396:../application/Src/usb_prop.c **** * Output         : None.
+ 397:../application/Src/usb_prop.c **** * Return         : The address of the device descriptor.
+ 398:../application/Src/usb_prop.c **** *******************************************************************************/
+ 399:../application/Src/usb_prop.c **** uint8_t *CustomHID_GetDeviceDescriptor(uint16_t Length)
+ 400:../application/Src/usb_prop.c **** {
+ 401:../application/Src/usb_prop.c ****   return Standard_GetDescriptorData(Length, &Device_Descriptor);
+ 402:../application/Src/usb_prop.c **** }
+ 403:../application/Src/usb_prop.c **** 
+ 404:../application/Src/usb_prop.c **** /*******************************************************************************
+ 405:../application/Src/usb_prop.c **** * Function Name  : CustomHID_GetConfigDescriptor.
+ 406:../application/Src/usb_prop.c **** * Description    : Gets the configuration descriptor.
+ 407:../application/Src/usb_prop.c **** * Input          : Length
+ 408:../application/Src/usb_prop.c **** * Output         : None.
+ 409:../application/Src/usb_prop.c **** * Return         : The address of the configuration descriptor.
+ 410:../application/Src/usb_prop.c **** *******************************************************************************/
+ 411:../application/Src/usb_prop.c **** uint8_t *CustomHID_GetConfigDescriptor(uint16_t Length)
+ 412:../application/Src/usb_prop.c **** {
+ 413:../application/Src/usb_prop.c ****   return Standard_GetDescriptorData(Length, &Config_Descriptor);
+ 414:../application/Src/usb_prop.c **** }
+ 415:../application/Src/usb_prop.c **** 
+ 416:../application/Src/usb_prop.c **** /*******************************************************************************
+ 417:../application/Src/usb_prop.c **** * Function Name  : CustomHID_GetStringDescriptor
+ 418:../application/Src/usb_prop.c **** * Description    : Gets the string descriptors according to the needed index
+ 419:../application/Src/usb_prop.c **** * Input          : Length
+ 420:../application/Src/usb_prop.c **** * Output         : None.
+ 421:../application/Src/usb_prop.c **** * Return         : The address of the string descriptors.
+ 422:../application/Src/usb_prop.c **** *******************************************************************************/
+ 423:../application/Src/usb_prop.c **** uint8_t *CustomHID_GetStringDescriptor(uint16_t Length)
+ 424:../application/Src/usb_prop.c **** {
+ 425:../application/Src/usb_prop.c ****   uint8_t wValue0 = pInformation->USBwValue0;
+ 426:../application/Src/usb_prop.c ****   if (wValue0 >= 4)
+ 427:../application/Src/usb_prop.c ****   {
+ 428:../application/Src/usb_prop.c ****     return NULL;
+ 429:../application/Src/usb_prop.c ****   }
+ 430:../application/Src/usb_prop.c ****   else 
+ARM GAS  /tmp/ccGMuq7y.s 			page 15
+
+
+ 431:../application/Src/usb_prop.c ****   {
+ 432:../application/Src/usb_prop.c ****     return Standard_GetDescriptorData(Length, &String_Descriptor[wValue0]);
+ 433:../application/Src/usb_prop.c ****   }
+ 434:../application/Src/usb_prop.c **** }
+ 435:../application/Src/usb_prop.c **** 
+ 436:../application/Src/usb_prop.c **** /*******************************************************************************
+ 437:../application/Src/usb_prop.c **** * Function Name  : JoystickHID_GetReportDescriptor.
+ 438:../application/Src/usb_prop.c **** * Description    : Gets the HID report descriptor.
+ 439:../application/Src/usb_prop.c **** * Input          : Length
+ 440:../application/Src/usb_prop.c **** * Output         : None.
+ 441:../application/Src/usb_prop.c **** * Return         : The address of the configuration descriptor.
+ 442:../application/Src/usb_prop.c **** *******************************************************************************/
+ 443:../application/Src/usb_prop.c **** uint8_t *JoystickHID_GetReportDescriptor(uint16_t Length)
+ 444:../application/Src/usb_prop.c **** {
+ 445:../application/Src/usb_prop.c ****   return Standard_GetDescriptorData(Length, &JoystickHID_Report_Descriptor);
+ 446:../application/Src/usb_prop.c **** }
+ 447:../application/Src/usb_prop.c **** 
+ 448:../application/Src/usb_prop.c **** /*******************************************************************************
+ 449:../application/Src/usb_prop.c **** * Function Name  : CustomHID_GetReportDescriptor.
+ 450:../application/Src/usb_prop.c **** * Description    : Gets the HID report descriptor.
+ 451:../application/Src/usb_prop.c **** * Input          : Length
+ 452:../application/Src/usb_prop.c **** * Output         : None.
+ 453:../application/Src/usb_prop.c **** * Return         : The address of the configuration descriptor.
+ 454:../application/Src/usb_prop.c **** *******************************************************************************/
+ 455:../application/Src/usb_prop.c **** uint8_t *CustomHID_GetReportDescriptor(uint16_t Length)
+ 456:../application/Src/usb_prop.c **** {
+ 457:../application/Src/usb_prop.c ****   return Standard_GetDescriptorData(Length, &CustomHID_Report_Descriptor);
+ 458:../application/Src/usb_prop.c **** }
+ 459:../application/Src/usb_prop.c **** 
+ 460:../application/Src/usb_prop.c **** /*******************************************************************************
+ 461:../application/Src/usb_prop.c **** * Function Name  : JoystickHID_GetHIDDescriptor.
+ 462:../application/Src/usb_prop.c **** * Description    : Gets the HID descriptor.
+ 463:../application/Src/usb_prop.c **** * Input          : Length
+ 464:../application/Src/usb_prop.c **** * Output         : None.
+ 465:../application/Src/usb_prop.c **** * Return         : The address of the configuration descriptor.
+ 466:../application/Src/usb_prop.c **** *******************************************************************************/
+ 467:../application/Src/usb_prop.c **** uint8_t *JoystickHID_GetHIDDescriptor(uint16_t Length)
+ 468:../application/Src/usb_prop.c **** {
+ 469:../application/Src/usb_prop.c ****   return Standard_GetDescriptorData(Length, &JoystickHID_Hid_Descriptor);
+ 470:../application/Src/usb_prop.c **** }
+ 471:../application/Src/usb_prop.c **** 
+ 472:../application/Src/usb_prop.c **** /*******************************************************************************
+ 473:../application/Src/usb_prop.c **** * Function Name  : CustomHID_GetHIDDescriptor.
+ 474:../application/Src/usb_prop.c **** * Description    : Gets the HID descriptor.
+ 475:../application/Src/usb_prop.c **** * Input          : Length
+ 476:../application/Src/usb_prop.c **** * Output         : None.
+ 477:../application/Src/usb_prop.c **** * Return         : The address of the configuration descriptor.
+ 478:../application/Src/usb_prop.c **** *******************************************************************************/
+ 479:../application/Src/usb_prop.c **** uint8_t *CustomHID_GetHIDDescriptor(uint16_t Length)
+ 480:../application/Src/usb_prop.c **** {
+ 481:../application/Src/usb_prop.c ****   return Standard_GetDescriptorData(Length, &CustomHID_Hid_Descriptor);
+ 482:../application/Src/usb_prop.c **** }
+ 483:../application/Src/usb_prop.c **** 
+ 484:../application/Src/usb_prop.c **** /*******************************************************************************
+ 485:../application/Src/usb_prop.c **** * Function Name  : CustomHID_Get_Interface_Setting.
+ 486:../application/Src/usb_prop.c **** * Description    : tests the interface and the alternate setting according to the
+ 487:../application/Src/usb_prop.c **** *                  supported one.
+ARM GAS  /tmp/ccGMuq7y.s 			page 16
+
+
+ 488:../application/Src/usb_prop.c **** * Input          : - Interface : interface number.
+ 489:../application/Src/usb_prop.c **** *                  - AlternateSetting : Alternate Setting number.
+ 490:../application/Src/usb_prop.c **** * Output         : None.
+ 491:../application/Src/usb_prop.c **** * Return         : USB_SUCCESS or USB_UNSUPPORT.
+ 492:../application/Src/usb_prop.c **** *******************************************************************************/
+ 493:../application/Src/usb_prop.c **** RESULT CustomHID_Get_Interface_Setting(uint8_t Interface, uint8_t AlternateSetting)
+ 494:../application/Src/usb_prop.c **** {
+ 495:../application/Src/usb_prop.c ****   if (AlternateSetting > 0)
+ 496:../application/Src/usb_prop.c ****   {
+ 497:../application/Src/usb_prop.c ****     return USB_UNSUPPORT;
+ 498:../application/Src/usb_prop.c ****   }
+ 499:../application/Src/usb_prop.c ****   else if (Interface > 0)
+ 500:../application/Src/usb_prop.c ****   {
+ 501:../application/Src/usb_prop.c ****     return USB_UNSUPPORT;
+ 502:../application/Src/usb_prop.c ****   }
+ 503:../application/Src/usb_prop.c ****   return USB_SUCCESS;
+ 504:../application/Src/usb_prop.c **** }
+ 505:../application/Src/usb_prop.c **** 
+ 506:../application/Src/usb_prop.c **** /*******************************************************************************
+ 507:../application/Src/usb_prop.c **** * Function Name  : CustomHID_SetProtocol
+ 508:../application/Src/usb_prop.c **** * Description    : Joystick Set Protocol request routine.
+ 509:../application/Src/usb_prop.c **** * Input          : None.
+ 510:../application/Src/usb_prop.c **** * Output         : None.
+ 511:../application/Src/usb_prop.c **** * Return         : USB SUCCESS.
+ 512:../application/Src/usb_prop.c **** *******************************************************************************/
+ 513:../application/Src/usb_prop.c **** RESULT CustomHID_SetProtocol(void)
+ 347              		.loc 1 513 8 view .LVU84
+ 348              	.LBB5:
+ 514:../application/Src/usb_prop.c **** {
+ 515:../application/Src/usb_prop.c ****   uint8_t wValue0 = pInformation->USBwValue0;
+ 349              		.loc 1 515 3 view .LVU85
+ 516:../application/Src/usb_prop.c ****   ProtocolValue = wValue0;
+ 350              		.loc 1 516 3 view .LVU86
+ 351              		.loc 1 516 17 is_stmt 0 view .LVU87
+ 352 0016 D278     		ldrb	r2, [r2, #3]	@ zero_extendqisi2
+ 353              	.LVL14:
+ 354              		.loc 1 516 17 view .LVU88
+ 355 0018 024B     		ldr	r3, .L46+4
+ 356              	.LBE5:
+ 357              	.LBE4:
+ 383:../application/Src/usb_prop.c ****   }
+ 358              		.loc 1 383 12 view .LVU89
+ 359 001a 0020     		movs	r0, #0
+ 360              	.LVL15:
+ 361              	.LBB7:
+ 362              	.LBB6:
+ 363              		.loc 1 516 17 view .LVU90
+ 364 001c 1A60     		str	r2, [r3]
+ 517:../application/Src/usb_prop.c ****   return USB_SUCCESS;
+ 365              		.loc 1 517 3 is_stmt 1 view .LVU91
+ 366              	.LVL16:
+ 367              		.loc 1 517 3 is_stmt 0 view .LVU92
+ 368              	.LBE6:
+ 369              	.LBE7:
+ 383:../application/Src/usb_prop.c ****   }
+ 370              		.loc 1 383 12 view .LVU93
+ 371 001e 7047     		bx	lr
+ARM GAS  /tmp/ccGMuq7y.s 			page 17
+
+
+ 372              	.L47:
+ 373              		.align	2
+ 374              	.L46:
+ 375 0020 00000000 		.word	pInformation
+ 376 0024 00000000 		.word	ProtocolValue
+ 377              		.cfi_endproc
+ 378              	.LFE37:
+ 380              		.section	.text.CustomHID_Get_Interface_Setting,"ax",%progbits
+ 381              		.align	1
+ 382              		.p2align 2,,3
+ 383              		.global	CustomHID_Get_Interface_Setting
+ 384              		.syntax unified
+ 385              		.thumb
+ 386              		.thumb_func
+ 387              		.fpu softvfp
+ 389              	CustomHID_Get_Interface_Setting:
+ 390              	.LVL17:
+ 391              	.LFB45:
+ 494:../application/Src/usb_prop.c ****   if (AlternateSetting > 0)
+ 392              		.loc 1 494 1 is_stmt 1 view -0
+ 393              		.cfi_startproc
+ 394              		@ args = 0, pretend = 0, frame = 0
+ 395              		@ frame_needed = 0, uses_anonymous_args = 0
+ 396              		@ link register save eliminated.
+ 495:../application/Src/usb_prop.c ****   {
+ 397              		.loc 1 495 3 view .LVU95
+ 495:../application/Src/usb_prop.c ****   {
+ 398              		.loc 1 495 6 is_stmt 0 view .LVU96
+ 399 0000 21B9     		cbnz	r1, .L50
+ 499:../application/Src/usb_prop.c ****   {
+ 400              		.loc 1 499 8 is_stmt 1 view .LVU97
+ 499:../application/Src/usb_prop.c ****   {
+ 401              		.loc 1 499 11 is_stmt 0 view .LVU98
+ 402 0002 0028     		cmp	r0, #0
+ 503:../application/Src/usb_prop.c **** }
+ 403              		.loc 1 503 10 view .LVU99
+ 404 0004 14BF     		ite	ne
+ 405 0006 0220     		movne	r0, #2
+ 406              	.LVL18:
+ 503:../application/Src/usb_prop.c **** }
+ 407              		.loc 1 503 10 view .LVU100
+ 408 0008 0020     		moveq	r0, #0
+ 409 000a 7047     		bx	lr
+ 410              	.LVL19:
+ 411              	.L50:
+ 501:../application/Src/usb_prop.c ****   }
+ 412              		.loc 1 501 12 view .LVU101
+ 413 000c 0220     		movs	r0, #2
+ 414              	.LVL20:
+ 504:../application/Src/usb_prop.c **** 
+ 415              		.loc 1 504 1 view .LVU102
+ 416 000e 7047     		bx	lr
+ 417              		.cfi_endproc
+ 418              	.LFE45:
+ 420              		.section	.text.CustomHID_GetProtocolValue,"ax",%progbits
+ 421              		.align	1
+ 422              		.p2align 2,,3
+ARM GAS  /tmp/ccGMuq7y.s 			page 18
+
+
+ 423              		.global	CustomHID_GetProtocolValue
+ 424              		.syntax unified
+ 425              		.thumb
+ 426              		.thumb_func
+ 427              		.fpu softvfp
+ 429              	CustomHID_GetProtocolValue:
+ 430              	.LVL21:
+ 431              	.LFB47:
+ 518:../application/Src/usb_prop.c **** }
+ 519:../application/Src/usb_prop.c **** 
+ 520:../application/Src/usb_prop.c **** /*******************************************************************************
+ 521:../application/Src/usb_prop.c **** * Function Name  : CustomHID_GetProtocolValue
+ 522:../application/Src/usb_prop.c **** * Description    : get the protocol value
+ 523:../application/Src/usb_prop.c **** * Input          : Length.
+ 524:../application/Src/usb_prop.c **** * Output         : None.
+ 525:../application/Src/usb_prop.c **** * Return         : address of the protocol value.
+ 526:../application/Src/usb_prop.c **** *******************************************************************************/
+ 527:../application/Src/usb_prop.c **** uint8_t *CustomHID_GetProtocolValue(uint16_t Length)
+ 528:../application/Src/usb_prop.c **** {
+ 432              		.loc 1 528 1 is_stmt 1 view -0
+ 433              		.cfi_startproc
+ 434              		@ args = 0, pretend = 0, frame = 0
+ 435              		@ frame_needed = 0, uses_anonymous_args = 0
+ 436              		@ link register save eliminated.
+ 529:../application/Src/usb_prop.c ****   if (Length == 0)
+ 437              		.loc 1 529 3 view .LVU104
+ 438              		.loc 1 529 6 is_stmt 0 view .LVU105
+ 439 0000 08B1     		cbz	r0, .L55
+ 530:../application/Src/usb_prop.c ****   {
+ 531:../application/Src/usb_prop.c ****     pInformation->Ctrl_Info.Usb_wLength = 1;
+ 532:../application/Src/usb_prop.c ****     return NULL;
+ 533:../application/Src/usb_prop.c ****   }
+ 534:../application/Src/usb_prop.c ****   else
+ 535:../application/Src/usb_prop.c ****   {
+ 536:../application/Src/usb_prop.c ****     return (uint8_t *)(&ProtocolValue);
+ 440              		.loc 1 536 12 view .LVU106
+ 441 0002 0348     		ldr	r0, .L56
+ 442              	.LVL22:
+ 537:../application/Src/usb_prop.c ****   }
+ 538:../application/Src/usb_prop.c **** }
+ 443              		.loc 1 538 1 view .LVU107
+ 444 0004 7047     		bx	lr
+ 445              	.LVL23:
+ 446              	.L55:
+ 531:../application/Src/usb_prop.c ****     return NULL;
+ 447              		.loc 1 531 5 is_stmt 1 view .LVU108
+ 531:../application/Src/usb_prop.c ****     return NULL;
+ 448              		.loc 1 531 41 is_stmt 0 view .LVU109
+ 449 0006 0122     		movs	r2, #1
+ 450 0008 024B     		ldr	r3, .L56+4
+ 451 000a 1B68     		ldr	r3, [r3]
+ 452 000c 1A82     		strh	r2, [r3, #16]	@ movhi
+ 532:../application/Src/usb_prop.c ****   }
+ 453              		.loc 1 532 5 is_stmt 1 view .LVU110
+ 532:../application/Src/usb_prop.c ****   }
+ 454              		.loc 1 532 12 is_stmt 0 view .LVU111
+ 455 000e 7047     		bx	lr
+ARM GAS  /tmp/ccGMuq7y.s 			page 19
+
+
+ 456              	.L57:
+ 457              		.align	2
+ 458              	.L56:
+ 459 0010 00000000 		.word	ProtocolValue
+ 460 0014 00000000 		.word	pInformation
+ 461              		.cfi_endproc
+ 462              	.LFE47:
+ 464              		.section	.text.CustomHID_init,"ax",%progbits
+ 465              		.align	1
+ 466              		.p2align 2,,3
+ 467              		.global	CustomHID_init
+ 468              		.syntax unified
+ 469              		.thumb
+ 470              		.thumb_func
+ 471              		.fpu softvfp
+ 473              	CustomHID_init:
+ 474              	.LFB29:
+ 156:../application/Src/usb_prop.c ****   /* Update the serial number string descriptor with the data from the unique 
+ 475              		.loc 1 156 1 is_stmt 1 view -0
+ 476              		.cfi_startproc
+ 477              		@ args = 0, pretend = 0, frame = 0
+ 478              		@ frame_needed = 0, uses_anonymous_args = 0
+ 159:../application/Src/usb_prop.c **** 	Get_ProductStr();
+ 479              		.loc 1 159 3 view .LVU113
+ 156:../application/Src/usb_prop.c ****   /* Update the serial number string descriptor with the data from the unique 
+ 480              		.loc 1 156 1 is_stmt 0 view .LVU114
+ 481 0000 10B5     		push	{r4, lr}
+ 482              	.LCFI2:
+ 483              		.cfi_def_cfa_offset 8
+ 484              		.cfi_offset 4, -8
+ 485              		.cfi_offset 14, -4
+ 164:../application/Src/usb_prop.c ****   /* Connect the device */
+ 486              		.loc 1 164 39 view .LVU115
+ 487 0002 0024     		movs	r4, #0
+ 159:../application/Src/usb_prop.c **** 	Get_ProductStr();
+ 488              		.loc 1 159 3 view .LVU116
+ 489 0004 FFF7FEFF 		bl	Get_SerialNum
+ 490              	.LVL24:
+ 160:../application/Src/usb_prop.c **** 	Get_VidPid();
+ 491              		.loc 1 160 2 is_stmt 1 view .LVU117
+ 492 0008 FFF7FEFF 		bl	Get_ProductStr
+ 493              	.LVL25:
+ 161:../application/Src/usb_prop.c **** 	JoystickHID_Report_Descriptor.Descriptor_Size = Get_ReportDesc();
+ 494              		.loc 1 161 2 view .LVU118
+ 495 000c FFF7FEFF 		bl	Get_VidPid
+ 496              	.LVL26:
+ 162:../application/Src/usb_prop.c ****     
+ 497              		.loc 1 162 2 view .LVU119
+ 162:../application/Src/usb_prop.c ****     
+ 498              		.loc 1 162 50 is_stmt 0 view .LVU120
+ 499 0010 FFF7FEFF 		bl	Get_ReportDesc
+ 500              	.LVL27:
+ 164:../application/Src/usb_prop.c ****   /* Connect the device */
+ 501              		.loc 1 164 39 view .LVU121
+ 502 0014 054B     		ldr	r3, .L60
+ 162:../application/Src/usb_prop.c ****     
+ 503              		.loc 1 162 48 view .LVU122
+ARM GAS  /tmp/ccGMuq7y.s 			page 20
+
+
+ 504 0016 064A     		ldr	r2, .L60+4
+ 164:../application/Src/usb_prop.c ****   /* Connect the device */
+ 505              		.loc 1 164 39 view .LVU123
+ 506 0018 1B68     		ldr	r3, [r3]
+ 162:../application/Src/usb_prop.c ****     
+ 507              		.loc 1 162 50 view .LVU124
+ 508 001a 9080     		strh	r0, [r2, #4]	@ movhi
+ 164:../application/Src/usb_prop.c ****   /* Connect the device */
+ 509              		.loc 1 164 3 is_stmt 1 view .LVU125
+ 164:../application/Src/usb_prop.c ****   /* Connect the device */
+ 510              		.loc 1 164 39 is_stmt 0 view .LVU126
+ 511 001c 9C72     		strb	r4, [r3, #10]
+ 166:../application/Src/usb_prop.c **** 
+ 512              		.loc 1 166 3 is_stmt 1 view .LVU127
+ 513 001e FFF7FEFF 		bl	PowerOn
+ 514              	.LVL28:
+ 169:../application/Src/usb_prop.c **** 
+ 515              		.loc 1 169 3 view .LVU128
+ 516 0022 FFF7FEFF 		bl	USB_SIL_Init
+ 517              	.LVL29:
+ 171:../application/Src/usb_prop.c **** }
+ 518              		.loc 1 171 3 view .LVU129
+ 171:../application/Src/usb_prop.c **** }
+ 519              		.loc 1 171 16 is_stmt 0 view .LVU130
+ 520 0026 034B     		ldr	r3, .L60+8
+ 521 0028 1C60     		str	r4, [r3]
+ 172:../application/Src/usb_prop.c **** 
+ 522              		.loc 1 172 1 view .LVU131
+ 523 002a 10BD     		pop	{r4, pc}
+ 524              	.L61:
+ 525              		.align	2
+ 526              	.L60:
+ 527 002c 00000000 		.word	pInformation
+ 528 0030 00000000 		.word	.LANCHOR1
+ 529 0034 00000000 		.word	bDeviceState
+ 530              		.cfi_endproc
+ 531              	.LFE29:
+ 533              		.section	.text.CustomHID_Reset,"ax",%progbits
+ 534              		.align	1
+ 535              		.p2align 2,,3
+ 536              		.global	CustomHID_Reset
+ 537              		.syntax unified
+ 538              		.thumb
+ 539              		.thumb_func
+ 540              		.fpu softvfp
+ 542              	CustomHID_Reset:
+ 543              	.LFB30:
+ 182:../application/Src/usb_prop.c ****   /* Set CustomHID_DEVICE as not configured */
+ 544              		.loc 1 182 1 is_stmt 1 view -0
+ 545              		.cfi_startproc
+ 546              		@ args = 0, pretend = 0, frame = 0
+ 547              		@ frame_needed = 0, uses_anonymous_args = 0
+ 184:../application/Src/usb_prop.c ****   pInformation->Current_Interface = 0;/*the default Interface*/
+ 548              		.loc 1 184 3 view .LVU133
+ 182:../application/Src/usb_prop.c ****   /* Set CustomHID_DEVICE as not configured */
+ 549              		.loc 1 182 1 is_stmt 0 view .LVU134
+ 550 0000 10B5     		push	{r4, lr}
+ARM GAS  /tmp/ccGMuq7y.s 			page 21
+
+
+ 551              	.LCFI3:
+ 552              		.cfi_def_cfa_offset 8
+ 553              		.cfi_offset 4, -8
+ 554              		.cfi_offset 14, -4
+ 184:../application/Src/usb_prop.c ****   pInformation->Current_Interface = 0;/*the default Interface*/
+ 555              		.loc 1 184 39 view .LVU135
+ 556 0002 0024     		movs	r4, #0
+ 184:../application/Src/usb_prop.c ****   pInformation->Current_Interface = 0;/*the default Interface*/
+ 557              		.loc 1 184 15 view .LVU136
+ 558 0004 374B     		ldr	r3, .L64
+ 188:../application/Src/usb_prop.c ****  
+ 559              		.loc 1 188 61 view .LVU137
+ 560 0006 384A     		ldr	r2, .L64+4
+ 184:../application/Src/usb_prop.c ****   pInformation->Current_Interface = 0;/*the default Interface*/
+ 561              		.loc 1 184 15 view .LVU138
+ 562 0008 1B68     		ldr	r3, [r3]
+ 185:../application/Src/usb_prop.c ****   
+ 563              		.loc 1 185 3 is_stmt 1 view .LVU139
+ 190:../application/Src/usb_prop.c **** 
+ 564              		.loc 1 190 3 is_stmt 0 view .LVU140
+ 565 000a 2046     		mov	r0, r4
+ 184:../application/Src/usb_prop.c ****   pInformation->Current_Interface = 0;/*the default Interface*/
+ 566              		.loc 1 184 39 view .LVU141
+ 567 000c 5C81     		strh	r4, [r3, #10]	@ movhi
+ 188:../application/Src/usb_prop.c ****  
+ 568              		.loc 1 188 3 is_stmt 1 view .LVU142
+ 188:../application/Src/usb_prop.c ****  
+ 569              		.loc 1 188 33 is_stmt 0 view .LVU143
+ 570 000e D279     		ldrb	r2, [r2, #7]	@ zero_extendqisi2
+ 571 0010 5A72     		strb	r2, [r3, #9]
+ 190:../application/Src/usb_prop.c **** 
+ 572              		.loc 1 190 3 is_stmt 1 view .LVU144
+ 573 0012 FFF7FEFF 		bl	SetBTABLE
+ 574              	.LVL30:
+ 193:../application/Src/usb_prop.c ****   SetEPTxStatus(ENDP0, EP_TX_STALL);
+ 575              		.loc 1 193 3 view .LVU145
+ 576 0016 2046     		mov	r0, r4
+ 577 0018 4FF40071 		mov	r1, #512
+ 578 001c FFF7FEFF 		bl	SetEPType
+ 579              	.LVL31:
+ 194:../application/Src/usb_prop.c ****   SetEPRxAddr(ENDP0, ENDP0_RXADDR);
+ 580              		.loc 1 194 3 view .LVU146
+ 581 0020 2046     		mov	r0, r4
+ 582 0022 1021     		movs	r1, #16
+ 583 0024 FFF7FEFF 		bl	SetEPTxStatus
+ 584              	.LVL32:
+ 195:../application/Src/usb_prop.c ****   SetEPTxAddr(ENDP0, ENDP0_TXADDR);
+ 585              		.loc 1 195 3 view .LVU147
+ 586 0028 2046     		mov	r0, r4
+ 587 002a 1821     		movs	r1, #24
+ 588 002c FFF7FEFF 		bl	SetEPRxAddr
+ 589              	.LVL33:
+ 196:../application/Src/usb_prop.c ****   Clear_Status_Out(ENDP0);
+ 590              		.loc 1 196 3 view .LVU148
+ 591 0030 5821     		movs	r1, #88
+ 592 0032 2046     		mov	r0, r4
+ 593 0034 FFF7FEFF 		bl	SetEPTxAddr
+ARM GAS  /tmp/ccGMuq7y.s 			page 22
+
+
+ 594              	.LVL34:
+ 197:../application/Src/usb_prop.c ****   SetEPRxCount(ENDP0, Device_Property.MaxPacketSize);
+ 595              		.loc 1 197 3 view .LVU149
+ 596 0038 2046     		mov	r0, r4
+ 597 003a FFF7FEFF 		bl	Clear_Status_Out
+ 598              	.LVL35:
+ 198:../application/Src/usb_prop.c ****   SetEPRxValid(ENDP0);
+ 599              		.loc 1 198 3 view .LVU150
+ 198:../application/Src/usb_prop.c ****   SetEPRxValid(ENDP0);
+ 600              		.loc 1 198 38 is_stmt 0 view .LVU151
+ 601 003e 2B4B     		ldr	r3, .L64+8
+ 198:../application/Src/usb_prop.c ****   SetEPRxValid(ENDP0);
+ 602              		.loc 1 198 3 view .LVU152
+ 603 0040 2046     		mov	r0, r4
+ 604 0042 93F82C10 		ldrb	r1, [r3, #44]	@ zero_extendqisi2
+ 605 0046 FFF7FEFF 		bl	SetEPRxCount
+ 606              	.LVL36:
+ 199:../application/Src/usb_prop.c **** 
+ 607              		.loc 1 199 3 is_stmt 1 view .LVU153
+ 608 004a 2046     		mov	r0, r4
+ 609 004c FFF7FEFF 		bl	SetEPRxValid
+ 610              	.LVL37:
+ 202:../application/Src/usb_prop.c ****   SetEPTxAddr(ENDP1, ENDP1_TXADDR);
+ 611              		.loc 1 202 3 view .LVU154
+ 612 0050 4FF4C061 		mov	r1, #1536
+ 613 0054 0120     		movs	r0, #1
+ 614 0056 FFF7FEFF 		bl	SetEPType
+ 615              	.LVL38:
+ 203:../application/Src/usb_prop.c ****   SetEPRxAddr(ENDP1, ENDP1_RXADDR);
+ 616              		.loc 1 203 3 view .LVU155
+ 617 005a 4FF48C71 		mov	r1, #280
+ 618 005e 0120     		movs	r0, #1
+ 619 0060 FFF7FEFF 		bl	SetEPTxAddr
+ 620              	.LVL39:
+ 204:../application/Src/usb_prop.c ****   SetEPTxCount(ENDP1, 0);
+ 621              		.loc 1 204 3 view .LVU156
+ 622 0064 4FF48E71 		mov	r1, #284
+ 623 0068 0120     		movs	r0, #1
+ 624 006a FFF7FEFF 		bl	SetEPRxAddr
+ 625              	.LVL40:
+ 205:../application/Src/usb_prop.c ****   SetEPRxCount(ENDP1, 64);
+ 626              		.loc 1 205 3 view .LVU157
+ 627 006e 2146     		mov	r1, r4
+ 628 0070 0120     		movs	r0, #1
+ 629 0072 FFF7FEFF 		bl	SetEPTxCount
+ 630              	.LVL41:
+ 206:../application/Src/usb_prop.c ****   SetEPRxStatus(ENDP1, EP_RX_VALID);
+ 631              		.loc 1 206 3 view .LVU158
+ 632 0076 4021     		movs	r1, #64
+ 633 0078 0120     		movs	r0, #1
+ 634 007a FFF7FEFF 		bl	SetEPRxCount
+ 635              	.LVL42:
+ 207:../application/Src/usb_prop.c ****   SetEPTxStatus(ENDP1, EP_TX_NAK);
+ 636              		.loc 1 207 3 view .LVU159
+ 637 007e 4FF44051 		mov	r1, #12288
+ 638 0082 0120     		movs	r0, #1
+ 639 0084 FFF7FEFF 		bl	SetEPRxStatus
+ARM GAS  /tmp/ccGMuq7y.s 			page 23
+
+
+ 640              	.LVL43:
+ 208:../application/Src/usb_prop.c **** 	
+ 641              		.loc 1 208 3 view .LVU160
+ 642 0088 2021     		movs	r1, #32
+ 643 008a 0120     		movs	r0, #1
+ 644 008c FFF7FEFF 		bl	SetEPTxStatus
+ 645              	.LVL44:
+ 211:../application/Src/usb_prop.c ****   SetEPTxAddr(ENDP2, ENDP2_TXADDR);
+ 646              		.loc 1 211 3 view .LVU161
+ 647 0090 4FF4C061 		mov	r1, #1536
+ 648 0094 0220     		movs	r0, #2
+ 649 0096 FFF7FEFF 		bl	SetEPType
+ 650              	.LVL45:
+ 212:../application/Src/usb_prop.c ****   SetEPRxAddr(ENDP2, ENDP2_RXADDR);
+ 651              		.loc 1 212 3 view .LVU162
+ 652 009a 9821     		movs	r1, #152
+ 653 009c 0220     		movs	r0, #2
+ 654 009e FFF7FEFF 		bl	SetEPTxAddr
+ 655              	.LVL46:
+ 213:../application/Src/usb_prop.c ****   SetEPTxCount(ENDP2, 0);
+ 656              		.loc 1 213 3 view .LVU163
+ 657 00a2 D821     		movs	r1, #216
+ 658 00a4 0220     		movs	r0, #2
+ 659 00a6 FFF7FEFF 		bl	SetEPRxAddr
+ 660              	.LVL47:
+ 214:../application/Src/usb_prop.c ****   SetEPRxCount(ENDP2, 64);
+ 661              		.loc 1 214 3 view .LVU164
+ 662 00aa 2146     		mov	r1, r4
+ 663 00ac 0220     		movs	r0, #2
+ 664 00ae FFF7FEFF 		bl	SetEPTxCount
+ 665              	.LVL48:
+ 215:../application/Src/usb_prop.c ****   SetEPRxStatus(ENDP2, EP_RX_VALID);
+ 666              		.loc 1 215 3 view .LVU165
+ 667 00b2 4021     		movs	r1, #64
+ 668 00b4 0220     		movs	r0, #2
+ 669 00b6 FFF7FEFF 		bl	SetEPRxCount
+ 670              	.LVL49:
+ 216:../application/Src/usb_prop.c ****   SetEPTxStatus(ENDP2, EP_TX_NAK);
+ 671              		.loc 1 216 3 view .LVU166
+ 672 00ba 4FF44051 		mov	r1, #12288
+ 673 00be 0220     		movs	r0, #2
+ 674 00c0 FFF7FEFF 		bl	SetEPRxStatus
+ 675              	.LVL50:
+ 217:../application/Src/usb_prop.c **** 
+ 676              		.loc 1 217 3 view .LVU167
+ 677 00c4 2021     		movs	r1, #32
+ 678 00c6 0220     		movs	r0, #2
+ 679 00c8 FFF7FEFF 		bl	SetEPTxStatus
+ 680              	.LVL51:
+ 220:../application/Src/usb_prop.c ****   bDeviceState = ATTACHED;
+ 681              		.loc 1 220 3 view .LVU168
+ 682 00cc 2046     		mov	r0, r4
+ 683 00ce FFF7FEFF 		bl	SetDeviceAddress
+ 684              	.LVL52:
+ 221:../application/Src/usb_prop.c **** 	
+ 685              		.loc 1 221 3 view .LVU169
+ 221:../application/Src/usb_prop.c **** 	
+ARM GAS  /tmp/ccGMuq7y.s 			page 24
+
+
+ 686              		.loc 1 221 16 is_stmt 0 view .LVU170
+ 687 00d2 0123     		movs	r3, #1
+ 688 00d4 0648     		ldr	r0, .L64+12
+ 223:../application/Src/usb_prop.c **** 	EP2_PrevXferComplete = 1;
+ 689              		.loc 1 223 23 view .LVU171
+ 690 00d6 0749     		ldr	r1, .L64+16
+ 224:../application/Src/usb_prop.c **** }
+ 691              		.loc 1 224 23 view .LVU172
+ 692 00d8 074A     		ldr	r2, .L64+20
+ 221:../application/Src/usb_prop.c **** 	
+ 693              		.loc 1 221 16 view .LVU173
+ 694 00da 0360     		str	r3, [r0]
+ 223:../application/Src/usb_prop.c **** 	EP2_PrevXferComplete = 1;
+ 695              		.loc 1 223 2 is_stmt 1 view .LVU174
+ 223:../application/Src/usb_prop.c **** 	EP2_PrevXferComplete = 1;
+ 696              		.loc 1 223 23 is_stmt 0 view .LVU175
+ 697 00dc 0B70     		strb	r3, [r1]
+ 224:../application/Src/usb_prop.c **** }
+ 698              		.loc 1 224 2 is_stmt 1 view .LVU176
+ 224:../application/Src/usb_prop.c **** }
+ 699              		.loc 1 224 23 is_stmt 0 view .LVU177
+ 700 00de 1370     		strb	r3, [r2]
+ 225:../application/Src/usb_prop.c **** /*******************************************************************************
+ 701              		.loc 1 225 1 view .LVU178
+ 702 00e0 10BD     		pop	{r4, pc}
+ 703              	.L65:
+ 704 00e2 00BF     		.align	2
+ 705              	.L64:
+ 706 00e4 00000000 		.word	pInformation
+ 707 00e8 00000000 		.word	Composite_ConfigDescriptor
+ 708 00ec 00000000 		.word	.LANCHOR2
+ 709 00f0 00000000 		.word	bDeviceState
+ 710 00f4 00000000 		.word	EP1_PrevXferComplete
+ 711 00f8 00000000 		.word	EP2_PrevXferComplete
+ 712              		.cfi_endproc
+ 713              	.LFE30:
+ 715              		.section	.text.CustomHID_GetDeviceDescriptor,"ax",%progbits
+ 716              		.align	1
+ 717              		.p2align 2,,3
+ 718              		.global	CustomHID_GetDeviceDescriptor
+ 719              		.syntax unified
+ 720              		.thumb
+ 721              		.thumb_func
+ 722              		.fpu softvfp
+ 724              	CustomHID_GetDeviceDescriptor:
+ 725              	.LVL53:
+ 726              	.LFB38:
+ 400:../application/Src/usb_prop.c ****   return Standard_GetDescriptorData(Length, &Device_Descriptor);
+ 727              		.loc 1 400 1 is_stmt 1 view -0
+ 728              		.cfi_startproc
+ 729              		@ args = 0, pretend = 0, frame = 0
+ 730              		@ frame_needed = 0, uses_anonymous_args = 0
+ 731              		@ link register save eliminated.
+ 401:../application/Src/usb_prop.c **** }
+ 732              		.loc 1 401 3 view .LVU180
+ 401:../application/Src/usb_prop.c **** }
+ 733              		.loc 1 401 10 is_stmt 0 view .LVU181
+ARM GAS  /tmp/ccGMuq7y.s 			page 25
+
+
+ 734 0000 0149     		ldr	r1, .L67
+ 735 0002 FFF7FEBF 		b	Standard_GetDescriptorData
+ 736              	.LVL54:
+ 737              	.L68:
+ 401:../application/Src/usb_prop.c **** }
+ 738              		.loc 1 401 10 view .LVU182
+ 739 0006 00BF     		.align	2
+ 740              	.L67:
+ 741 0008 00000000 		.word	.LANCHOR3
+ 742              		.cfi_endproc
+ 743              	.LFE38:
+ 745              		.section	.text.CustomHID_GetConfigDescriptor,"ax",%progbits
+ 746              		.align	1
+ 747              		.p2align 2,,3
+ 748              		.global	CustomHID_GetConfigDescriptor
+ 749              		.syntax unified
+ 750              		.thumb
+ 751              		.thumb_func
+ 752              		.fpu softvfp
+ 754              	CustomHID_GetConfigDescriptor:
+ 755              	.LVL55:
+ 756              	.LFB39:
+ 412:../application/Src/usb_prop.c ****   return Standard_GetDescriptorData(Length, &Config_Descriptor);
+ 757              		.loc 1 412 1 is_stmt 1 view -0
+ 758              		.cfi_startproc
+ 759              		@ args = 0, pretend = 0, frame = 0
+ 760              		@ frame_needed = 0, uses_anonymous_args = 0
+ 761              		@ link register save eliminated.
+ 413:../application/Src/usb_prop.c **** }
+ 762              		.loc 1 413 3 view .LVU184
+ 413:../application/Src/usb_prop.c **** }
+ 763              		.loc 1 413 10 is_stmt 0 view .LVU185
+ 764 0000 0149     		ldr	r1, .L70
+ 765 0002 FFF7FEBF 		b	Standard_GetDescriptorData
+ 766              	.LVL56:
+ 767              	.L71:
+ 413:../application/Src/usb_prop.c **** }
+ 768              		.loc 1 413 10 view .LVU186
+ 769 0006 00BF     		.align	2
+ 770              	.L70:
+ 771 0008 00000000 		.word	.LANCHOR4
+ 772              		.cfi_endproc
+ 773              	.LFE39:
+ 775              		.section	.text.CustomHID_GetStringDescriptor,"ax",%progbits
+ 776              		.align	1
+ 777              		.p2align 2,,3
+ 778              		.global	CustomHID_GetStringDescriptor
+ 779              		.syntax unified
+ 780              		.thumb
+ 781              		.thumb_func
+ 782              		.fpu softvfp
+ 784              	CustomHID_GetStringDescriptor:
+ 785              	.LVL57:
+ 786              	.LFB40:
+ 424:../application/Src/usb_prop.c ****   uint8_t wValue0 = pInformation->USBwValue0;
+ 787              		.loc 1 424 1 is_stmt 1 view -0
+ 788              		.cfi_startproc
+ARM GAS  /tmp/ccGMuq7y.s 			page 26
+
+
+ 789              		@ args = 0, pretend = 0, frame = 0
+ 790              		@ frame_needed = 0, uses_anonymous_args = 0
+ 791              		@ link register save eliminated.
+ 425:../application/Src/usb_prop.c ****   if (wValue0 >= 4)
+ 792              		.loc 1 425 3 view .LVU188
+ 425:../application/Src/usb_prop.c ****   if (wValue0 >= 4)
+ 793              		.loc 1 425 11 is_stmt 0 view .LVU189
+ 794 0000 054B     		ldr	r3, .L74
+ 795 0002 1B68     		ldr	r3, [r3]
+ 796 0004 DB78     		ldrb	r3, [r3, #3]	@ zero_extendqisi2
+ 797              	.LVL58:
+ 426:../application/Src/usb_prop.c ****   {
+ 798              		.loc 1 426 3 is_stmt 1 view .LVU190
+ 426:../application/Src/usb_prop.c ****   {
+ 799              		.loc 1 426 6 is_stmt 0 view .LVU191
+ 800 0006 032B     		cmp	r3, #3
+ 801 0008 04D8     		bhi	.L73
+ 432:../application/Src/usb_prop.c ****   }
+ 802              		.loc 1 432 5 is_stmt 1 view .LVU192
+ 432:../application/Src/usb_prop.c ****   }
+ 803              		.loc 1 432 47 is_stmt 0 view .LVU193
+ 804 000a 0449     		ldr	r1, .L74+4
+ 432:../application/Src/usb_prop.c ****   }
+ 805              		.loc 1 432 12 view .LVU194
+ 806 000c 01EBC301 		add	r1, r1, r3, lsl #3
+ 807 0010 FFF7FEBF 		b	Standard_GetDescriptorData
+ 808              	.LVL59:
+ 809              	.L73:
+ 434:../application/Src/usb_prop.c **** 
+ 810              		.loc 1 434 1 view .LVU195
+ 811 0014 0020     		movs	r0, #0
+ 812              	.LVL60:
+ 434:../application/Src/usb_prop.c **** 
+ 813              		.loc 1 434 1 view .LVU196
+ 814 0016 7047     		bx	lr
+ 815              	.L75:
+ 816              		.align	2
+ 817              	.L74:
+ 818 0018 00000000 		.word	pInformation
+ 819 001c 00000000 		.word	.LANCHOR5
+ 820              		.cfi_endproc
+ 821              	.LFE40:
+ 823              		.section	.text.JoystickHID_GetReportDescriptor,"ax",%progbits
+ 824              		.align	1
+ 825              		.p2align 2,,3
+ 826              		.global	JoystickHID_GetReportDescriptor
+ 827              		.syntax unified
+ 828              		.thumb
+ 829              		.thumb_func
+ 830              		.fpu softvfp
+ 832              	JoystickHID_GetReportDescriptor:
+ 833              	.LVL61:
+ 834              	.LFB41:
+ 444:../application/Src/usb_prop.c ****   return Standard_GetDescriptorData(Length, &JoystickHID_Report_Descriptor);
+ 835              		.loc 1 444 1 is_stmt 1 view -0
+ 836              		.cfi_startproc
+ 837              		@ args = 0, pretend = 0, frame = 0
+ARM GAS  /tmp/ccGMuq7y.s 			page 27
+
+
+ 838              		@ frame_needed = 0, uses_anonymous_args = 0
+ 839              		@ link register save eliminated.
+ 445:../application/Src/usb_prop.c **** }
+ 840              		.loc 1 445 3 view .LVU198
+ 445:../application/Src/usb_prop.c **** }
+ 841              		.loc 1 445 10 is_stmt 0 view .LVU199
+ 842 0000 0149     		ldr	r1, .L77
+ 843 0002 FFF7FEBF 		b	Standard_GetDescriptorData
+ 844              	.LVL62:
+ 845              	.L78:
+ 445:../application/Src/usb_prop.c **** }
+ 846              		.loc 1 445 10 view .LVU200
+ 847 0006 00BF     		.align	2
+ 848              	.L77:
+ 849 0008 00000000 		.word	.LANCHOR1
+ 850              		.cfi_endproc
+ 851              	.LFE41:
+ 853              		.section	.text.CustomHID_GetReportDescriptor,"ax",%progbits
+ 854              		.align	1
+ 855              		.p2align 2,,3
+ 856              		.global	CustomHID_GetReportDescriptor
+ 857              		.syntax unified
+ 858              		.thumb
+ 859              		.thumb_func
+ 860              		.fpu softvfp
+ 862              	CustomHID_GetReportDescriptor:
+ 863              	.LVL63:
+ 864              	.LFB42:
+ 456:../application/Src/usb_prop.c ****   return Standard_GetDescriptorData(Length, &CustomHID_Report_Descriptor);
+ 865              		.loc 1 456 1 is_stmt 1 view -0
+ 866              		.cfi_startproc
+ 867              		@ args = 0, pretend = 0, frame = 0
+ 868              		@ frame_needed = 0, uses_anonymous_args = 0
+ 869              		@ link register save eliminated.
+ 457:../application/Src/usb_prop.c **** }
+ 870              		.loc 1 457 3 view .LVU202
+ 457:../application/Src/usb_prop.c **** }
+ 871              		.loc 1 457 10 is_stmt 0 view .LVU203
+ 872 0000 0149     		ldr	r1, .L80
+ 873 0002 FFF7FEBF 		b	Standard_GetDescriptorData
+ 874              	.LVL64:
+ 875              	.L81:
+ 457:../application/Src/usb_prop.c **** }
+ 876              		.loc 1 457 10 view .LVU204
+ 877 0006 00BF     		.align	2
+ 878              	.L80:
+ 879 0008 00000000 		.word	.LANCHOR6
+ 880              		.cfi_endproc
+ 881              	.LFE42:
+ 883              		.section	.text.JoystickHID_GetHIDDescriptor,"ax",%progbits
+ 884              		.align	1
+ 885              		.p2align 2,,3
+ 886              		.global	JoystickHID_GetHIDDescriptor
+ 887              		.syntax unified
+ 888              		.thumb
+ 889              		.thumb_func
+ 890              		.fpu softvfp
+ARM GAS  /tmp/ccGMuq7y.s 			page 28
+
+
+ 892              	JoystickHID_GetHIDDescriptor:
+ 893              	.LVL65:
+ 894              	.LFB43:
+ 468:../application/Src/usb_prop.c ****   return Standard_GetDescriptorData(Length, &JoystickHID_Hid_Descriptor);
+ 895              		.loc 1 468 1 is_stmt 1 view -0
+ 896              		.cfi_startproc
+ 897              		@ args = 0, pretend = 0, frame = 0
+ 898              		@ frame_needed = 0, uses_anonymous_args = 0
+ 899              		@ link register save eliminated.
+ 469:../application/Src/usb_prop.c **** }
+ 900              		.loc 1 469 3 view .LVU206
+ 469:../application/Src/usb_prop.c **** }
+ 901              		.loc 1 469 10 is_stmt 0 view .LVU207
+ 902 0000 0149     		ldr	r1, .L83
+ 903 0002 FFF7FEBF 		b	Standard_GetDescriptorData
+ 904              	.LVL66:
+ 905              	.L84:
+ 469:../application/Src/usb_prop.c **** }
+ 906              		.loc 1 469 10 view .LVU208
+ 907 0006 00BF     		.align	2
+ 908              	.L83:
+ 909 0008 00000000 		.word	.LANCHOR7
+ 910              		.cfi_endproc
+ 911              	.LFE43:
+ 913              		.section	.text.CustomHID_GetHIDDescriptor,"ax",%progbits
+ 914              		.align	1
+ 915              		.p2align 2,,3
+ 916              		.global	CustomHID_GetHIDDescriptor
+ 917              		.syntax unified
+ 918              		.thumb
+ 919              		.thumb_func
+ 920              		.fpu softvfp
+ 922              	CustomHID_GetHIDDescriptor:
+ 923              	.LVL67:
+ 924              	.LFB44:
+ 480:../application/Src/usb_prop.c ****   return Standard_GetDescriptorData(Length, &CustomHID_Hid_Descriptor);
+ 925              		.loc 1 480 1 is_stmt 1 view -0
+ 926              		.cfi_startproc
+ 927              		@ args = 0, pretend = 0, frame = 0
+ 928              		@ frame_needed = 0, uses_anonymous_args = 0
+ 929              		@ link register save eliminated.
+ 481:../application/Src/usb_prop.c **** }
+ 930              		.loc 1 481 3 view .LVU210
+ 481:../application/Src/usb_prop.c **** }
+ 931              		.loc 1 481 10 is_stmt 0 view .LVU211
+ 932 0000 0149     		ldr	r1, .L86
+ 933 0002 FFF7FEBF 		b	Standard_GetDescriptorData
+ 934              	.LVL68:
+ 935              	.L87:
+ 481:../application/Src/usb_prop.c **** }
+ 936              		.loc 1 481 10 view .LVU212
+ 937 0006 00BF     		.align	2
+ 938              	.L86:
+ 939 0008 00000000 		.word	.LANCHOR8
+ 940              		.cfi_endproc
+ 941              	.LFE44:
+ 943              		.section	.text.CustomHID_Status_Out,"ax",%progbits
+ARM GAS  /tmp/ccGMuq7y.s 			page 29
+
+
+ 944              		.align	1
+ 945              		.p2align 2,,3
+ 946              		.global	CustomHID_Status_Out
+ 947              		.syntax unified
+ 948              		.thumb
+ 949              		.thumb_func
+ 950              		.fpu softvfp
+ 952              	CustomHID_Status_Out:
+ 953              	.LFB49:
+ 954              		.cfi_startproc
+ 955              		@ args = 0, pretend = 0, frame = 0
+ 956              		@ frame_needed = 0, uses_anonymous_args = 0
+ 957              		@ link register save eliminated.
+ 958 0000 7047     		bx	lr
+ 959              		.cfi_endproc
+ 960              	.LFE49:
+ 962 0002 00BF     		.section	.text.CustomHID_SetProtocol,"ax",%progbits
+ 963              		.align	1
+ 964              		.p2align 2,,3
+ 965              		.global	CustomHID_SetProtocol
+ 966              		.syntax unified
+ 967              		.thumb
+ 968              		.thumb_func
+ 969              		.fpu softvfp
+ 971              	CustomHID_SetProtocol:
+ 972              	.LFB46:
+ 514:../application/Src/usb_prop.c ****   uint8_t wValue0 = pInformation->USBwValue0;
+ 973              		.loc 1 514 1 is_stmt 1 view -0
+ 974              		.cfi_startproc
+ 975              		@ args = 0, pretend = 0, frame = 0
+ 976              		@ frame_needed = 0, uses_anonymous_args = 0
+ 977              		@ link register save eliminated.
+ 515:../application/Src/usb_prop.c ****   ProtocolValue = wValue0;
+ 978              		.loc 1 515 3 view .LVU214
+ 979              	.LVL69:
+ 516:../application/Src/usb_prop.c ****   return USB_SUCCESS;
+ 980              		.loc 1 516 3 view .LVU215
+ 515:../application/Src/usb_prop.c ****   ProtocolValue = wValue0;
+ 981              		.loc 1 515 11 is_stmt 0 view .LVU216
+ 982 0000 034A     		ldr	r2, .L90
+ 983              	.LVL70:
+ 516:../application/Src/usb_prop.c ****   return USB_SUCCESS;
+ 984              		.loc 1 516 17 view .LVU217
+ 985 0002 044B     		ldr	r3, .L90+4
+ 515:../application/Src/usb_prop.c ****   ProtocolValue = wValue0;
+ 986              		.loc 1 515 11 view .LVU218
+ 987 0004 1268     		ldr	r2, [r2]
+ 988              	.LVL71:
+ 518:../application/Src/usb_prop.c **** 
+ 989              		.loc 1 518 1 view .LVU219
+ 990 0006 0020     		movs	r0, #0
+ 516:../application/Src/usb_prop.c ****   return USB_SUCCESS;
+ 991              		.loc 1 516 17 view .LVU220
+ 992 0008 D278     		ldrb	r2, [r2, #3]	@ zero_extendqisi2
+ 993              	.LVL72:
+ 516:../application/Src/usb_prop.c ****   return USB_SUCCESS;
+ 994              		.loc 1 516 17 view .LVU221
+ARM GAS  /tmp/ccGMuq7y.s 			page 30
+
+
+ 995 000a 1A60     		str	r2, [r3]
+ 517:../application/Src/usb_prop.c **** }
+ 996              		.loc 1 517 3 is_stmt 1 view .LVU222
+ 518:../application/Src/usb_prop.c **** 
+ 997              		.loc 1 518 1 is_stmt 0 view .LVU223
+ 998 000c 7047     		bx	lr
+ 999              	.L91:
+ 1000 000e 00BF     		.align	2
+ 1001              	.L90:
+ 1002 0010 00000000 		.word	pInformation
+ 1003 0014 00000000 		.word	ProtocolValue
+ 1004              		.cfi_endproc
+ 1005              	.LFE46:
+ 1007              		.global	String_Descriptor
+ 1008              		.global	CustomHID_Hid_Descriptor
+ 1009              		.global	JoystickHID_Hid_Descriptor
+ 1010              		.global	CustomHID_Report_Descriptor
+ 1011              		.global	JoystickHID_Report_Descriptor
+ 1012              		.global	Config_Descriptor
+ 1013              		.global	Device_Descriptor
+ 1014              		.global	User_Standard_Requests
+ 1015              		.global	Device_Property
+ 1016              		.global	Device_Table
+ 1017              		.comm	Report_Buf,2,4
+ 1018              		.global	Request
+ 1019              		.comm	EXTI_Enable,1,1
+ 1020              		.comm	ProtocolValue,4,4
+ 1021              		.section	.bss.Request,"aw",%nobits
+ 1022              		.set	.LANCHOR0,. + 0
+ 1025              	Request:
+ 1026 0000 00       		.space	1
+ 1027              		.section	.data.Config_Descriptor,"aw"
+ 1028              		.align	2
+ 1029              		.set	.LANCHOR4,. + 0
+ 1032              	Config_Descriptor:
+ 1033 0000 00000000 		.word	Composite_ConfigDescriptor
+ 1034 0004 4200     		.short	66
+ 1035 0006 0000     		.space	2
+ 1036              		.section	.data.CustomHID_Hid_Descriptor,"aw"
+ 1037              		.align	2
+ 1038              		.set	.LANCHOR8,. + 0
+ 1041              	CustomHID_Hid_Descriptor:
+ 1042 0000 2B000000 		.word	Composite_ConfigDescriptor+43
+ 1043 0004 0900     		.short	9
+ 1044 0006 0000     		.space	2
+ 1045              		.section	.data.CustomHID_Report_Descriptor,"aw"
+ 1046              		.align	2
+ 1047              		.set	.LANCHOR6,. + 0
+ 1050              	CustomHID_Report_Descriptor:
+ 1051 0000 00000000 		.word	CustomHID_ReportDescriptor
+ 1052 0004 5800     		.short	88
+ 1053 0006 0000     		.space	2
+ 1054              		.section	.data.Device_Descriptor,"aw"
+ 1055              		.align	2
+ 1056              		.set	.LANCHOR3,. + 0
+ 1059              	Device_Descriptor:
+ 1060 0000 00000000 		.word	Composite_DeviceDescriptor
+ARM GAS  /tmp/ccGMuq7y.s 			page 31
+
+
+ 1061 0004 1200     		.short	18
+ 1062 0006 0000     		.space	2
+ 1063              		.section	.data.Device_Property,"aw"
+ 1064              		.align	2
+ 1065              		.set	.LANCHOR2,. + 0
+ 1068              	Device_Property:
+ 1069 0000 00000000 		.word	CustomHID_init
+ 1070 0004 00000000 		.word	CustomHID_Reset
+ 1071 0008 00000000 		.word	CustomHID_Status_In
+ 1072 000c 00000000 		.word	CustomHID_Status_Out
+ 1073 0010 00000000 		.word	CustomHID_Data_Setup
+ 1074 0014 00000000 		.word	CustomHID_NoData_Setup
+ 1075 0018 00000000 		.word	CustomHID_Get_Interface_Setting
+ 1076 001c 00000000 		.word	CustomHID_GetDeviceDescriptor
+ 1077 0020 00000000 		.word	CustomHID_GetConfigDescriptor
+ 1078 0024 00000000 		.word	CustomHID_GetStringDescriptor
+ 1079 0028 00000000 		.word	0
+ 1080 002c 40       		.byte	64
+ 1081 002d 000000   		.space	3
+ 1082              		.section	.data.Device_Table,"aw"
+ 1083              		.align	2
+ 1086              	Device_Table:
+ 1087 0000 03       		.byte	3
+ 1088 0001 01       		.byte	1
+ 1089              		.section	.data.JoystickHID_Hid_Descriptor,"aw"
+ 1090              		.align	2
+ 1091              		.set	.LANCHOR7,. + 0
+ 1094              	JoystickHID_Hid_Descriptor:
+ 1095 0000 12000000 		.word	Composite_ConfigDescriptor+18
+ 1096 0004 0900     		.short	9
+ 1097 0006 0000     		.space	2
+ 1098              		.section	.data.JoystickHID_Report_Descriptor,"aw"
+ 1099              		.align	2
+ 1100              		.set	.LANCHOR1,. + 0
+ 1103              	JoystickHID_Report_Descriptor:
+ 1104 0000 00000000 		.word	JoystickHID_ReportDescriptor
+ 1105 0004 5600     		.short	86
+ 1106 0006 0000     		.space	2
+ 1107              		.section	.data.String_Descriptor,"aw"
+ 1108              		.align	2
+ 1109              		.set	.LANCHOR5,. + 0
+ 1112              	String_Descriptor:
+ 1113 0000 00000000 		.word	Composite_StringLangID
+ 1114 0004 0400     		.short	4
+ 1115 0006 0000     		.space	2
+ 1116 0008 00000000 		.word	Composite_StringVendor
+ 1117 000c 2600     		.short	38
+ 1118 000e 0000     		.space	2
+ 1119 0010 00000000 		.word	Composite_StringProduct
+ 1120 0014 3400     		.short	52
+ 1121 0016 0000     		.space	2
+ 1122 0018 00000000 		.word	Composite_StringSerial
+ 1123 001c 1A00     		.short	26
+ 1124 001e 0000     		.space	2
+ 1125              		.section	.data.User_Standard_Requests,"aw"
+ 1126              		.align	2
+ 1129              	User_Standard_Requests:
+ARM GAS  /tmp/ccGMuq7y.s 			page 32
+
+
+ 1130 0000 00000000 		.word	NOP_Process
+ 1131 0004 00000000 		.word	CustomHID_SetConfiguration
+ 1132 0008 00000000 		.word	NOP_Process
+ 1133 000c 00000000 		.word	NOP_Process
+ 1134 0010 00000000 		.word	NOP_Process
+ 1135 0014 00000000 		.word	NOP_Process
+ 1136 0018 00000000 		.word	NOP_Process
+ 1137 001c 00000000 		.word	NOP_Process
+ 1138 0020 00000000 		.word	CustomHID_SetDeviceAddress
+ 1139              		.text
+ 1140              	.Letext0:
+ 1141              		.file 2 "/usr/lib/gcc/arm-none-eabi/9.2.1/include/stdint.h"
+ 1142              		.file 3 "../Drivers/CMSIS/CM3/CoreSupport/core_cm3.h"
+ 1143              		.file 4 "../Drivers/CMSIS/CM3/DeviceSupport/ST/STM32F10x/system_stm32f10x.h"
+ 1144              		.file 5 "../Drivers/STM32_USB-FS-Device_Driver/inc/usb_type.h"
+ 1145              		.file 6 "../Drivers/STM32_USB-FS-Device_Driver/inc/usb_regs.h"
+ 1146              		.file 7 "../Drivers/STM32_USB-FS-Device_Driver/inc/usb_def.h"
+ 1147              		.file 8 "../Drivers/STM32_USB-FS-Device_Driver/inc/usb_core.h"
+ 1148              		.file 9 "../Drivers/STM32_USB-FS-Device_Driver/inc/usb_init.h"
+ 1149              		.file 10 "../Drivers/STM32_USB-FS-Device_Driver/inc/usb_lib.h"
+ 1150              		.file 11 "../application/Inc/usb_prop.h"
+ 1151              		.file 12 "../application/Inc/usb_desc.h"
+ 1152              		.file 13 "../application/Inc/usb_pwr.h"
+ 1153              		.file 14 "../application/Inc/usb_hw.h"
+ 1154              		.file 15 "../Drivers/STM32_USB-FS-Device_Driver/inc/usb_sil.h"
+ARM GAS  /tmp/ccGMuq7y.s 			page 33
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 usb_prop.c
+     /tmp/ccGMuq7y.s:16     .text.CustomHID_SetConfiguration:0000000000000000 $t
+     /tmp/ccGMuq7y.s:25     .text.CustomHID_SetConfiguration:0000000000000000 CustomHID_SetConfiguration
+     /tmp/ccGMuq7y.s:51     .text.CustomHID_SetConfiguration:0000000000000010 $d
+     /tmp/ccGMuq7y.s:57     .text.CustomHID_SetDeviceAddress:0000000000000000 $t
+     /tmp/ccGMuq7y.s:65     .text.CustomHID_SetDeviceAddress:0000000000000000 CustomHID_SetDeviceAddress
+     /tmp/ccGMuq7y.s:82     .text.CustomHID_SetDeviceAddress:0000000000000008 $d
+     /tmp/ccGMuq7y.s:87     .text.CustomHID_Status_In:0000000000000000 $t
+     /tmp/ccGMuq7y.s:95     .text.CustomHID_Status_In:0000000000000000 CustomHID_Status_In
+     /tmp/ccGMuq7y.s:108    .text.CustomHID_Data_Setup:0000000000000000 $t
+     /tmp/ccGMuq7y.s:116    .text.CustomHID_Data_Setup:0000000000000000 CustomHID_Data_Setup
+     /tmp/ccGMuq7y.s:252    .text.CustomHID_Data_Setup:0000000000000068 $d
+     /tmp/ccGMuq7y.s:272    .text.CustomHID_SetReport_Feature:0000000000000000 CustomHID_SetReport_Feature
+     /tmp/ccGMuq7y.s:922    .text.CustomHID_GetHIDDescriptor:0000000000000000 CustomHID_GetHIDDescriptor
+     /tmp/ccGMuq7y.s:429    .text.CustomHID_GetProtocolValue:0000000000000000 CustomHID_GetProtocolValue
+     /tmp/ccGMuq7y.s:862    .text.CustomHID_GetReportDescriptor:0000000000000000 CustomHID_GetReportDescriptor
+     /tmp/ccGMuq7y.s:892    .text.JoystickHID_GetHIDDescriptor:0000000000000000 JoystickHID_GetHIDDescriptor
+     /tmp/ccGMuq7y.s:832    .text.JoystickHID_GetReportDescriptor:0000000000000000 JoystickHID_GetReportDescriptor
+     /tmp/ccGMuq7y.s:264    .text.CustomHID_SetReport_Feature:0000000000000000 $t
+     /tmp/ccGMuq7y.s:302    .text.CustomHID_SetReport_Feature:0000000000000010 $d
+                            *COM*:0000000000000002 Report_Buf
+     /tmp/ccGMuq7y.s:308    .text.CustomHID_NoData_Setup:0000000000000000 $t
+     /tmp/ccGMuq7y.s:316    .text.CustomHID_NoData_Setup:0000000000000000 CustomHID_NoData_Setup
+     /tmp/ccGMuq7y.s:375    .text.CustomHID_NoData_Setup:0000000000000020 $d
+                            *COM*:0000000000000004 ProtocolValue
+     /tmp/ccGMuq7y.s:381    .text.CustomHID_Get_Interface_Setting:0000000000000000 $t
+     /tmp/ccGMuq7y.s:389    .text.CustomHID_Get_Interface_Setting:0000000000000000 CustomHID_Get_Interface_Setting
+     /tmp/ccGMuq7y.s:421    .text.CustomHID_GetProtocolValue:0000000000000000 $t
+     /tmp/ccGMuq7y.s:459    .text.CustomHID_GetProtocolValue:0000000000000010 $d
+     /tmp/ccGMuq7y.s:465    .text.CustomHID_init:0000000000000000 $t
+     /tmp/ccGMuq7y.s:473    .text.CustomHID_init:0000000000000000 CustomHID_init
+     /tmp/ccGMuq7y.s:527    .text.CustomHID_init:000000000000002c $d
+     /tmp/ccGMuq7y.s:534    .text.CustomHID_Reset:0000000000000000 $t
+     /tmp/ccGMuq7y.s:542    .text.CustomHID_Reset:0000000000000000 CustomHID_Reset
+     /tmp/ccGMuq7y.s:706    .text.CustomHID_Reset:00000000000000e4 $d
+     /tmp/ccGMuq7y.s:716    .text.CustomHID_GetDeviceDescriptor:0000000000000000 $t
+     /tmp/ccGMuq7y.s:724    .text.CustomHID_GetDeviceDescriptor:0000000000000000 CustomHID_GetDeviceDescriptor
+     /tmp/ccGMuq7y.s:741    .text.CustomHID_GetDeviceDescriptor:0000000000000008 $d
+     /tmp/ccGMuq7y.s:746    .text.CustomHID_GetConfigDescriptor:0000000000000000 $t
+     /tmp/ccGMuq7y.s:754    .text.CustomHID_GetConfigDescriptor:0000000000000000 CustomHID_GetConfigDescriptor
+     /tmp/ccGMuq7y.s:771    .text.CustomHID_GetConfigDescriptor:0000000000000008 $d
+     /tmp/ccGMuq7y.s:776    .text.CustomHID_GetStringDescriptor:0000000000000000 $t
+     /tmp/ccGMuq7y.s:784    .text.CustomHID_GetStringDescriptor:0000000000000000 CustomHID_GetStringDescriptor
+     /tmp/ccGMuq7y.s:818    .text.CustomHID_GetStringDescriptor:0000000000000018 $d
+     /tmp/ccGMuq7y.s:824    .text.JoystickHID_GetReportDescriptor:0000000000000000 $t
+     /tmp/ccGMuq7y.s:849    .text.JoystickHID_GetReportDescriptor:0000000000000008 $d
+     /tmp/ccGMuq7y.s:854    .text.CustomHID_GetReportDescriptor:0000000000000000 $t
+     /tmp/ccGMuq7y.s:879    .text.CustomHID_GetReportDescriptor:0000000000000008 $d
+     /tmp/ccGMuq7y.s:884    .text.JoystickHID_GetHIDDescriptor:0000000000000000 $t
+     /tmp/ccGMuq7y.s:909    .text.JoystickHID_GetHIDDescriptor:0000000000000008 $d
+     /tmp/ccGMuq7y.s:914    .text.CustomHID_GetHIDDescriptor:0000000000000000 $t
+     /tmp/ccGMuq7y.s:939    .text.CustomHID_GetHIDDescriptor:0000000000000008 $d
+     /tmp/ccGMuq7y.s:944    .text.CustomHID_Status_Out:0000000000000000 $t
+     /tmp/ccGMuq7y.s:952    .text.CustomHID_Status_Out:0000000000000000 CustomHID_Status_Out
+     /tmp/ccGMuq7y.s:963    .text.CustomHID_SetProtocol:0000000000000000 $t
+     /tmp/ccGMuq7y.s:971    .text.CustomHID_SetProtocol:0000000000000000 CustomHID_SetProtocol
+ARM GAS  /tmp/ccGMuq7y.s 			page 34
+
+
+     /tmp/ccGMuq7y.s:1002   .text.CustomHID_SetProtocol:0000000000000010 $d
+     /tmp/ccGMuq7y.s:1112   .data.String_Descriptor:0000000000000000 String_Descriptor
+     /tmp/ccGMuq7y.s:1041   .data.CustomHID_Hid_Descriptor:0000000000000000 CustomHID_Hid_Descriptor
+     /tmp/ccGMuq7y.s:1094   .data.JoystickHID_Hid_Descriptor:0000000000000000 JoystickHID_Hid_Descriptor
+     /tmp/ccGMuq7y.s:1050   .data.CustomHID_Report_Descriptor:0000000000000000 CustomHID_Report_Descriptor
+     /tmp/ccGMuq7y.s:1103   .data.JoystickHID_Report_Descriptor:0000000000000000 JoystickHID_Report_Descriptor
+     /tmp/ccGMuq7y.s:1032   .data.Config_Descriptor:0000000000000000 Config_Descriptor
+     /tmp/ccGMuq7y.s:1059   .data.Device_Descriptor:0000000000000000 Device_Descriptor
+     /tmp/ccGMuq7y.s:1129   .data.User_Standard_Requests:0000000000000000 User_Standard_Requests
+     /tmp/ccGMuq7y.s:1068   .data.Device_Property:0000000000000000 Device_Property
+     /tmp/ccGMuq7y.s:1086   .data.Device_Table:0000000000000000 Device_Table
+     /tmp/ccGMuq7y.s:1025   .bss.Request:0000000000000000 Request
+                            *COM*:0000000000000001 EXTI_Enable
+     /tmp/ccGMuq7y.s:1026   .bss.Request:0000000000000000 $d
+     /tmp/ccGMuq7y.s:1028   .data.Config_Descriptor:0000000000000000 $d
+     /tmp/ccGMuq7y.s:1037   .data.CustomHID_Hid_Descriptor:0000000000000000 $d
+     /tmp/ccGMuq7y.s:1046   .data.CustomHID_Report_Descriptor:0000000000000000 $d
+     /tmp/ccGMuq7y.s:1055   .data.Device_Descriptor:0000000000000000 $d
+     /tmp/ccGMuq7y.s:1064   .data.Device_Property:0000000000000000 $d
+     /tmp/ccGMuq7y.s:1083   .data.Device_Table:0000000000000000 $d
+     /tmp/ccGMuq7y.s:1090   .data.JoystickHID_Hid_Descriptor:0000000000000000 $d
+     /tmp/ccGMuq7y.s:1099   .data.JoystickHID_Report_Descriptor:0000000000000000 $d
+     /tmp/ccGMuq7y.s:1108   .data.String_Descriptor:0000000000000000 $d
+     /tmp/ccGMuq7y.s:1126   .data.User_Standard_Requests:0000000000000000 $d
+
+UNDEFINED SYMBOLS
+pInformation
+bDeviceState
+Get_SerialNum
+Get_ProductStr
+Get_VidPid
+Get_ReportDesc
+PowerOn
+USB_SIL_Init
+SetBTABLE
+SetEPType
+SetEPTxStatus
+SetEPRxAddr
+SetEPTxAddr
+Clear_Status_Out
+SetEPRxCount
+SetEPRxValid
+SetEPTxCount
+SetEPRxStatus
+SetDeviceAddress
+Composite_ConfigDescriptor
+EP1_PrevXferComplete
+EP2_PrevXferComplete
+Standard_GetDescriptorData
+CustomHID_ReportDescriptor
+Composite_DeviceDescriptor
+JoystickHID_ReportDescriptor
+Composite_StringLangID
+Composite_StringVendor
+Composite_StringProduct
+Composite_StringSerial
+NOP_Process
+ARM GAS  /tmp/ccGMuq7y.s 			page 35
+
+
