@@ -1,0 +1,54 @@
+{
+    "name": "PlayerControls",
+    "maps": [
+        {
+            "name": "Gameplay",
+            "id": "7d648173-6f1d-42e5-b912-223446bfba01",
+            "actions": [
+                {
+                    "name": "MoveY",
+                    "type": "Value",
+                    "id": "27360580-9c06-4363-a845-650e71e941ae",
+                    "expectedControlType": "Axis",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
+                    "name": "MoveX",
+                    "type": "Value",
+                    "id": "edd26ad2-afe6-49fa-920d-afff2c4db0ae",
+                    "expectedControlType": "Axis",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "a315b431-a526-4c35-94cb-c66b0e1d869c",
+                    "path": "<HID::STMicroelectronics FreeJoy>/ry",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "MoveY",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "66f5762f-9a54-4ba0-b3c7-73c136f954cf",
+                    "path": "<HID::STMicroelectronics FreeJoy>/rx",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "MoveX",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        }
+    ],
+    "controlSchemes": []
+}
