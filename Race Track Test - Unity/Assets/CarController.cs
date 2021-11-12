@@ -8,8 +8,14 @@ public class CarController : MonoBehaviour
 {
     private PlayerControls controls;
 
+    public bool isSpotsActived;
+    public GameObject spotsLights;
+
     public float horizontalInput { get; private set; }
     public float verticalInput { get; private set; }
+    public float acceleratorInput { get; private set; }
+    public float brakeInput { get; private set; }
+
     private float steerAngle;
     private bool isBreaking;
 
@@ -53,23 +59,31 @@ public class CarController : MonoBehaviour
         Debug.Log("Horizontal: " + horizontalInput + " Vertical: " + verticalInput);
     }
 
-    public String PrintByteArray(byte[] bytes)
+    public void GetSpotlights(InputAction.CallbackContext context)
     {
-        var sb = "new byte[] { ";
-        foreach (var b in bytes)
-        {
-            sb += b.ToString() + ", ";
-        }
-        sb += "}";
-        return sb;
+        Debug.Log("GetSpotlights");
+        isSpotsActived = !isSpotsActived;
+        spotsLights.SetActive(isSpotsActived);
     }
 
-    public void GetInputY(InputAction.CallbackContext context)
-    {
-        verticalInput = context.ReadValue<float>();
+    // sub accelerator and brake
+    public void SetInputY() {
+        verticalInput = acceleratorInput - brakeInput;
     }
 
-    public void GetInputX(InputAction.CallbackContext context)
+    public void GetAccelerator(InputAction.CallbackContext context)
+    {
+        acceleratorInput = context.ReadValue<float>();
+        SetInputY();
+    }
+
+    public void GetBrake(InputAction.CallbackContext context)
+    {
+        brakeInput = context.ReadValue<float>();
+        SetInputY();
+    }
+
+    public void GetDirection(InputAction.CallbackContext context)
     {
         horizontalInput = context.ReadValue<float>();
     }

@@ -6,7 +6,7 @@
             "id": "7d648173-6f1d-42e5-b912-223446bfba01",
             "actions": [
                 {
-                    "name": "MoveY",
+                    "name": "Forward",
                     "type": "Value",
                     "id": "27360580-9c06-4363-a845-650e71e941ae",
                     "expectedControlType": "Axis",
@@ -15,13 +15,31 @@
                     "initialStateCheck": true
                 },
                 {
-                    "name": "MoveX",
+                    "name": "Direction",
                     "type": "Value",
                     "id": "edd26ad2-afe6-49fa-920d-afff2c4db0ae",
                     "expectedControlType": "Axis",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": true
+                },
+                {
+                    "name": "Brake",
+                    "type": "Value",
+                    "id": "4aad6b90-89b6-4a0e-b272-e803c60aa5ad",
+                    "expectedControlType": "Axis",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
+                    "name": "Button",
+                    "type": "Button",
+                    "id": "9d564aed-d932-4fdc-8a59-0b11e2cc0ac9",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -32,7 +50,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "MoveY",
+                    "action": "Forward",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -43,7 +61,29 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "MoveX",
+                    "action": "Direction",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "52ed2e26-1996-4c92-9850-a06c48ef580a",
+                    "path": "<HID::STMicroelectronics FreeJoy>/trigger",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Button",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "441b9e7d-fffc-4bd4-b61b-7bf9c1366848",
+                    "path": "<HID::STMicroelectronics FreeJoy>/rz",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Brake",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

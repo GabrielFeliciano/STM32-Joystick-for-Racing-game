@@ -28,7 +28,7 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
             ""id"": ""7d648173-6f1d-42e5-b912-223446bfba01"",
             ""actions"": [
                 {
-                    ""name"": ""MoveY"",
+                    ""name"": ""Forward"",
                     ""type"": ""Value"",
                     ""id"": ""27360580-9c06-4363-a845-650e71e941ae"",
                     ""expectedControlType"": ""Axis"",
@@ -37,13 +37,31 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
                     ""initialStateCheck"": true
                 },
                 {
-                    ""name"": ""MoveX"",
+                    ""name"": ""Direction"",
                     ""type"": ""Value"",
                     ""id"": ""edd26ad2-afe6-49fa-920d-afff2c4db0ae"",
                     ""expectedControlType"": ""Axis"",
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""Brake"",
+                    ""type"": ""Value"",
+                    ""id"": ""4aad6b90-89b6-4a0e-b272-e803c60aa5ad"",
+                    ""expectedControlType"": ""Axis"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""Button"",
+                    ""type"": ""Button"",
+                    ""id"": ""9d564aed-d932-4fdc-8a59-0b11e2cc0ac9"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -54,7 +72,7 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""MoveY"",
+                    ""action"": ""Forward"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -65,7 +83,29 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""MoveX"",
+                    ""action"": ""Direction"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""52ed2e26-1996-4c92-9850-a06c48ef580a"",
+                    ""path"": ""<HID::STMicroelectronics FreeJoy>/trigger"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Button"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""441b9e7d-fffc-4bd4-b61b-7bf9c1366848"",
+                    ""path"": ""<HID::STMicroelectronics FreeJoy>/rz"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Brake"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -76,8 +116,10 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
 }");
         // Gameplay
         m_Gameplay = asset.FindActionMap("Gameplay", throwIfNotFound: true);
-        m_Gameplay_MoveY = m_Gameplay.FindAction("MoveY", throwIfNotFound: true);
-        m_Gameplay_MoveX = m_Gameplay.FindAction("MoveX", throwIfNotFound: true);
+        m_Gameplay_Forward = m_Gameplay.FindAction("Forward", throwIfNotFound: true);
+        m_Gameplay_Direction = m_Gameplay.FindAction("Direction", throwIfNotFound: true);
+        m_Gameplay_Brake = m_Gameplay.FindAction("Brake", throwIfNotFound: true);
+        m_Gameplay_Button = m_Gameplay.FindAction("Button", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -137,14 +179,18 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
     // Gameplay
     private readonly InputActionMap m_Gameplay;
     private IGameplayActions m_GameplayActionsCallbackInterface;
-    private readonly InputAction m_Gameplay_MoveY;
-    private readonly InputAction m_Gameplay_MoveX;
+    private readonly InputAction m_Gameplay_Forward;
+    private readonly InputAction m_Gameplay_Direction;
+    private readonly InputAction m_Gameplay_Brake;
+    private readonly InputAction m_Gameplay_Button;
     public struct GameplayActions
     {
         private @PlayerControls m_Wrapper;
         public GameplayActions(@PlayerControls wrapper) { m_Wrapper = wrapper; }
-        public InputAction @MoveY => m_Wrapper.m_Gameplay_MoveY;
-        public InputAction @MoveX => m_Wrapper.m_Gameplay_MoveX;
+        public InputAction @Forward => m_Wrapper.m_Gameplay_Forward;
+        public InputAction @Direction => m_Wrapper.m_Gameplay_Direction;
+        public InputAction @Brake => m_Wrapper.m_Gameplay_Brake;
+        public InputAction @Button => m_Wrapper.m_Gameplay_Button;
         public InputActionMap Get() { return m_Wrapper.m_Gameplay; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -154,29 +200,43 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
         {
             if (m_Wrapper.m_GameplayActionsCallbackInterface != null)
             {
-                @MoveY.started -= m_Wrapper.m_GameplayActionsCallbackInterface.OnMoveY;
-                @MoveY.performed -= m_Wrapper.m_GameplayActionsCallbackInterface.OnMoveY;
-                @MoveY.canceled -= m_Wrapper.m_GameplayActionsCallbackInterface.OnMoveY;
-                @MoveX.started -= m_Wrapper.m_GameplayActionsCallbackInterface.OnMoveX;
-                @MoveX.performed -= m_Wrapper.m_GameplayActionsCallbackInterface.OnMoveX;
-                @MoveX.canceled -= m_Wrapper.m_GameplayActionsCallbackInterface.OnMoveX;
+                @Forward.started -= m_Wrapper.m_GameplayActionsCallbackInterface.OnForward;
+                @Forward.performed -= m_Wrapper.m_GameplayActionsCallbackInterface.OnForward;
+                @Forward.canceled -= m_Wrapper.m_GameplayActionsCallbackInterface.OnForward;
+                @Direction.started -= m_Wrapper.m_GameplayActionsCallbackInterface.OnDirection;
+                @Direction.performed -= m_Wrapper.m_GameplayActionsCallbackInterface.OnDirection;
+                @Direction.canceled -= m_Wrapper.m_GameplayActionsCallbackInterface.OnDirection;
+                @Brake.started -= m_Wrapper.m_GameplayActionsCallbackInterface.OnBrake;
+                @Brake.performed -= m_Wrapper.m_GameplayActionsCallbackInterface.OnBrake;
+                @Brake.canceled -= m_Wrapper.m_GameplayActionsCallbackInterface.OnBrake;
+                @Button.started -= m_Wrapper.m_GameplayActionsCallbackInterface.OnButton;
+                @Button.performed -= m_Wrapper.m_GameplayActionsCallbackInterface.OnButton;
+                @Button.canceled -= m_Wrapper.m_GameplayActionsCallbackInterface.OnButton;
             }
             m_Wrapper.m_GameplayActionsCallbackInterface = instance;
             if (instance != null)
             {
-                @MoveY.started += instance.OnMoveY;
-                @MoveY.performed += instance.OnMoveY;
-                @MoveY.canceled += instance.OnMoveY;
-                @MoveX.started += instance.OnMoveX;
-                @MoveX.performed += instance.OnMoveX;
-                @MoveX.canceled += instance.OnMoveX;
+                @Forward.started += instance.OnForward;
+                @Forward.performed += instance.OnForward;
+                @Forward.canceled += instance.OnForward;
+                @Direction.started += instance.OnDirection;
+                @Direction.performed += instance.OnDirection;
+                @Direction.canceled += instance.OnDirection;
+                @Brake.started += instance.OnBrake;
+                @Brake.performed += instance.OnBrake;
+                @Brake.canceled += instance.OnBrake;
+                @Button.started += instance.OnButton;
+                @Button.performed += instance.OnButton;
+                @Button.canceled += instance.OnButton;
             }
         }
     }
     public GameplayActions @Gameplay => new GameplayActions(this);
     public interface IGameplayActions
     {
-        void OnMoveY(InputAction.CallbackContext context);
-        void OnMoveX(InputAction.CallbackContext context);
+        void OnForward(InputAction.CallbackContext context);
+        void OnDirection(InputAction.CallbackContext context);
+        void OnBrake(InputAction.CallbackContext context);
+        void OnButton(InputAction.CallbackContext context);
     }
 }
